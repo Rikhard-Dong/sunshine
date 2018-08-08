@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://10.26.231.210;database=YG_MES
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: ride
+    password: ABCabc123#
+
+
+logging:
+  level:
+    com.hfmes.sunshine: debug
+mybatis:
+  type-aliases-package: com.hfmes.sunshine.domain
+  mapper-locations: classpath:mapper/*.xml

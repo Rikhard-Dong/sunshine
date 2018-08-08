@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.MldDtlDao">
+
+    <resultMap id="MldDtlResult" type="com.hfmes.sunshine.domain.MldDtl">
+        <result property="mldDtlId" column="MldDtlId"/>
+        <result property="mldTypeId" column="MldTypeId"/>
+        <result property="barCode" column="BarCode"/>
+        <result property="title" column="Title"/>
+        <result property="code" column="Code"/>
+        <result property="spec" column="Spec"/>
+        <result property="unit" column="Unit"/>
+        <result property="type" column="Type"/>
+        <result property="cycle" column="Cycle"/>
+        <result property="weight" column="Weight"/>
+        <result property="num" column="Num"/>
+        <result property="model" column="Model"/>
+        <result property="enDate" column="EnDate"/>
+        <result property="operator" column="Operator"/>
+        <result property="status" column="Status"/>
+        <result property="memo" column="Memo"/>
+        <result property="capacity" column="Capacity"/>
+    </resultMap>
+
+    <select id="findByMldDtlId" resultMap="MldDtlResult">
+        select *
+        from T_MldDtl
+        where MldDtlId = #{mldDtlId};
+    </select>
+</mapper>
