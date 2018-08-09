@@ -10,29 +10,25 @@ import java.util.Map;
  * @date 2018/8/9 10:04
  */
 @Data
-public class Result {
+public class Result<T> {
     private Integer errcode;
     private String errmsg;
-    private Map<String, Object> data = new HashMap<>();
+    private T data;
 
-    public Result addData(String key, Object value) {
-        this.data.put(key, value);
-        return this;
-    }
 
-    public Result success() {
+    public static Result success() {
         return newResult(0, "ok", null);
     }
 
-    public Result success(Map<String, Object> data) {
+    public static <T> Result success(T data) {
         return newResult(0, "ok", data);
     }
 
-    public Result fail(Integer errcode) {
+    public static Result fail(Integer errcode) {
         return newResult(errcode, null, null);
     }
 
-    public Result newResult(Integer errcode, String errmsg, Map<String, Object> data) {
+    public static <T> Result newResult(Integer errcode, String errmsg, T data) {
         Result result = new Result();
         result.setErrcode(errcode);
         result.setErrmsg(errmsg);

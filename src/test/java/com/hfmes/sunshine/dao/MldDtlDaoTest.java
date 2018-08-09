@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -27,5 +29,13 @@ public class MldDtlDaoTest {
         MldDtl mldDtl = mldDtlDao.findByMldDtlId(1);
         assertNotNull(mldDtl);
         log.debug("mldDtl --> {}", mldDtl);
+    }
+
+    @Test
+    public void findAll() {
+        List<MldDtl> mldDtls = mldDtlDao.findAll();
+        assertNotNull(mldDtls);
+        assertNotEquals(mldDtls.size(), 0);
+        log.debug("mlddtl list --> {}", mldDtls);
     }
 }

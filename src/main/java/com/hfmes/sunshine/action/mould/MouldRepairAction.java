@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
  * @author supreDong@gmail.com
  * @date 2018/8/9 11:07
  * 模具维修action
+ *
+ * 区分devc action中的MouldRepairAction
  */
-@Component
+@Component(value = "mouldRepairAction2")
 @Slf4j
 public class MouldRepairAction implements Action<MouldStatus, MouldEvents> {
     @Override

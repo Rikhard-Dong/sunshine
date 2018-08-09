@@ -15,4 +15,9 @@
         from T_Person
         where CardNo = #{cardNo}
     </select>
+
+    <select id="findAll" resultType="com.hfmes.sunshine.domain.Person">
+        select *
+        from T_Person;
+    </select>
 </mapper>

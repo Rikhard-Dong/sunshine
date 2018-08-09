@@ -5,6 +5,7 @@ import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
@@ -27,6 +28,7 @@ public class ModelStateMachineConfig extends EnumStateMachineConfigurerAdapter<M
     private final CompleteMouldFillingAction completeMouldFillingAction;
     private final DemouldingAction demouldingAction;
     private final MouldCollarAction mouldCollarAction;
+    @Qualifier("mouldRepairAction2")
     private final MouldRepairAction mouldRepairAction;
     private final MouldRepairComplete2SM10Action mouldRepairComplete2SM10Action;
     private final MouldRepairComplete2SM40Action mouldRepairComplete2SM40Action;

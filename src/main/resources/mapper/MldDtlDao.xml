@@ -29,4 +29,9 @@
         from T_MldDtl
         where MldDtlId = #{mldDtlId};
     </select>
+
+    <select id="findAll" resultMap="MldDtlResult">
+        select *
+        from T_MldDtl;
+    </select>
 </mapper>

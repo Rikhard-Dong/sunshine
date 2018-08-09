@@ -4,6 +4,7 @@ import com.hfmes.sunshine.action.devc.*;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
@@ -26,6 +27,7 @@ public class DeviceStateMachineConfig extends EnumStateMachineConfigurerAdapter<
     private final DeviceRepairCompleteAction deviceRepairCompleteAction;
     private final DeviceReportRePairAction deviceReportRePairAction;
     private final DeviceRevokeReportRepairAction deviceRevokeReportRepairAction;
+    @Qualifier("mouldRepairAction1")
     private final MouldRepairAction mouldRepairAction;
     private final MouldRepairCompleteAction mouldRepairCompleteAction;
     private final ProduceCheckAndAcceptAction produceCheckAndAcceptAction;

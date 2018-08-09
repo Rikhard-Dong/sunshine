@@ -36,4 +36,8 @@ public class SCOptionDaoTest {
 
         log.debug("scOptions --> {}", scOptions);
     }
+
+    @Test
+    public void findByCardNoAndDeviceId() {
+    }
 }
