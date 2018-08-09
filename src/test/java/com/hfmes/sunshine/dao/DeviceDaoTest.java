@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class DeviceDaoTest {
 
     @Autowired
-    private DeviceDao deviceDao;
+    private DevcDao deviceDao;
 
     @Test
     public void findByDeviceId() {

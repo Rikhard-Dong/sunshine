@@ -6,7 +6,7 @@ package com.hfmes.sunshine.enums;
  * <p>
  * 模具状态
  */
-public enum ModelStatus {
+public enum MouldStatus {
     SM00,   // 在架
     SM10,   // 领用
     SM20,   // 装模

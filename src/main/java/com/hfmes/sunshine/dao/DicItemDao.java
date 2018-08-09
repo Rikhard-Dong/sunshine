@@ -8,4 +8,6 @@ import com.hfmes.sunshine.domain.DicItem;
  */
 public interface DicItemDao {
     DicItem findById(Integer id);
+
+    DicItem findByCode(String code);
 }

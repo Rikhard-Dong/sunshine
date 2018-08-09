@@ -17,4 +17,10 @@
         from T_DicItem
         where dic_item_id = #{id}
     </select>
+
+    <select id="findByCode" resultMap="dicItemResult">
+        select *
+        from T_DicItem
+        where code = #{code}
+    </select>
 </mapper>
