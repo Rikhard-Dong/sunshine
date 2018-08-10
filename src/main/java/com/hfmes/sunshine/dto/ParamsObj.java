@@ -22,4 +22,7 @@ public class ParamsObj implements Serializable {
 
     @JsonProperty("PersonId")
     private Integer personId;
+
+    @JsonProperty("DevcStatus")
+    private String devcStatus;
 }
