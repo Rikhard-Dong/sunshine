@@ -176,6 +176,11 @@ public class OptionWebServiceImpl implements OptionWebService {
      * 生产计数接口
      *****************************************************/
 
+    @Override
+    public String updateLocalToServerCount(String devcId, String count) {
+        Boolean result =countNumService.updateLocalToServerCount(devcId,count);
+        return StringUtils.capitalize(result.toString());
+    }
     /* *****************************************************
      * 检查同步情况接口
      *****************************************************/
@@ -193,11 +198,6 @@ public class OptionWebServiceImpl implements OptionWebService {
      *****************************************************/
 
 
-    @Override
-    public String updateLocalToServerCount(String devcId, String count) {
-        Boolean result =countNumService.updateLocalToServerCount(devcId,count);
-        return StringUtils.capitalize(result.toString());
-    }
 
 
     /**
