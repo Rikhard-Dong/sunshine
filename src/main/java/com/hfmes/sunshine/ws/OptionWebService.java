@@ -140,6 +140,9 @@ public interface OptionWebService {
      * 检查同步情况接口
      *****************************************************/
 
+    @WebMethod
+    String checkDSSame(@WebParam(name = "obj") String objStr);
+
 
     /* *****************************************************
      * 实现状态同步接口

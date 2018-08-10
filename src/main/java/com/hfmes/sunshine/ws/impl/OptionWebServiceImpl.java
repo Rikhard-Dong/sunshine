@@ -5,6 +5,7 @@ import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.ParamsObj;
 import com.hfmes.sunshine.dto.Result;
+import com.hfmes.sunshine.service.CheckStatusService;
 import com.hfmes.sunshine.service.ConditionService;
 import com.hfmes.sunshine.service.CountNumService;
 import com.hfmes.sunshine.service.OptionService;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.util.List;
 
@@ -30,13 +32,18 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     private final OptionService optionService;
     private final ConditionService conditionService;
+    private final CheckStatusService checkStatusService;
+
     private final CountNumService countNumService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
-                                ConditionService conditionService,CountNumService countNumService) {
+                                ConditionService conditionService,
+                                CheckStatusService checkStatusService,
+                                CountNumService countNumService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
+        this.checkStatusService = checkStatusService;
         this.countNumService=countNumService;
     }
 
@@ -162,6 +169,29 @@ public class OptionWebServiceImpl implements OptionWebService {
         Boolean result = conditionService.procNumAchieveSetNum(params.getDeviceId());
         return StringUtils.capitalize(result.toString());
     }
+
+
+
+    /* *****************************************************
+     * 生产计数接口
+     *****************************************************/
+
+    /* *****************************************************
+     * 检查同步情况接口
+     *****************************************************/
+
+    @Override
+    public String checkDSSame(@WebParam(name = "obj") String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = checkStatusService.checkDevcSync(params.getDeviceId(), params.getDevcStatus());
+        return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
+    }
+
+
+    /* *****************************************************
+     * 实现状态同步接口
+     *****************************************************/
+
 
     @Override
     public String updateLocalToServerCount(String devcId, String count) {
