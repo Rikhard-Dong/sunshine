@@ -98,12 +98,23 @@ public class BeanConfig {
         return initMouldStateMachines();
     }
 
+    /**
+     * key device id
+     * value count 数量
+     * @return
+     */
+    @Bean(name = "countNums")
+    public Map<Integer, Integer> countNums() {
+        return initCountNums();
+    }
+
 
     /**
      * 初始化设备map
      *
      * @return map of devices
      */
+
     private Map<Integer, Devc> initDevcs() {
         Map<Integer, Devc> devcs = new ConcurrentHashMap<>();
 
@@ -164,10 +175,11 @@ public class BeanConfig {
             for (Devc devc : devcs) {
                 StateMachine<DeviceStatus, DeviceEvents> stateMachine = deviceStateMachineFactory.getStateMachine(devc.getTitle());
                 // 从数据库恢复到指定状态
+                stateMachine.start();
                 if (devc.getStatus() != null) {
-                    stateMachine = StateMachineUtils.setDeviceStateMachineState(stateMachine, DeviceStatus.valueOf(devc.getStatus()));
-                } else {
-                    stateMachine.start();
+                    DeviceStatus status = DeviceStatus.valueOf(devc.getStatus());
+                    log.debug("# status --> {}", status);
+                    StateMachineUtils.setDeviceStateMachineState(stateMachine, status);
                 }
                 deviceStateMachines.put(devc.getDeviceId(), stateMachine);
             }
@@ -205,4 +217,19 @@ public class BeanConfig {
         return mouldStateMachines;
     }
 
+
+    /**
+     * 生产计数
+     *
+     * @return
+     */
+    private Map<Integer, Integer> initCountNums() {
+        List<Devc> devcList = deviceDao.findAll();
+        Map<Integer, Integer> countNums = new ConcurrentHashMap<>();
+        for (Devc devc : devcList) {
+            countNums.put(devc.getDeviceId(), 0);
+        }
+
+        return countNums;
+    }
 }

@@ -32,7 +32,7 @@ public class SunshineApplicationTests {
         log.debug("device state machines size is --> {}", deviceStateMachines.size());
 
         for (Map.Entry<Integer, StateMachine<DeviceStatus, DeviceEvents>> entry : deviceStateMachines.entrySet()) {
-            log.debug("## id --> {}, status --> {}", entry.getKey(), entry.getValue().getId());
+            log.debug("## id --> {}, status --> {}", entry.getKey(), entry.getValue().getState().getId());
         }
     }
 

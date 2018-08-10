@@ -2,6 +2,7 @@ package com.hfmes.sunshine.utils;
 
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.access.StateMachineAccess;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
@@ -13,6 +14,8 @@ import java.util.List;
  * @date 2018/8/10 15:25
  * 状态机工具类
  */
+
+@Slf4j
 public class StateMachineUtils {
 
     /**
@@ -21,8 +24,10 @@ public class StateMachineUtils {
      * @param stateMachine 状态机
      * @param status       转态
      */
-    public static StateMachine<DeviceStatus, DeviceEvents> setDeviceStateMachineState(StateMachine<DeviceStatus, DeviceEvents> stateMachine,
+    public static void setDeviceStateMachineState(StateMachine<DeviceStatus, DeviceEvents> stateMachine,
                                                   DeviceStatus status) {
+
+        log.debug("###### before update status --> {}", stateMachine.getState().getId());
         stateMachine.stop();
         List<StateMachineAccess<DeviceStatus, DeviceEvents>> regions = stateMachine.getStateMachineAccessor().withAllRegions();
         for (StateMachineAccess<DeviceStatus, DeviceEvents> region : regions) {
@@ -30,6 +35,7 @@ public class StateMachineUtils {
         }
         stateMachine.start();
 
-        return stateMachine;
+        log.debug("###### after update status --> {}", stateMachine.getState().getId());
+//        return stateMachine;
     }
 }
