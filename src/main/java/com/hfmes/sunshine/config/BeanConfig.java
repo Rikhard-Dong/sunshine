@@ -3,9 +3,11 @@ package com.hfmes.sunshine.config;
 import com.hfmes.sunshine.dao.DevcDao;
 import com.hfmes.sunshine.dao.MldDtlDao;
 import com.hfmes.sunshine.dao.PersonDao;
+import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
 import com.hfmes.sunshine.domain.Person;
+import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldEvents;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,18 +43,21 @@ public class BeanConfig {
     private final PersonDao personDao;
 
     private final MldDtlDao mldDtlDao;
+    private final TaskDao taskDao;
 
     @Autowired
     public BeanConfig(StateMachineFactory<DeviceStatus, DeviceEvents> deviceStateMachineFactory,
                       StateMachineFactory<MouldStatus, MouldEvents> mouldStateMachineFactory,
                       DevcDao deviceDao,
                       PersonDao personDao,
-                      MldDtlDao mldDtlDao) {
+                      MldDtlDao mldDtlDao,
+                      TaskDao taskDao) {
         this.deviceStateMachineFactory = deviceStateMachineFactory;
         this.mouldStateMachineFactory = mouldStateMachineFactory;
         this.deviceDao = deviceDao;
         this.personDao = personDao;
         this.mldDtlDao = mldDtlDao;
+        this.taskDao = taskDao;
     }
 
     /**
@@ -101,6 +107,7 @@ public class BeanConfig {
     /**
      * key device id
      * value count 数量
+     *
      * @return
      */
     @Bean(name = "countNums")
@@ -108,6 +115,32 @@ public class BeanConfig {
         return initCountNums();
     }
 
+
+    /**
+     * key deviceId
+     * value 设备对应的工单list
+     *
+     * @return
+     */
+    @Bean(name = "deviceTasks")
+    public Map<Integer, List<Task>> deviceTasks() {
+        return initDeviceTasks();
+    }
+
+    /**
+     * @return
+     */
+    private Map<Integer, List<Task>> initDeviceTasks() {
+        List<Task> tasks = taskDao.findAllStatusNotEqualST40();
+        Map<Integer, List<Task>> result = new ConcurrentHashMap<>();
+
+        for (Task task : tasks) {
+            List<Task> tmp = result.computeIfAbsent(task.getDevcId(), k -> new ArrayList<>());
+            tmp.add(task);
+        }
+
+        return result;
+    }
 
     /**
      * 初始化设备map

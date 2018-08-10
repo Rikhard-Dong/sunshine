@@ -43,4 +43,15 @@
         where TaskId = #{taskid}
     </select>
 
+    <select id="findAll" resultType="com.hfmes.sunshine.domain.Task">
+        select *
+        from T_Task
+    </select>
+
+    <select id="findAllStatusNotEqualST40" resultType="com.hfmes.sunshine.domain.Task">
+        select *
+        from T_Task task
+        where task.Status != 'ST40'
+    </select>
+
 </mapper>
