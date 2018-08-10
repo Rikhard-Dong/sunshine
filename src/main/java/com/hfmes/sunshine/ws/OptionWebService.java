@@ -127,6 +127,7 @@ public interface OptionWebService {
 
     /**
      * 更新服务器对象计数器的值
+     *
      * @param devcId
      * @param count
      * @return
@@ -140,11 +141,51 @@ public interface OptionWebService {
      * 检查同步情况接口
      *****************************************************/
 
+    /**
+     * 检查设备状态是否同步
+     *
+     * @param devcId     上传设备id
+     * @param devcStatus 上传设备状态
+     * @return 一致返回true, 不一致返回false
+     */
     @WebMethod
-    String checkDSSame(@WebParam(name = "obj") String objStr);
+    String checkDSSame(@WebParam(name = "devcId") String devcId,
+                       @WebParam(name = "devcStatus") String devcStatus);
 
+
+    /**
+     * 检查模具状态是否同步
+     *
+     * @param mldId     上传模具id
+     * @param mldStatus 上传模具状态
+     * @return 一致返回true, 不一致返回false
+     */
+    @WebMethod
+    String checkMSSame(@WebParam(name = "mldId") String mldId,
+                       @WebParam(name = "mldStatus") String mldStatus);
+
+    /**
+     * 检查工单状态是否同步
+     *
+     * @param taskId     工单id
+     * @param taskStatus 工单状态
+     * @return 一致返回true, 不一致返回false
+     */
+    @WebMethod
+    String checkTSSame(@WebParam(name = "taskId") String taskId,
+                       @WebParam(name = "taskStatus") String taskStatus);
 
     /* *****************************************************
      * 实现状态同步接口
      *****************************************************/
+
+
+    @WebMethod
+    String updateDSServToLocal(@WebParam(name = "devcId") String devcId);
+
+    @WebMethod
+    String updateMSServToLocal(@WebParam(name = "mldId") String mldId);
+
+    @WebMethod
+    String updateTSServToLocal(@WebParam(name = "taskId") String taskId);
 }

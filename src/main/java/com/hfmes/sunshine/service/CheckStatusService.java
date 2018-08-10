@@ -26,9 +26,11 @@ public interface CheckStatusService {
     Boolean checkMldStatus(Integer mldId, String mldStatus);
 
     /**
-     * @param taskId 工单id
+     * 检查工单同步状态
+     *
+     * @param taskId     工单id
      * @param taskStatus 工单状态
-     * @return
+     * @return 一致返回true, 否则返回false
      */
     Boolean checkTaskMldStatus(Integer taskId, String taskStatus);
 }

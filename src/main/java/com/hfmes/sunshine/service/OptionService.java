@@ -1,10 +1,8 @@
 package com.hfmes.sunshine.service;
 
-import com.hfmes.sunshine.domain.SCCondition;
 import com.hfmes.sunshine.domain.SCMethod;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
-import com.hfmes.sunshine.dto.OptionsDTO;
 
 import java.util.List;
 

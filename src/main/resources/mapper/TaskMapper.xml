@@ -54,4 +54,15 @@
         where task.Status != 'ST40'
     </select>
 
+    <select id="getStatusByTaskId" resultType="java.lang.String">
+        select task.Status
+        from T_Task task
+        where task.TaskId = #{taskId}
+    </select>
+    <select id="findByStatusIsST00" resultType="com.hfmes.sunshine.domain.Task">
+        select *
+        from T_Task
+        where Status = 'ST00'
+    </select>
+
 </mapper>

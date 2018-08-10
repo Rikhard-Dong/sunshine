@@ -15,6 +15,7 @@ import com.hfmes.sunshine.enums.MouldStatus;
 import com.hfmes.sunshine.utils.StateMachineUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,7 @@ public class BeanConfig {
     private final PersonDao personDao;
 
     private final MldDtlDao mldDtlDao;
+
     private final TaskDao taskDao;
 
     @Autowired
@@ -59,6 +61,10 @@ public class BeanConfig {
         this.mldDtlDao = mldDtlDao;
         this.taskDao = taskDao;
     }
+
+    /* **********************************************************
+     * 所有注入的bean
+     ***********************************************************/
 
     /**
      * 注入所有设备map bean
@@ -127,6 +133,34 @@ public class BeanConfig {
         return initDeviceTasks();
     }
 
+    /**
+     * 模具map
+     * key 模具id
+     * value 模具对象
+     *
+     * @return map of mldDtl
+     */
+    @Bean(name = "mldDtls")
+    public Map<Integer, MldDtl> mldDtlMap() {
+        return initMldDtlMap();
+    }
+
+    /**
+     * 工单map, 只要任务状态为ST00分配状态的工单
+     * key 工单id
+     * value 工单对象
+     *
+     * @return map of task
+     */
+    @Bean(name = "tasks")
+    public Map<Integer, Task> taskMap() {
+        return initTaskMap();
+    }
+
+
+    /* **********************************************************
+     * 注入bean实现过程
+     ***********************************************************/
 
     /**
      * 初始化设备map
@@ -267,5 +301,44 @@ public class BeanConfig {
         }
 
         return result;
+    }
+
+    /**
+     * 初始化模具map
+     *
+     * @return
+     */
+    private Map<Integer, MldDtl> initMldDtlMap() {
+        Map<Integer, MldDtl> map = new ConcurrentHashMap<>();
+        List<MldDtl> mldDtls = mldDtlDao.findAll();
+        if (mldDtls != null && mldDtls.size() > 0) {
+            for (MldDtl mldDtl : mldDtls) {
+                map.put(mldDtl.getMldDtlId(), mldDtl);
+            }
+        } else {
+            log.warn("initMldDtlMap 警告 --> 没有模具信息");
+        }
+
+        return map;
+    }
+
+    /**
+     * 初始化工单map
+     *
+     * @return
+     */
+    private Map<Integer, Task> initTaskMap() {
+        Map<Integer, Task> map = new ConcurrentHashMap<>();
+
+        List<Task> tasks = taskDao.findByStatusIsST00();
+        if (tasks != null && tasks.size() > 0) {
+            for (Task task : tasks) {
+                map.put(task.getTaskId(), task);
+            }
+        } else {
+            log.warn("警告 --> 符合条件的工单为空");
+        }
+
+        return map;
     }
 }

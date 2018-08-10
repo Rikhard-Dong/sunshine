@@ -25,6 +25,12 @@ public interface TaskDao {
      */
     List<Task> findAllStatusNotEqualST40();
 
+    /**
+     * 查询所有状态为ST00分配的工单
+     *
+     * @return list of task while task status is ST00
+     */
+    List<Task> findByStatusIsST00();
 
     /**
      * 根据任务ID查找
@@ -33,4 +39,13 @@ public interface TaskDao {
      * @return task
      */
     Task findByTaskId(Integer taskId);
+
+    /**
+     * 根据工单id获取当前工单的状态
+     *
+     * @param taskId 工单id
+     * @return 当前工单的状态
+     */
+    String getStatusByTaskId(Integer taskId);
+
 }

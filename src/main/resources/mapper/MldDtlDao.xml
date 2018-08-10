@@ -34,4 +34,9 @@
         select *
         from T_MldDtl;
     </select>
+    <select id="getStatusByMldId" resultType="java.lang.String">
+        select mld.Status
+        from T_MldDtl mld
+        where mld.MldDtlId = #{mldDtlId}
+    </select>
 </mapper>

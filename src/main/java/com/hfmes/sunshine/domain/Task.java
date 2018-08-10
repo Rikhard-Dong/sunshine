@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Date;
  */
 @Data
 public class Task {
+    // 数据库字段
     private Integer taskId;
     private Integer planDtlId;
     private Integer matDtlId;
@@ -37,8 +40,10 @@ public class Task {
     //其他冲压数量  包括架模/维修等数量
     private Integer otherNum;
 
-    // 级联属性
+    // 级联属性, 序列化时忽略
+    @JsonIgnore
     private Person devOp;
+    @JsonIgnore
     private Person mldOp;
 
     @Override

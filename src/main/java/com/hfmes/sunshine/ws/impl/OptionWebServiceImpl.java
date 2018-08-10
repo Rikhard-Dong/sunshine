@@ -1,14 +1,14 @@
 package com.hfmes.sunshine.ws.impl;
 
+import com.hfmes.sunshine.domain.Devc;
+import com.hfmes.sunshine.domain.MldDtl;
 import com.hfmes.sunshine.domain.SCMethod;
+import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.ParamsObj;
 import com.hfmes.sunshine.dto.Result;
-import com.hfmes.sunshine.service.CheckStatusService;
-import com.hfmes.sunshine.service.ConditionService;
-import com.hfmes.sunshine.service.CountNumService;
-import com.hfmes.sunshine.service.OptionService;
+import com.hfmes.sunshine.service.*;
 import com.hfmes.sunshine.utils.JacksonUtils;
 import com.hfmes.sunshine.ws.OptionWebService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.util.List;
 
@@ -33,18 +32,20 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final OptionService optionService;
     private final ConditionService conditionService;
     private final CheckStatusService checkStatusService;
-
+    private final SyncStatusService syncStatusService;
     private final CountNumService countNumService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
                                 ConditionService conditionService,
                                 CheckStatusService checkStatusService,
+                                SyncStatusService syncStatusService,
                                 CountNumService countNumService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
         this.checkStatusService = checkStatusService;
-        this.countNumService=countNumService;
+        this.syncStatusService = syncStatusService;
+        this.countNumService = countNumService;
     }
 
     /**
@@ -92,7 +93,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     /**
      * @param objStr 参数对象json数据
-     * @return
+     * @return 执行结果
      */
     @Override
     public String hasMould(String objStr) {
@@ -101,6 +102,10 @@ public class OptionWebServiceImpl implements OptionWebService {
         return StringUtils.capitalize(result.toString());
     }
 
+    /**
+     * @param objStr 参数对象json数据
+     * @return 执行结果
+     */
     @Override
     public String mldOpLegal(String objStr) {
         ParamsObj params = getParamObj(objStr);
@@ -110,7 +115,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     /**
      * @param objStr 参数对象json数据
-     * @return
+     * @return 执行结果
      */
     @Override
     public String isDeviceRun(String objStr) {
@@ -121,7 +126,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     /**
      * @param objStr 参数对象json数据
-     * @return
+     * @return 执行结果
      */
     @Override
     public String isMouldUse(String objStr) {
@@ -130,6 +135,10 @@ public class OptionWebServiceImpl implements OptionWebService {
         return StringUtils.capitalize(result.toString());
     }
 
+    /**
+     * @param objStr 参数对象json数据
+     * @return 执行结果
+     */
     @Override
     public String devOpLegal(String objStr) {
         ParamsObj params = getParamObj(objStr);
@@ -139,7 +148,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     /**
      * @param objStr 参数对象json数据
-     * @return
+     * @return 执行结果
      */
     @Override
     public String isTaskDevOpEqualsCurPerson(String objStr) {
@@ -150,7 +159,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     /**
      * @param objStr 参数对象json数据
-     * @return
+     * @return 执行结果
      */
     @Override
     public String procNumAchieveSetNum(String objStr) {
@@ -161,7 +170,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     /**
      * @param objStr 参数对象json数据
-     * @return
+     * @return 执行结果
      */
     @Override
     public String procNumLessThanSetNum(String objStr) {
@@ -178,27 +187,83 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     @Override
     public String updateLocalToServerCount(String devcId, String count) {
-        Boolean result =countNumService.updateLocalToServerCount(devcId,count);
+        Boolean result = countNumService.updateLocalToServerCount(devcId, count);
         return StringUtils.capitalize(result.toString());
     }
+
+
     /* *****************************************************
      * 检查同步情况接口
      *****************************************************/
 
+    /**
+     * @param devcId     上传设备id
+     * @param devcStatus 上传设备状态
+     * @return 一致返回true, 不一致返回false
+     */
     @Override
-    public String checkDSSame(@WebParam(name = "obj") String objStr) {
-        ParamsObj params = getParamObj(objStr);
-        Boolean result = checkStatusService.checkDevcStatus(params.getDeviceId(), params.getDevcStatus());
+    public String checkDSSame(String devcId, String devcStatus) {
+        Boolean result = checkStatusService.checkDevcStatus(Integer.valueOf(devcId), devcStatus);
         return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
     }
+
+    /**
+     * @param mldId     上传模具id
+     * @param mldStatus 上传模具状态
+     * @return 一致返回true, 不一致返回false
+     */
+    @Override
+    public String checkMSSame(String mldId, String mldStatus) {
+        Boolean result = checkStatusService.checkMldStatus(Integer.valueOf(mldId), mldStatus);
+
+        return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
+    }
+
+    /**
+     * @param taskId     工单id
+     * @param taskStatus 工单状态
+     * @return 一致返回true, 不一致返回false
+     */
+    @Override
+    public String checkTSSame(String taskId, String taskStatus) {
+        Boolean result = checkStatusService.checkTaskMldStatus(Integer.valueOf(taskId), taskStatus);
+        return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
+    }
+
+
 
 
     /* *****************************************************
      * 实现状态同步接口
      *****************************************************/
 
+    @Override
+    public String updateDSServToLocal(String devcId) {
+        Devc devc = syncStatusService.syncDevc(Integer.valueOf(devcId));
 
+        Result result = Result.success(devc);
+        return JacksonUtils.toJSon(result);
+    }
 
+    @Override
+    public String updateMSServToLocal(String mldId) {
+        MldDtl mldDtl = syncStatusService.syncMldDtl(Integer.valueOf(mldId));
+
+        Result result = Result.success(mldDtl);
+        return JacksonUtils.toJSon(result);
+    }
+
+    @Override
+    public String updateTSServToLocal(String taskId) {
+        Task task = syncStatusService.syncTask(Integer.valueOf(taskId));
+
+        Result result = Result.success(task);
+        return JacksonUtils.toJSon(result);
+    }
+
+    /* *****************************************************
+     * 内部方法
+     *****************************************************/
 
     /**
      * 将json数据转换成对象

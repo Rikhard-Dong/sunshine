@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.dao.MldDtlDao;
+import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.service.CheckStatusService;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +22,16 @@ public class CheckStatusServiceImpl implements CheckStatusService {
 
     private final Map<Integer, Devc> devcs;
 
+    private final MldDtlDao mldDtlDao;
+    private final TaskDao taskDao;
+
     @Autowired
-    public CheckStatusServiceImpl(@Qualifier("devcs") Map<Integer, Devc> devcs) {
+    public CheckStatusServiceImpl(@Qualifier("devcs") Map<Integer, Devc> devcs,
+                                  MldDtlDao mldDtlDao,
+                                  TaskDao taskDao) {
         this.devcs = devcs;
+        this.mldDtlDao = mldDtlDao;
+        this.taskDao = taskDao;
     }
 
     /**
@@ -39,13 +48,25 @@ public class CheckStatusServiceImpl implements CheckStatusService {
         return StringUtils.equals(devcStatus, devc.getStatus());
     }
 
+    /**
+     * @param mldId     模具id
+     * @param mldStatus 模具状态
+     * @return
+     */
     @Override
     public Boolean checkMldStatus(Integer mldId, String mldStatus) {
-        return null;
+        String curStatus = mldDtlDao.getStatusByMldId(mldId);
+        return StringUtils.equals(mldStatus, curStatus);
     }
 
+    /**
+     * @param taskId     工单id
+     * @param taskStatus 工单状态
+     * @return
+     */
     @Override
     public Boolean checkTaskMldStatus(Integer taskId, String taskStatus) {
-        return null;
+        String curStatus = taskDao.getStatusByTaskId(taskId);
+        return StringUtils.equals(taskStatus, curStatus);
     }
 }

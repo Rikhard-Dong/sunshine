@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
@@ -24,8 +25,10 @@ public class Devc {
     private String mldStatus;
     private Integer weightTun;
 
-    // 级联属性
+    // 级联属性, 序列化时忽略
+    @JsonIgnore
     private Dept dept;
+    @JsonIgnore
     private Task task;
 
     @Override

@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class CountNumServiceImpl implements CountNumService{
+public class CountNumServiceImpl implements CountNumService {
 
     @Autowired
     private Map<Integer, Devc> devcs;
@@ -21,23 +21,23 @@ public class CountNumServiceImpl implements CountNumService{
 
     @Override
     public boolean updateLocalToServerCount(String devcId, String count) {
-        Devc devc=devcs.get(Integer.parseInt(devcId));
+        Devc devc = devcs.get(Integer.parseInt(devcId));
 
-        if(devc==null){
+        if (devc == null) {
             return false;
-        }else{
-            int num=countNums.get(Integer.parseInt(devcId));
-            num=num+Integer.parseInt(count);
-            if(devc.getTask().getStatus().equals("ST10")){
-                devc.getTask().setProcNum(devc.getTask().getProcNum()+Integer.parseInt(count));
-            }else{
-                devc.getTask().setTestNum(devc.getTask().getTestNum()+Integer.parseInt(count));
+        } else {
+            int num = countNums.get(Integer.parseInt(devcId));
+            num = num + Integer.parseInt(count);
+            if (devc.getTask().getStatus().equals("ST10")) {
+                devc.getTask().setProcNum(devc.getTask().getProcNum() + Integer.parseInt(count));
+            } else {
+                devc.getTask().setTestNum(devc.getTask().getTestNum() + Integer.parseInt(count));
             }
             try {
-                devcs.put(devc.getDeviceId(),devc);
-                countNums.put(devc.getDeviceId(),num);
+                devcs.put(devc.getDeviceId(), devc);
+                countNums.put(devc.getDeviceId(), num);
                 return true;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }

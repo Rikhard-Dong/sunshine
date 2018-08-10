@@ -38,4 +38,10 @@ public class MldDtlDaoTest {
         assertNotEquals(mldDtls.size(), 0);
         log.debug("mlddtl list --> {}", mldDtls);
     }
+
+    @Test
+    public void getStatusByMldId() {
+        String curState = mldDtlDao.getStatusByMldId(1);
+        log.debug("cur state --> {}", curState);
+    }
 }
