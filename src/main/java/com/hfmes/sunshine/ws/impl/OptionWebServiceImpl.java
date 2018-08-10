@@ -7,6 +7,7 @@ import com.hfmes.sunshine.dto.ParamsObj;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.CheckStatusService;
 import com.hfmes.sunshine.service.ConditionService;
+import com.hfmes.sunshine.service.CountNumService;
 import com.hfmes.sunshine.service.OptionService;
 import com.hfmes.sunshine.utils.JacksonUtils;
 import com.hfmes.sunshine.ws.OptionWebService;
@@ -33,14 +34,17 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final ConditionService conditionService;
     private final CheckStatusService checkStatusService;
 
+    private final CountNumService countNumService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
                                 ConditionService conditionService,
-                                CheckStatusService checkStatusService) {
+                                CheckStatusService checkStatusService,
+                                CountNumService countNumService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
         this.checkStatusService = checkStatusService;
+        this.countNumService=countNumService;
     }
 
     /**
@@ -172,6 +176,11 @@ public class OptionWebServiceImpl implements OptionWebService {
      * 生产计数接口
      *****************************************************/
 
+    @Override
+    public String updateLocalToServerCount(String devcId, String count) {
+        Boolean result =countNumService.updateLocalToServerCount(devcId,count);
+        return StringUtils.capitalize(result.toString());
+    }
     /* *****************************************************
      * 检查同步情况接口
      *****************************************************/
@@ -187,6 +196,8 @@ public class OptionWebServiceImpl implements OptionWebService {
     /* *****************************************************
      * 实现状态同步接口
      *****************************************************/
+
+
 
 
     /**

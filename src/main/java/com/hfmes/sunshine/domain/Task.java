@@ -34,6 +34,9 @@ public class Task {
     private Date mldPlanEnd;
     private Integer bindNum;
 
+    //其他冲压数量  包括架模/维修等数量
+    private Integer otherNum;
+
     // 级联属性
     private Person devOp;
     private Person mldOp;

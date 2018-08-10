@@ -124,6 +124,18 @@ public interface OptionWebService {
      * 生产计数接口
      *****************************************************/
 
+
+    /**
+     * 更新服务器对象计数器的值
+     * @param devcId
+     * @param count
+     * @return
+     */
+    @WebMethod
+    String updateLocalToServerCount(@WebParam(name = "devcId") String devcId,
+                                    @WebParam(name = "count") String count);
+
+
     /* *****************************************************
      * 检查同步情况接口
      *****************************************************/
