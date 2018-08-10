@@ -27,4 +27,6 @@ public class MldDtl {
     private String status;
     private String memo;
     private Float capacity;
+
+
 }

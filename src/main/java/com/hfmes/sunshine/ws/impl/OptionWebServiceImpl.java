@@ -6,6 +6,7 @@ import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.ParamsObj;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.ConditionService;
+import com.hfmes.sunshine.service.CountNumService;
 import com.hfmes.sunshine.service.OptionService;
 import com.hfmes.sunshine.utils.JacksonUtils;
 import com.hfmes.sunshine.ws.OptionWebService;
@@ -29,12 +30,14 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     private final OptionService optionService;
     private final ConditionService conditionService;
+    private final CountNumService countNumService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
-                                ConditionService conditionService) {
+                                ConditionService conditionService,CountNumService countNumService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
+        this.countNumService=countNumService;
     }
 
     /**
@@ -159,6 +162,13 @@ public class OptionWebServiceImpl implements OptionWebService {
         Boolean result = conditionService.procNumAchieveSetNum(params.getDeviceId());
         return StringUtils.capitalize(result.toString());
     }
+
+    @Override
+    public String updateLocalToServerCount(String devcId, String count) {
+        Boolean result =countNumService.updateLocalToServerCount(devcId,count);
+        return StringUtils.capitalize(result.toString());
+    }
+
 
     /**
      * 将json数据转换成对象
