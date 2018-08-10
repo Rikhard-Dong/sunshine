@@ -127,20 +127,6 @@ public class BeanConfig {
         return initDeviceTasks();
     }
 
-    /**
-     * @return
-     */
-    private Map<Integer, List<Task>> initDeviceTasks() {
-        List<Task> tasks = taskDao.findAllStatusNotEqualST40();
-        Map<Integer, List<Task>> result = new ConcurrentHashMap<>();
-
-        for (Task task : tasks) {
-            List<Task> tmp = result.computeIfAbsent(task.getDevcId(), k -> new ArrayList<>());
-            tmp.add(task);
-        }
-
-        return result;
-    }
 
     /**
      * 初始化设备map
@@ -264,5 +250,22 @@ public class BeanConfig {
         }
 
         return countNums;
+    }
+
+    /**
+     * @return
+     */
+    private Map<Integer, List<Task>> initDeviceTasks() {
+        List<Task> tasks = taskDao.findAllStatusNotEqualST40();
+        Map<Integer, List<Task>> result = new ConcurrentHashMap<>();
+
+        for (Task task : tasks) {
+            if (task.getDevcId() != null) {
+                List<Task> tmp = result.computeIfAbsent(task.getDevcId(), k -> new ArrayList<>());
+                tmp.add(task);
+            }
+        }
+
+        return result;
     }
 }

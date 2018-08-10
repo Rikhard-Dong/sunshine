@@ -31,11 +31,21 @@ public class CheckStatusServiceImpl implements CheckStatusService {
      * @return
      */
     @Override
-    public Boolean checkDevcSync(Integer deviceId, String devcStatus) {
+    public Boolean checkDevcStatus(Integer deviceId, String devcStatus) {
         Devc devc = devcs.get(deviceId);
         if (devc == null) {
             return Boolean.FALSE;
         }
         return StringUtils.equals(devcStatus, devc.getStatus());
+    }
+
+    @Override
+    public Boolean checkMldStatus(Integer mldId, String mldStatus) {
+        return null;
+    }
+
+    @Override
+    public Boolean checkTaskMldStatus(Integer taskId, String taskStatus) {
+        return null;
     }
 }

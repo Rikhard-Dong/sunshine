@@ -11,7 +11,24 @@ public interface CheckStatusService {
      *
      * @param deviceId   设备id
      * @param devcStatus 下位机上传状态
-     * @return 一直返回true, 否则返回false
+     * @return 一致返回true, 否则返回false
      */
-    Boolean checkDevcSync(Integer deviceId, String devcStatus);
+    Boolean checkDevcStatus(Integer deviceId, String devcStatus);
+
+
+    /**
+     * 检查模具同步状态
+     *
+     * @param mldId     模具id
+     * @param mldStatus 模具状态
+     * @return 一致返回true, 否则返回false
+     */
+    Boolean checkMldStatus(Integer mldId, String mldStatus);
+
+    /**
+     * @param taskId 工单id
+     * @param taskStatus 工单状态
+     * @return
+     */
+    Boolean checkTaskMldStatus(Integer taskId, String taskStatus);
 }

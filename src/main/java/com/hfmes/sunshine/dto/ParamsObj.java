@@ -25,4 +25,16 @@ public class ParamsObj implements Serializable {
 
     @JsonProperty("DevcStatus")
     private String devcStatus;
+
+    @JsonProperty("MldId")
+    private Integer mldId;
+
+    @JsonProperty("MldStatus")
+    private String mldStatus;
+
+    @JsonProperty("TaskId")
+    private Integer taskId;
+
+    @JsonProperty("TaskStatus")
+    private String taskStatus;
 }

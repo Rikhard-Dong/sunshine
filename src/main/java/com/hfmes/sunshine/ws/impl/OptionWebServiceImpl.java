@@ -179,7 +179,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     @Override
     public String checkDSSame(@WebParam(name = "obj") String objStr) {
         ParamsObj params = getParamObj(objStr);
-        Boolean result = checkStatusService.checkDevcSync(params.getDeviceId(), params.getDevcStatus());
+        Boolean result = checkStatusService.checkDevcStatus(params.getDeviceId(), params.getDevcStatus());
         return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
     }
 
