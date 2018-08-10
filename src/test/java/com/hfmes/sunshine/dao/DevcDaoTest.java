@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.dao;
 
 import com.hfmes.sunshine.domain.Devc;
+import com.hfmes.sunshine.enums.DeviceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,5 +30,22 @@ public class DevcDaoTest {
     public void findAll() {
         List<Devc> a = deviceDao.findAll();
         log.debug("{}", a);
+    }
+
+    @Test
+    public void findByDeviceId() {
+
+        Devc devc = deviceDao.findByDeviceId(2);
+        log.debug("devc --> {}", devc);
+        log.debug("devc dept --> {}", devc.getDept());
+        log.debug("devc task --> {}", devc.getTask());
+
+    }
+
+    @Test
+    public void getStatusByDeviceId() {
+
+        DeviceStatus status = deviceDao.getStatusByDeviceId(2);
+        log.debug("status --> {}", status);
     }
 }

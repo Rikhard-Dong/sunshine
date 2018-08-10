@@ -12,3 +12,8 @@ logging:
 mybatis:
   type-aliases-package: com.hfmes.sunshine.domain
   mapper-locations: classpath:mapper/*.xml
+
+  # 打开延迟加载的开关，再将积极加载改为消极加载（即按需加载）
+  configuration:
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false

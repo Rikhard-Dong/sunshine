@@ -17,6 +17,13 @@
         <result property="mldStatus" column="MldStatus"/>
         <result property="weightTun" column="WeightTun"/>
 
+
+        <association property="dept" select="com.hfmes.sunshine.dao.DeptDao.findByDeptId"
+                     javaType="com.hfmes.sunshine.domain.Dept" column="DeptId"/>
+
+        <association property="task" select="com.hfmes.sunshine.dao.TaskDao.findByTaskId" column="TaskId"
+                     javaType="com.hfmes.sunshine.domain.Task"/>
+
     </resultMap>
 
     <select id="findByDeviceId" resultMap="DevcResult">
@@ -28,6 +35,11 @@
     <select id="findAll" resultMap="DevcResult">
         select *
         from T_Devc
+    </select>
+    <select id="getStatusByDeviceId" resultType="com.hfmes.sunshine.enums.DeviceStatus">
+        select status
+        from T_Devc
+        where DeptId = #{deviceId}
     </select>
 
 </mapper>

@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.OptionService;
@@ -29,7 +30,7 @@ public class OptionServiceImplTest {
 
     @Test
     public void obtainOptions() {
-        List<OptionsDTO> result = optionService.obtainOptions("1186200375", 2);
+        List<OptionDTO> result = optionService.obtainOptions("1186200375", 2);
 
         log.debug("{}", result);
 

@@ -4,7 +4,40 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.TaskDao">
 
-    <select id="findByTaskId" resultType="com.hfmes.sunshine.domain.Task">
+    <resultMap id="taskResult" type="com.hfmes.sunshine.domain.Task">
+
+        <result property="taskId" column="TaskId"/>
+        <result property="planDtlId" column="PlanDtlId"/>
+        <result property="matDtlId" column="MatDtlId"/>
+        <result property="devcId" column="DevcId"/>
+        <result property="mldDtlId" column="MldDtlId"/>
+        <result property="devOpId" column="DevOpId"/>
+        <result property="mldOpId" column="MldOpId"/>
+        <result property="arrDate" column="ArrDate"/>
+        <result property="num" column="Num"/>
+        <result property="matNum" column="MatNum"/>
+        <result property="startTime" column="StartTime"/>
+        <result property="endTime" column="EntTime"/>
+        <result property="procNum" column="ProcNum"/>
+        <result property="status" column="Status"/>
+        <result property="mldStartTime" column="MldStartTime"/>
+        <result property="mldEndTime" column="MldEndTime"/>
+        <result property="testNum" column="TestNum"/>
+        <result property="setNum" column="SetNum"/>
+        <result property="prdPlanStart" column="PrdPlanStart"/>
+        <result property="prdPlanEnd" column="PrdPlanEnd"/>
+        <result property="mldPlanStart" column="MldPlanStart"/>
+        <result property="mldPlanEnd" column="MldPlanEnd"/>
+        <result property="bindNum" column="BindNum"/>
+
+        <association property="mldOp" column="MldOpId" javaType="com.hfmes.sunshine.domain.Person"
+                     select="com.hfmes.sunshine.dao.PersonDao.findByPersonId"/>
+
+        <association property="devOp" column="DevOpId" javaType="com.hfmes.sunshine.domain.Person"
+                     select="com.hfmes.sunshine.dao.PersonDao.findByPersonId"/>
+    </resultMap>
+
+    <select id="findByTaskId" resultMap="taskResult">
         select *
         from T_Task
         where TaskId = #{taskid}

@@ -5,25 +5,45 @@
 <mapper namespace="com.hfmes.sunshine.dao.PersonDao">
 
     <resultMap id="personResult" type="com.hfmes.sunshine.domain.Person">
+
+        <result property="personId" column="PersonId"/>
+        <result property="cardNo" column="CardNo"/>
+        <result property="username" column="UserName"/>
+        <result property="password" column="UserPwd"/>
+        <result property="name" column="Name"/>
+        <result property="birth" column="Birth"/>
+        <result property="born" column="born"/>
+        <result property="enDate" column="EnDate"/>
+        <result property="deptId" column="DeptId"/>
+        <result property="memo" column="Memo"/>
+        <result property="status" column="Status"/>
+        <result property="sex" column="Sex"/>
+        <result property="post" column="Post"/>
+        <result property="nation" column="Nation"/>
+        <result property="marriage" column="Marriage"/>
+        <result property="address" column="Address"/>
+        <result property="tel" column="Tel"/>
+        <result property="IDNumber" column="IDNumber"/>
+        <result property="photo" column="Photo"/>
+        <result property="devcId" column="DevcId"/>
+
         <association property="dept" column="DeptId" javaType="com.hfmes.sunshine.domain.Dept"
-                     resultMap="com.hfmes.sunshine.dao.DeptDao.deptResult"/>
+                     select="com.hfmes.sunshine.dao.DeptDao.findByDeptId"/>
     </resultMap>
 
     <select id="findByPersonId" resultMap="personResult">
-        select
-            p.*,
-            d.*
-        from T_Person p left join T_Dept d on p.DeptId = d.DeptId
+        select *
+        from T_Person
         where PersonId = #{personId}
     </select>
 
-    <select id="findByCardNo" resultType="com.hfmes.sunshine.domain.Person">
+    <select id="findByCardNo" resultMap="personResult">
         select *
         from T_Person
         where CardNo = #{cardNo}
     </select>
 
-    <select id="findAll" resultType="com.hfmes.sunshine.domain.Person">
+    <select id="findAll" resultMap="personResult">
         select *
         from T_Person;
     </select>

@@ -2,6 +2,7 @@ package com.hfmes.sunshine.domain;
 
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -30,9 +31,35 @@ public class Person {
     private String address;
     private String tel;
     private String IDNumber;
-    private Byte[] image;
+    private Byte[] photo;
     private Integer devcId;
 
     // 级联属性
     private Dept dept;
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "personId=" + personId +
+                ", cardNo='" + cardNo + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", birth='" + birth + '\'' +
+                ", born='" + born + '\'' +
+                ", enDate=" + enDate +
+                ", deptId=" + deptId +
+                ", memo='" + memo + '\'' +
+                ", status='" + status + '\'' +
+                ", sex='" + sex + '\'' +
+                ", post='" + post + '\'' +
+                ", nation='" + nation + '\'' +
+                ", marriage='" + marriage + '\'' +
+                ", address='" + address + '\'' +
+                ", tel='" + tel + '\'' +
+                ", IDNumber='" + IDNumber + '\'' +
+                ", photo=" + Arrays.toString(photo) +
+                ", devcId=" + devcId +
+                '}';
+    }
 }

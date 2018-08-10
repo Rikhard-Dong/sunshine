@@ -26,6 +26,8 @@ public class PersonDaoTest {
     public void findByPersonId() {
         Person person = personDao.findByPersonId(3);
         assertNotNull(person);
+        log.debug("person id --> {}", person.getPersonId());
+        log.debug("person dept --> {}", person.getDept());
         log.debug("person --> {}", person);
     }
 

@@ -43,4 +43,64 @@ public interface OptionWebService {
      */
     @WebMethod
     String obtainMethods(@WebParam(name = "opId") String opId);
+
+    /* *****************************************************
+     * 条件判断
+     *****************************************************/
+
+    /**
+     * 1. 当前设备有无模具
+     *
+     * @param obj 参数对象json数据
+     * @return true 有 false 无
+     */
+    @WebMethod
+    String hasMould(@WebParam(name = "obj") String obj);
+
+    /**
+     * 3. 设备是否运行
+     *
+     * @param obj 参数对象json数据
+     * @return True 运行
+     */
+    @WebMethod
+    String isDeviceRun(@WebParam(name = "obj") String obj);
+
+    /**
+     * 4. 模具状态为使用
+     *
+     * @param obj 参数对象json数据
+     * @return True 使用
+     */
+    @WebMethod
+    String isMouldUse(@WebParam(name = "obj") String obj);
+
+    /**
+     * 6. 当前工单的操作者为刷卡者
+     *
+     * @param objStr 参数对象json数据
+     * @return 一致True
+     */
+    @WebMethod
+    String isTaskDevOpEqualsCurPerson(@WebParam(name = "obj") String objStr);
+
+    /**
+     * 7. 生产数量达到设定数量
+     *
+     * @param objStr 参数对象json数据
+     * @return 达到返回true
+     */
+    @WebMethod
+    String procNumAchieveSetNum(@WebParam(name = "obj") String objStr);
+
+    /**
+     * 8. 生产数量小于设定数量
+     *
+     * @param objStr 参数对象json数据
+     * @return 小于返回true
+     */
+    @WebMethod
+    String procNumLessThanSetNum(@WebParam(name = "obj") String objStr);
+
+
 }

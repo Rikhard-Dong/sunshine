@@ -25,7 +25,9 @@ public class CXFConfig {
     private final TestWebService testWebService;
 
     @Autowired
-    public CXFConfig(Bus bus, OptionWebService optionWebService, TestWebService testWebService) {
+    public CXFConfig(Bus bus,
+                     OptionWebService optionWebService,
+                     TestWebService testWebService) {
         this.bus = bus;
         this.optionWebService = optionWebService;
         this.testWebService = testWebService;

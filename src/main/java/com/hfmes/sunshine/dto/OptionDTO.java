@@ -9,11 +9,13 @@ import lombok.Data;
  */
 @Data
 public class OptionDTO {
+    String type;
     String name;
     Integer code;
 
-    public OptionDTO(SCOption option) {
+    public OptionDTO(SCOption option, String type) {
         this.name = option.getOptName();
         this.code = option.getScOptionId();
+        this.type = type;
     }
 }

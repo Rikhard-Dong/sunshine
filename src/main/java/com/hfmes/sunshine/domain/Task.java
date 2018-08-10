@@ -12,7 +12,7 @@ import java.util.Date;
 public class Task {
     private Integer taskId;
     private Integer planDtlId;
-    private Integer metDtlId;
+    private Integer matDtlId;
     private Integer devcId;
     private Integer mldDtlId;
     private Integer devOpId;
@@ -27,9 +27,43 @@ public class Task {
     private Date mldStartTime;
     private Date mldEndTime;
     private Integer testNum;
+    private Integer setNum;
     private Date prdPlanStart;
     private Date prdPlanEnd;
     private Date mldPlanStart;
     private Date mldPlanEnd;
     private Integer bindNum;
+
+    // 级联属性
+    private Person devOp;
+    private Person mldOp;
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskId=" + taskId +
+                ", planDtlId=" + planDtlId +
+                ", matDtlId=" + matDtlId +
+                ", devcId=" + devcId +
+                ", mldDtlId=" + mldDtlId +
+                ", devOpId=" + devOpId +
+                ", mldOpId=" + mldOpId +
+                ", arrDate=" + arrDate +
+                ", num=" + num +
+                ", matNum=" + matNum +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", procNum=" + procNum +
+                ", status='" + status + '\'' +
+                ", mldStartTime=" + mldStartTime +
+                ", mldEndTime=" + mldEndTime +
+                ", testNum=" + testNum +
+                ", setNum=" + setNum +
+                ", prdPlanStart=" + prdPlanStart +
+                ", prdPlanEnd=" + prdPlanEnd +
+                ", mldPlanStart=" + mldPlanStart +
+                ", mldPlanEnd=" + mldPlanEnd +
+                ", bindNum=" + bindNum +
+                '}';
+    }
 }

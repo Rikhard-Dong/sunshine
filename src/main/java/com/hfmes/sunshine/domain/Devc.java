@@ -26,4 +26,22 @@ public class Devc {
 
     // 级联属性
     private Dept dept;
+    private Task task;
+
+    @Override
+    public String toString() {
+        return "Devc{" +
+                "deviceId=" + deviceId +
+                ", deptId=" + deptId +
+                ", title='" + title + '\'' +
+                ", type='" + type + '\'' +
+                ", buyTime=" + buyTime +
+                ", status='" + status + '\'' +
+                ", memo='" + memo + '\'' +
+                ", taskId=" + taskId +
+                ", taskSetDate=" + taskSetDate +
+                ", mldStatus='" + mldStatus + '\'' +
+                ", weightTun=" + weightTun +
+                '}';
+    }
 }
