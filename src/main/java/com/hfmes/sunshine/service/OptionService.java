@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.service;
 
+import com.hfmes.sunshine.domain.SCCondition;
+import com.hfmes.sunshine.domain.SCMethod;
 import com.hfmes.sunshine.dto.OptionsDTO;
 
 import java.util.List;
@@ -18,4 +20,20 @@ public interface OptionService {
      * @return list of optionDTO
      */
     List<OptionsDTO> obtainOptions(String cardNo, Integer deviceId);
+
+    /**
+     * 获取该操作的所需要满足的所有条件
+     *
+     * @param opId opID
+     * @return list of condition
+     */
+    List<SCCondition> obtainConditions(Integer opId);
+
+    /**
+     * 获取该操作的动作
+     *
+     * @param opId opId
+     * @return list of method
+     */
+    List<SCMethod> obtainMethods(Integer opId);
 }

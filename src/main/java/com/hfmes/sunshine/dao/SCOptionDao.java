@@ -16,6 +16,15 @@ public interface SCOptionDao {
 
     List<SCOption> findByRoleId(Integer roleId);
 
+    /**
+     * 废弃
+     *
+     * @param cardNo
+     * @param deviceStatus
+     * @param mldStatus
+     * @param taskStatus
+     * @return
+     */
     List<SCOption> findByCardNoAndStatus(@Param("cardNo") String cardNo,
                                          @Param("deviceStatus") String deviceStatus,
                                          @Param("mldStatus") String mldStatus,

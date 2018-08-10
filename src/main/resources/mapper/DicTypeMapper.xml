@@ -14,6 +14,6 @@
     <select id="findById" resultMap="DicTypeResult">
         select *
         from T_DicType
-        where dic_type_id = #{id}
+        where dic_type_id = #{title}
     </select>
 </mapper>

@@ -4,6 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.DeptDao">
 
+    <resultMap id="deptResult" type="com.hfmes.sunshine.domain.Dept">
+        <result property="deptId" column="DeptId"/>
+        <result property="title" column="Title"/>
+        <result property="code" column="Code"/>
+        <result property="parent" column="Parent"/>
+        <result property="type" column="Type"/>
+    </resultMap>
+
     <select id="findByDeptId" resultType="com.hfmes.sunshine.domain.Dept">
         select *
         from T_Dept

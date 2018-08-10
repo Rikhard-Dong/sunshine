@@ -15,7 +15,7 @@
     <select id="findById" resultMap="dicItemResult">
         select *
         from T_DicItem
-        where dic_item_id = #{id}
+        where dic_item_id = #{title}
     </select>
 
     <select id="findByCode" resultMap="dicItemResult">

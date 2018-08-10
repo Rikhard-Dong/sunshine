@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.config;
 
 import com.hfmes.sunshine.ws.OptionWebService;
+import com.hfmes.sunshine.ws.TestWebService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,30 @@ import javax.xml.ws.Endpoint;
 @Configuration
 public class CXFConfig {
 
-    @Autowired
-    private Bus bus;
+    private final Bus bus;
+
+    private final OptionWebService optionWebService;
+
+    private final TestWebService testWebService;
 
     @Autowired
-    private OptionWebService optionWebService;
+    public CXFConfig(Bus bus, OptionWebService optionWebService, TestWebService testWebService) {
+        this.bus = bus;
+        this.optionWebService = optionWebService;
+        this.testWebService = testWebService;
+    }
 
     @Bean
     public Endpoint endpoint() {
         EndpointImpl endpoint = new EndpointImpl(bus, optionWebService);
         endpoint.publish("/options");
+        return endpoint;
+    }
+
+    @Bean
+    public EndpointImpl testEndPoint() {
+        EndpointImpl endpoint = new EndpointImpl(bus, testWebService);
+        endpoint.publish("/test");
         return endpoint;
     }
 }

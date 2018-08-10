@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.SCConditionDao">
+
+    <select id="findByOpId" resultType="com.hfmes.sunshine.domain.SCCondition">
+        select cond.*
+        from T_SCCondition cond
+            join T_SCOptCond optCond on cond.SCConditionId = optCond.SCConditionId
+        where optCond.SCOptionId = #{opId}
+    </select>
+</mapper>

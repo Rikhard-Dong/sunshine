@@ -32,4 +32,7 @@ public class Person {
     private String IDNumber;
     private Byte[] image;
     private Integer devcId;
+
+    // 级联属性
+    private Dept dept;
 }

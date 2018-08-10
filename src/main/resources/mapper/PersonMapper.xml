@@ -4,9 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.PersonDao">
 
-    <select id="findByPersonId" resultType="com.hfmes.sunshine.domain.Person">
-        select *
-        from T_Person
+    <resultMap id="personResult" type="com.hfmes.sunshine.domain.Person">
+        <association property="dept" column="DeptId" javaType="com.hfmes.sunshine.domain.Dept"
+                     resultMap="com.hfmes.sunshine.dao.DeptDao.deptResult"/>
+    </resultMap>
+
+    <select id="findByPersonId" resultMap="personResult">
+        select
+            p.*,
+            d.*
+        from T_Person p left join T_Dept d on p.DeptId = d.DeptId
         where PersonId = #{personId}
     </select>
 

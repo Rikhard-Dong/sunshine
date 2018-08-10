@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.SCMethodDao">
+
+    <select id="findByOpId" resultType="com.hfmes.sunshine.domain.SCMethod">
+        select method.*
+        from T_SCMethod method
+            join T_SCOptMethod optMethod on method.SCMethodId = optMethod.SCMethodId
+        where optMethod.SCOptionId = #{opId}
+    </select>
+</mapper>

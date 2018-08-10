@@ -7,7 +7,7 @@
     <select id="findBySCOptionId" resultType="com.hfmes.sunshine.domain.SCOption">
         select *
         from T_SCOption
-        where scOptionId = #{id}
+        where scOptionId = #{title}
     </select>
 
     <select id="findByRoleId" resultType="com.hfmes.sunshine.domain.SCOption">

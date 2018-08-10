@@ -1,12 +1,7 @@
 package com.hfmes.sunshine.service.impl;
 
-import com.hfmes.sunshine.dao.DevcDao;
-import com.hfmes.sunshine.dao.RoleDao;
-import com.hfmes.sunshine.dao.SCOptionDao;
-import com.hfmes.sunshine.dao.TaskDao;
-import com.hfmes.sunshine.domain.Devc;
-import com.hfmes.sunshine.domain.SCOption;
-import com.hfmes.sunshine.domain.Task;
+import com.hfmes.sunshine.dao.*;
+import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.service.OptionService;
@@ -31,16 +26,24 @@ public class OptionServiceImpl implements OptionService {
 
     private final TaskDao taskDao;
 
+    private final SCConditionDao conditionDao;
+
+    private final SCMethodDao methodDao;
+
     private final Map<Integer, Devc> devcs;
 
     @Autowired
     public OptionServiceImpl(SCOptionDao optionDao,
                              RoleDao roleDao,
                              TaskDao taskDao,
+                             SCConditionDao conditionDao,
+                             SCMethodDao methodDao,
                              @Qualifier("devcs") Map<Integer, Devc> devcs) {
         this.optionDao = optionDao;
         this.roleDao = roleDao;
         this.taskDao = taskDao;
+        this.conditionDao = conditionDao;
+        this.methodDao = methodDao;
         this.devcs = devcs;
     }
 
@@ -55,7 +58,15 @@ public class OptionServiceImpl implements OptionService {
     public List<OptionsDTO> obtainOptions(String cardNo, Integer deviceId) {
 
 
+
         Devc devc = devcs.get(deviceId);
+
+
+        if (devc == null) {
+            // TODO 传入的设备不在map中
+            log.warn("警告 --> 当前没有设备信息");
+            return null;
+        }
 
         String deviceStatus = devc.getStatus();
         String mouldStatus = devc.getMldStatus();
@@ -83,5 +94,23 @@ public class OptionServiceImpl implements OptionService {
         }
 
         return new ArrayList<>(result.values());
+    }
+
+    /**
+     * @param opId opID
+     * @return
+     */
+    @Override
+    public List<SCCondition> obtainConditions(Integer opId) {
+        return conditionDao.findByOpId(opId);
+    }
+
+    /**
+     * @param opId opId
+     * @return
+     */
+    @Override
+    public List<SCMethod> obtainMethods(Integer opId) {
+        return methodDao.findByOpId(opId);
     }
 }
