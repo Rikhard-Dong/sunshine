@@ -45,11 +45,17 @@ public class ConditionServiceImpl implements ConditionService {
      * @return
      */
     @Override
-    public Boolean mldNotSet(Integer deviceId) {
-        Task task = devcMap.get(deviceId).getTask();
-        // todo 装模人员未设定或刷卡人员 具体判断有疑问
+    public Boolean mldOpLegal(Integer deviceId, Integer personId) {
+        Devc devc = devcMap.get(deviceId);
+        if (devc == null) {
+            // TODO 内存数据中不存在当前设备
+            log.warn("设备不存在...");
+            return false;
+        }
+        Task task = devc.getTask();
 
-        return false;
+
+        return task != null && (task.getMldOpId() == 0 || task.getMldOpId().equals(personId));
     }
 
     /**
@@ -81,6 +87,25 @@ public class ConditionServiceImpl implements ConditionService {
             return false;
         }
         return devc.getMldStatus() != null && MouldStatus.valueOf(devc.getStatus()) == MouldStatus.SM40;
+    }
+
+    /**
+     * @param deviceId 设备id
+     * @param personId 刷卡人id
+     * @return
+     */
+    @Override
+    public Boolean devOpLegal(Integer deviceId, Integer personId) {
+        Devc devc = devcMap.get(deviceId);
+        if (devc == null) {
+            // TODO 内存数据中不存在当前设备
+            log.warn("设备不存在...");
+            return false;
+        }
+        Task task = devc.getTask();
+
+
+        return task != null && (task.getDevOpId() == 0 || task.getDevOpId().equals(personId));
     }
 
     /**

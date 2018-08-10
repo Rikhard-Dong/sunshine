@@ -91,6 +91,13 @@ public class OptionWebServiceImpl implements OptionWebService {
         return StringUtils.capitalize(result.toString());
     }
 
+    @Override
+    public String mldOpLegal(String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = conditionService.mldOpLegal(params.getDeviceId(), params.getPersonId());
+        return StringUtils.capitalize(result.toString());
+    }
+
     /**
      * @param objStr 参数对象json数据
      * @return
@@ -110,6 +117,13 @@ public class OptionWebServiceImpl implements OptionWebService {
     public String isMouldUse(String objStr) {
         ParamsObj params = getParamObj(objStr);
         Boolean result = conditionService.isMouldUse(params.getDeviceId());
+        return StringUtils.capitalize(result.toString());
+    }
+
+    @Override
+    public String devOpLegal(String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = conditionService.devOpLegal(params.getDeviceId(), params.getPersonId());
         return StringUtils.capitalize(result.toString());
     }
 

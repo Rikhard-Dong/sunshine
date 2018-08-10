@@ -10,6 +10,7 @@ import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
+import com.hfmes.sunshine.utils.StateMachineUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,8 +163,12 @@ public class BeanConfig {
         if (devcs != null && devcs.size() != 0) {
             for (Devc devc : devcs) {
                 StateMachine<DeviceStatus, DeviceEvents> stateMachine = deviceStateMachineFactory.getStateMachine(devc.getTitle());
-                // TODO 从数据库恢复到指定状态
-                stateMachine.start();
+                // 从数据库恢复到指定状态
+                if (devc.getStatus() != null) {
+                    stateMachine = StateMachineUtils.setDeviceStateMachineState(stateMachine, DeviceStatus.valueOf(devc.getStatus()));
+                } else {
+                    stateMachine.start();
+                }
                 deviceStateMachines.put(devc.getDeviceId(), stateMachine);
             }
         } else {

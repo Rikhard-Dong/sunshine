@@ -30,6 +30,10 @@ public class SunshineApplicationTests {
         assertNotNull(deviceStateMachines);
         assertNotEquals(deviceStateMachines.size(), 0);
         log.debug("device state machines size is --> {}", deviceStateMachines.size());
+
+        for (Map.Entry<Integer, StateMachine<DeviceStatus, DeviceEvents>> entry : deviceStateMachines.entrySet()) {
+            log.debug("## id --> {}, status --> {}", entry.getKey(), entry.getValue().getId());
+        }
     }
 
 }

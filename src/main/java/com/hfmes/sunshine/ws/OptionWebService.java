@@ -58,6 +58,15 @@ public interface OptionWebService {
     String hasMould(@WebParam(name = "obj") String obj);
 
     /**
+     * 2. 装模人员未设定或刷卡人员
+     *
+     * @param objStr 参数对象json数据
+     * @return 符合条件返回true
+     */
+    @WebMethod
+    String mldOpLegal(@WebParam(name = "obj") String objStr);
+
+    /**
      * 3. 设备是否运行
      *
      * @param obj 参数对象json数据
@@ -74,6 +83,15 @@ public interface OptionWebService {
      */
     @WebMethod
     String isMouldUse(@WebParam(name = "obj") String obj);
+
+    /**
+     * 5. 当前工单为操作工或者未指定
+     *
+     * @param objStr 参数对象json数据
+     * @return
+     */
+    @WebMethod
+    String devOpLegal(@WebParam(name = "obj") String objStr);
 
     /**
      * 6. 当前工单的操作者为刷卡者

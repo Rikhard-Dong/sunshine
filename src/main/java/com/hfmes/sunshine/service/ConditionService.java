@@ -20,9 +20,9 @@ public interface ConditionService {
      * 2. 装模人员未设定或刷卡人员
      *
      * @param deviceId 设备Id
-     * @return 未设定返回true, 设定返回false
+     * @return task中mldOpId为0或者和当前刷卡的相等则返回true
      */
-    Boolean mldNotSet(Integer deviceId);
+    Boolean mldOpLegal(Integer deviceId, Integer personId);
 
     /**
      * 3. 判断设备是否运行
@@ -39,6 +39,15 @@ public interface ConditionService {
      * @return 使用 True
      */
     Boolean isMouldUse(Integer deviceId);
+
+    /**
+     * 5. 当前工单为操作工或者未指定
+     *
+     * @param deviceId 设备id
+     * @param personId 刷卡人id
+     * @return task中devOpId为0或者和当前刷卡的相等则返回true
+     */
+    Boolean devOpLegal(Integer deviceId, Integer personId);
 
     /**
      * 6. 当前工单的操作者为刷卡者
