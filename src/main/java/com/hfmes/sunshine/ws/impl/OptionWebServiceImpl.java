@@ -34,18 +34,24 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final CheckStatusService checkStatusService;
     private final SyncStatusService syncStatusService;
     private final CountNumService countNumService;
+    private final StatusChangeService statusChangeService;
+    private final TaskService taskService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
                                 ConditionService conditionService,
                                 CheckStatusService checkStatusService,
                                 SyncStatusService syncStatusService,
-                                CountNumService countNumService) {
+                                CountNumService countNumService,
+                                StatusChangeService statusChangeService,
+                                TaskService taskService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
         this.checkStatusService = checkStatusService;
         this.syncStatusService = syncStatusService;
         this.countNumService = countNumService;
+        this.statusChangeService = statusChangeService;
+        this.taskService = taskService;
     }
 
     /**
@@ -260,6 +266,49 @@ public class OptionWebServiceImpl implements OptionWebService {
         Result result = Result.success(task);
         return JacksonUtils.toJSon(result);
     }
+
+    /* *****************************************************
+     * 工单下发操作
+     *****************************************************/
+
+    /**
+     * @param deviceId 设备ID
+     * @return
+     */
+    @Override
+    public String taskDown(String deviceId) {
+        taskService.taskDown(Integer.valueOf(deviceId));
+        return JacksonUtils.toJSon(Result.success());
+    }
+
+    /* *****************************************************
+     * 实现管理端强制转换状态机状态
+     *****************************************************/
+
+    /**
+     * @param deviceId 设备id
+     * @param status   强制更新设备状态
+     * @return
+     */
+    @Override
+    public String changeDeviceStateMachineStatus(String deviceId, String status) {
+        statusChangeService.changeDeviceStateMachineStatus(Integer.valueOf(deviceId), status);
+
+        return JacksonUtils.toJSon(Result.success());
+    }
+
+    /**
+     * @param mouldId 模具id
+     * @param status  模具状态
+     * @return
+     */
+    @Override
+    public String changeMouldStateMachineStatus(String mouldId, String status) {
+        statusChangeService.changeMouldStateMachineStatus(Integer.valueOf(mouldId), status);
+        return JacksonUtils.toJSon(Result.success());
+    }
+
+
 
     /* *****************************************************
      * 内部方法

@@ -180,12 +180,72 @@ public interface OptionWebService {
      *****************************************************/
 
 
+    /**
+     * 同步设备信息
+     *
+     * @param devcId device id
+     * @return
+     */
     @WebMethod
     String updateDSServToLocal(@WebParam(name = "devcId") String devcId);
 
+    /**
+     * 同步模具信息
+     *
+     * @param mldId 模具id
+     * @return
+     */
     @WebMethod
     String updateMSServToLocal(@WebParam(name = "mldId") String mldId);
 
+    /**
+     * 同步工单信息
+     *
+     * @param taskId 工单id
+     * @return
+     */
     @WebMethod
     String updateTSServToLocal(@WebParam(name = "taskId") String taskId);
+
+    /* *****************************************************
+     * 工单下发
+     *****************************************************/
+
+
+    /**
+     * 工单下操作
+     *
+     * @param deviceId 设备ID
+     * @return
+     */
+    @WebMethod
+    String taskDown(@WebParam(name = "deviceId") String deviceId);
+
+    /* *****************************************************
+     * 实现管理端强制转换状态机状态
+     *****************************************************/
+
+    /**
+     * 强制更新状态机状态
+     *
+     * @param deviceId 设备id
+     * @param status   强制更新设备状态
+     * @return
+     */
+    @WebMethod
+    String changeDeviceStateMachineStatus(@WebParam(name = "deviceId") String deviceId,
+                                          @WebParam(name = "status") String status);
+
+    /**
+     * 强制更新模具状态
+     *
+     * @param mouldId 模具id
+     * @param status  模具状态
+     * @return
+     */
+    @WebMethod
+    String changeMouldStateMachineStatus(@WebParam(name = "mouldId") String mouldId,
+                                         @WebParam(name = "status") String status);
+
+
 }

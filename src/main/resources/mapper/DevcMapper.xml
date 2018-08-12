@@ -26,6 +26,12 @@
 
     </resultMap>
 
+    <update id="updateTaskId">
+        update T_Devc
+        set TaskId = #{taskId}
+        where devcId = #{devcId}
+    </update>
+
     <select id="findByDeviceId" resultMap="DevcResult">
         select *
         from T_Devc

@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.dao;
 
 import com.hfmes.sunshine.domain.Task;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,6 +12,26 @@ import java.util.List;
  * 任务
  */
 public interface TaskDao {
+
+    /* ****************************************
+     * update
+     ******************************************/
+
+    /**
+     * 更新工单状态
+     *
+     * @param taskId 工单id
+     * @param status 更新状态
+     * @return 更新行数
+     */
+    Integer updateStaus(@Param("taskId") Integer taskId,
+                        @Param("status") String status);
+
+
+    /* ****************************************
+     * Select
+     ******************************************/
+
     /**
      * 查找所有的任务
      *

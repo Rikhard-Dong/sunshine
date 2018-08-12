@@ -37,6 +37,12 @@
                      select="com.hfmes.sunshine.dao.PersonDao.findByPersonId"/>
     </resultMap>
 
+    <update id="updateStaus">
+        update T_Task task
+        set task.Status = #{status}
+        where task.TaskId = #{taskId}
+    </update>
+
     <select id="findByTaskId" resultMap="taskResult">
         select *
         from T_Task

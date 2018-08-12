@@ -259,7 +259,12 @@ public class BeanConfig {
         if (mldDtls != null && mldDtls.size() != 0) {
             for (MldDtl mldDtl : mldDtls) {
                 StateMachine<MouldStatus, MouldEvents> stateMachine = mouldStateMachineFactory.getStateMachine(mldDtl.getCode());
-                // TODO 从数据库中恢复模具的状态
+                // 从数据库中恢复模具的状态
+                stateMachine.start();
+                if (mldDtl.getStatus() != null) {
+                    MouldStatus status = MouldStatus.valueOf(mldDtl.getStatus());
+                    StateMachineUtils.setMouldStateMachineState(stateMachine, status);
+                }
 
                 mouldStateMachines.put(mldDtl.getMldDtlId(), stateMachine);
             }
@@ -290,7 +295,7 @@ public class BeanConfig {
      * @return
      */
     private Map<Integer, List<Task>> initDeviceTasks() {
-        List<Task> tasks = taskDao.findAllStatusNotEqualST40();
+        List<Task> tasks = taskDao.findByStatusIsST00();
         Map<Integer, List<Task>> result = new ConcurrentHashMap<>();
 
         for (Task task : tasks) {
