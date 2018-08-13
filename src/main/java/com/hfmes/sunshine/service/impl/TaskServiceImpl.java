@@ -1,7 +1,6 @@
 package com.hfmes.sunshine.service.impl;
 
 import com.hfmes.sunshine.dao.DevcDao;
-import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.service.TaskService;

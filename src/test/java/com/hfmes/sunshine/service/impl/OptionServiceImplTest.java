@@ -1,7 +1,6 @@
 package com.hfmes.sunshine.service.impl;
 
 import com.hfmes.sunshine.dto.OptionDTO;
-import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.OptionService;
 import com.hfmes.sunshine.utils.JacksonUtils;
@@ -13,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author supreDong@gmail.com

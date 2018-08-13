@@ -277,12 +277,14 @@ public interface OptionWebService {
      * @param opId     操作员id
      * @param optionId 操作ID
      * @param deviceId 设备id
+     * @param mldId    模具id
      * @return
      */
     @WebMethod
     String btnPressOpAction(@WebParam(name = "opId") String opId,
                             @WebParam(name = "optionId") String optionId,
-                            @WebParam(name = "deviceId") String deviceId);
+                            @WebParam(name = "deviceId") String deviceId,
+                            @WebParam(name = "mldId") String mldId);
 
 
 

@@ -10,4 +10,9 @@
             join T_SCOptMethod optMethod on method.SCMethodId = optMethod.SCMethodId
         where optMethod.SCOptionId = #{opId}
     </select>
+
+    <select id="findAll" resultType="com.hfmes.sunshine.domain.SCMethod">
+        select *
+        from T_SCMethod
+    </select>
 </mapper>

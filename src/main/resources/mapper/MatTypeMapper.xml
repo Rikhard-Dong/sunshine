@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.MatTypeDao">
+
+    <resultMap id="MatTypeResult" type="com.hfmes.sunshine.domain.MatType">
+        <result property="matTypeId" column="MatTypeId"/>
+        <result property="title" column="Title"/>
+        <result property="type" column="Type"/>
+        <result property="spec" column="Spec"/>
+        <result property="memo" column="Memo"/>
+    </resultMap>
+
+    <select id="findById" resultMap="MatTypeResult">
+        select *
+        from T_MatType
+        where MatTypeId = #{matTypeId}
+    </select>
+</mapper>

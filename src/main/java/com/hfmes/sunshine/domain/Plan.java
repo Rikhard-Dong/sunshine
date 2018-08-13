@@ -19,11 +19,11 @@ public class Plan {
     private Integer cmpNum;
     private String status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date reqTime;
+    private Date reqTime = new Date();
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date cmpTime;
+    private Date cmpTime = new Date();
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date inTime;
+    private Date inTime = new Date();
     private String operator;
     private String source;
     private String type;

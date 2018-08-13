@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.dao;
 
 import com.hfmes.sunshine.domain.MldDtl;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,6 +10,24 @@ import java.util.List;
  * @date 2018/8/8 21:03
  */
 public interface MldDtlDao {
+
+    /* ****************************************
+     * update
+     ******************************************/
+
+    /**
+     * 更新模具状态
+     *
+     * @param mldDtlId 模具id
+     * @param status   更新后的状态
+     * @return 影响行数
+     */
+    Integer updateStatus(@Param("mldDtlId") Integer mldDtlId,
+                         @Param("status") String status);
+
+    /* ****************************************
+     * select
+     ******************************************/
 
     /**
      * 获取所有模具

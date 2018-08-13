@@ -21,29 +21,29 @@ public class Task {
     private Integer devOpId;
     private Integer mldOpId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date arrDate;
+    private Date arrDate = new Date();;
     private Integer num;
     private Float matNum;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date startTime;
+    private Date startTime = new Date();;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date endTime;
+    private Date endTime = new Date();
     private Integer procNum;
     private String status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date mldStartTime;
+    private Date mldStartTime = new Date();;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date mldEndTime;
+    private Date mldEndTime = new Date();;
     private Integer testNum;
     private Integer setNum;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date prdPlanStart;
+    private Date prdPlanStart = new Date();;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date prdPlanEnd;
+    private Date prdPlanEnd = new Date();;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date mldPlanStart;
+    private Date mldPlanStart = new Date();;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date mldPlanEnd;
+    private Date mldPlanEnd = new Date();;
     private Integer bindNum;
 
     //其他冲压数量  包括架模/维修等数量
@@ -51,6 +51,8 @@ public class Task {
 
     // 级联属性
     private PlanDtl planDtl;
+    private MatDtl matDtl;
+    private Devc devc;
     //    @JsonIgnore
     private Person devOp;
     //    @JsonIgnore

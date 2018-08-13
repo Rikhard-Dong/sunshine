@@ -18,9 +18,9 @@ public class StatusData {
     private String curStatus;
     private String nextStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date start;
+    private Date start = new Date();
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date stop;
+    private Date stop = new Date();
     private Integer hold;
     private Integer count;
     private String eventType;

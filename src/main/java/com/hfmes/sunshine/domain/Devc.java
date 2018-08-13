@@ -24,20 +24,22 @@ public class Devc implements Serializable {
     private String title;
     private String type;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date buyTime;
+    private Date buyTime = new Date();
     private String status;
     private String memo;
     private Integer taskId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date taskSetDate;
+    private Date taskSetDate = new Date();
     private String mldStatus;
     private Integer weightTun;
+    private Integer mldDtlId;
 
-    // 级联属性, 序列化时忽略
-    @JsonIgnore
+    // 级联属性
     private Dept dept;
     @JsonIgnore
     private Task task;
+    @JsonIgnore
+    private MldDtl mldDtl;
 
     @Override
     public String toString() {

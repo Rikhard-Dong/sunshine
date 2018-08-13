@@ -11,4 +11,11 @@ import java.util.List;
 public interface SCMethodDao {
 
     List<SCMethod> findByOpId(Integer opId);
+
+    /**
+     * 获取所有操作
+     *
+     * @return
+     */
+    List<SCMethod> findAll();
 }

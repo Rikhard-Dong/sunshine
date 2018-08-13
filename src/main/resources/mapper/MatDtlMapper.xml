@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.MatDtlDao">
+    <resultMap id="matDtlResult" type="com.hfmes.sunshine.domain.MatDtl">
+        <result property="matDtlId" column="MatDtlId"/>
+        <result property="barCode" column="BarCode"/>
+        <result property="matTypeId" column="MatTypeId"/>
+        <result property="inDate" column="InDate"/>
+        <result property="num" column="Num"/>
+        <result property="supplier" column="Supplier"/>
+        <result property="status" column="Status"/>
+        <result property="memo" column="Memo"/>
+
+        <association property="matType" column="MatTypeId" javaType="com.hfmes.sunshine.domain.MatType"
+                     select="com.hfmes.sunshine.dao.MatTypeDao.findById"/>
+    </resultMap>
+
+    <select id="findById" resultMap="matDtlResult">
+        select *
+        from T_MatDtl
+        where MatDtlId = #{matDtlId}
+    </select>
+</mapper>

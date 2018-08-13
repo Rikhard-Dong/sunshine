@@ -24,7 +24,7 @@ public class Person {
     private String birth;
     private String born;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date enDate;
+    private Date enDate = new Date();
     private Integer deptId;
     private String memo;
     private String status;

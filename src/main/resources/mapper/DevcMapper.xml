@@ -16,6 +16,7 @@
         <result property="taskSetDate" column="TaskSetDate"/>
         <result property="mldStatus" column="MldStatus"/>
         <result property="weightTun" column="WeightTun"/>
+        <result property="mldDtlId" column="MldDtlId"/>
 
 
         <association property="dept" select="com.hfmes.sunshine.dao.DeptDao.findByDeptId"
@@ -24,12 +25,21 @@
         <association property="task" select="com.hfmes.sunshine.dao.TaskDao.findByTaskId" column="TaskId"
                      javaType="com.hfmes.sunshine.domain.Task"/>
 
+        <association property="mldDtl" select="com.hfmes.sunshine.dao.MldDtlDao.findByMldDtlId" column="MldDtlId"
+                     javaType="com.hfmes.sunshine.domain.MldDtl"/>
+
     </resultMap>
 
     <update id="updateTaskId">
         update T_Devc
         set TaskId = #{taskId}
         where devcId = #{devcId}
+    </update>
+
+    <update id="updateMldDtlIdAndMldStatus">
+        update T_Devc
+        set MldDtlId = #{mldDtlId}, MldStatus = #{mldDtlStatus}
+        where DevcId = #{devcId}
     </update>
 
     <select id="findByDeviceId" resultMap="DevcResult">

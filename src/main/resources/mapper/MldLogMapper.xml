@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.MldLogDao">
+
+    <resultMap id="MldLogResult" type="com.hfmes.sunshine.domain.MldLog">
+        <result property="mldLogId" column="MldLogId"/>
+        <result property="mldDtlId" column="MldDtlId"/>
+        <result property="taskId" column="TaskId"/>
+        <result property="opId" column="OpId"/>
+        <result property="opTime" column="OpTime"/>
+        <result property="opDesc" column="OpDesc"/>
+        <result property="opName" column="OpName"/>
+        <result property="opType" column="OpType"/>
+    </resultMap>
+
+
+    <insert id="insertOne" keyProperty="MldLogId" parameterType="com.hfmes.sunshine.domain.MldLog"
+            useGeneratedKeys="true">
+        insert into T_MldLog (MldDtlId, TaskId, OpId, OpTime, OpDesc, OpName, OpType)
+        values (#{mldDtlId}, #{taskId}, #{opId}, #{opTime}, #{opDesc}, #{opName}, #{opType})
+    </insert>
+</mapper>

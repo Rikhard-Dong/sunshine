@@ -30,4 +30,10 @@ public class StatusDataDaoTest {
         assertEquals(i, new Integer(1));
         log.debug("data id --> {}", data.getStatusDataId());
     }
+
+    @Test
+    public void findByDevcIdAndTypeTop1() {
+        StatusData data = statusDataDao.findByDevcIdAndTypeTop1(2, 1);
+        assertNull(data);
+    }
 }

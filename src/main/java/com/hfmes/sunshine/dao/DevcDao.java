@@ -26,6 +26,18 @@ public interface DevcDao {
     Integer updateTaskId(@Param("devcId") Integer deviceId,
                          @Param("taskId") Integer taskId);
 
+    /**
+     * 更新设备的模具信息及模具状态
+     *
+     * @param devcId    设备id
+     * @param mldDtlId  模具id
+     * @param mldStatus 模具状态
+     * @return 受影响行数
+     */
+    Integer updateMldDtlIdAndMldStatus(@Param("devcId") Integer devcId,
+                                       @Param("mldDtlId") Integer mldDtlId,
+                                       @Param("mldDtlStatus") String mldStatus);
+
     /* ****************************************
      * Select
      ******************************************/
