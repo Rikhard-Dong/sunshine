@@ -1,9 +1,6 @@
 package com.hfmes.sunshine.ws.impl;
 
-import com.hfmes.sunshine.domain.Devc;
-import com.hfmes.sunshine.domain.MldDtl;
-import com.hfmes.sunshine.domain.SCMethod;
-import com.hfmes.sunshine.domain.Task;
+import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.ParamsObj;
@@ -36,7 +33,8 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final CountNumService countNumService;
     private final StatusChangeService statusChangeService;
     private final TaskService taskService;
-
+    private final  PlanDtlService planDtlService;
+    private final DevcService devcService;
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
                                 ConditionService conditionService,
@@ -44,6 +42,8 @@ public class OptionWebServiceImpl implements OptionWebService {
                                 SyncStatusService syncStatusService,
                                 CountNumService countNumService,
                                 StatusChangeService statusChangeService,
+                                PlanDtlService planDtlService,
+                                DevcService devcService,
                                 TaskService taskService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
@@ -52,6 +52,8 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.countNumService = countNumService;
         this.statusChangeService = statusChangeService;
         this.taskService = taskService;
+        this.planDtlService=planDtlService;
+        this.devcService=devcService;
     }
 
     /**
@@ -275,8 +277,21 @@ public class OptionWebServiceImpl implements OptionWebService {
      */
     @Override
     public String taskDown(String devcId) {
-        taskService.taskDown(Integer.valueOf(devcId));
-        return JacksonUtils.toJSon(Result.success());
+       int taskId= taskService.taskDown(Integer.valueOf(devcId));
+        return String.valueOf(taskId);
+    }
+
+    @Override
+    public String updateDevcFromSql(String devcId) {
+        Devc devc=devcService.updateDevcFromSql(Integer.parseInt(devcId));
+        //Result result = Result.success(devc);
+        return JacksonUtils.toJSon(devc);
+    }
+
+    @Override
+    public String updateTaskFromSql(String devcId,String taskId) {
+        Task task=taskService.updateTaskFromSql(Integer.parseInt(devcId),Integer.parseInt(taskId));
+        return JacksonUtils.toJSon(task);
     }
 
     /* *****************************************************
@@ -322,6 +337,14 @@ public class OptionWebServiceImpl implements OptionWebService {
         Integer optionId = Integer.valueOf(optionIdStr);
         Integer deviceId = Integer.valueOf(deviceIdStr);
         return null;
+    }
+
+    @Override
+    public String getPlanDtlById(String planDtlId) {
+        PlanDtl planDtl=planDtlService.getPlanDtlById(Integer.parseInt(planDtlId));
+
+        Result result = Result.success(planDtl);
+        return JacksonUtils.toJSon(planDtl);
     }
 
 

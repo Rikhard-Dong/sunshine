@@ -32,4 +32,7 @@ public class PlanDtl {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date cmpTime;
     private String pin;
+
+    private PrdtType prdtType;
+    private Plan plan;
 }

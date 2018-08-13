@@ -14,7 +14,7 @@ import java.util.Date;
 @JsonIgnoreProperties(value = { "handler" })
 public class Plan {
     private Integer planId;
-    private String oderNo;
+    private String orderNo;
     private Integer reqNum;
     private Integer cmpNum;
     private String status;

@@ -21,6 +21,10 @@
         <result property="reqTime" column="ReqTime"/>
         <result property="cmpTime" column="CmpTime"/>
         <result property="pin" column="PIN"/>
+        <association property="prdtType" column="PrdtTypeId" javaType="com.hfmes.sunshine.domain.PrdtType"
+                     select="com.hfmes.sunshine.dao.PrdtTypeDao.findById"/>
+        <association property="plan" column="PlanId" javaType="com.hfmes.sunshine.domain.Plan"
+                     select="com.hfmes.sunshine.dao.PlanDao.findByPlanId"/>
     </resultMap>
 
     <select id="findById" resultMap="planDtlResult">

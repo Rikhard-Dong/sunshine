@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.service;
 
+import com.hfmes.sunshine.domain.Task;
+
 /**
  * @author supreDong@gmail.com
  * @date 2018/8/12 11:41
@@ -12,5 +14,7 @@ public interface TaskService {
      *
      * @param deviceId 设备id
      */
-    void taskDown(Integer deviceId);
+    int taskDown(Integer deviceId);
+
+    Task updateTaskFromSql(int devcId,int taskId);
 }

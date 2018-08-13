@@ -57,13 +57,13 @@
 
     <select id="findAll" resultMap="taskResult">
         select *
-        from T_Task
+        from T_Task and DateDiff(dd,ArrDate,getdate())=0
     </select>
 
     <select id="findAllStatusNotEqualST40" resultMap="taskResult">
         select *
         from T_Task task
-        where task.Status != 'ST40'
+        where task.Status != 'ST40' and DateDiff(dd,ArrDate,getdate())=0
     </select>
 
     <select id="getStatusByTaskId" resultType="java.lang.String">
@@ -74,7 +74,13 @@
     <select id="findByStatusIsST00" resultMap="taskResult">
         select *
         from T_Task
-        where Status = 'ST00'
+        where Status = 'ST00' and DateDiff(dd,ArrDate,getdate())=0
+    </select>
+
+    <select id="findByStatusIsST00ByDevcId" resultMap="taskResult">
+        select *
+        from T_Task
+        where Status = 'ST00' and T_Task.DevcId=#{deviceId} and DateDiff(dd,ArrDate,getdate())=0
     </select>
 
 </mapper>

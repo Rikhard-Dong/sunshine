@@ -69,4 +69,5 @@ public interface TaskDao {
      */
     String getStatusByTaskId(Integer taskId);
 
+    List<Task> findByStatusIsST00ByDevcId(Integer deviceId);
 }

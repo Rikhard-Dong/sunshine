@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.service.impl;
 
 import com.hfmes.sunshine.dao.DevcDao;
+import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.service.TaskService;
@@ -24,8 +25,10 @@ public class TaskServiceImpl implements TaskService {
     private final Map<Integer, Devc> devcMap;
     private final Map<Integer, Task> taskMap;
 
+    private final TaskDao taskDao;
     @Autowired
     public TaskServiceImpl(DevcDao devcDao,
+                           TaskDao taskDao,
                            @Qualifier("deviceTasks") Map<Integer, List<Task>> deviceTasks,
                            @Qualifier("devcs") Map<Integer, Devc> devcMap,
                            @Qualifier("tasks") Map<Integer, Task> taskMap) {
@@ -33,6 +36,7 @@ public class TaskServiceImpl implements TaskService {
         this.deviceTasks = deviceTasks;
         this.devcMap = devcMap;
         this.taskMap = taskMap;
+        this.taskDao=taskDao;
     }
 
     /**
@@ -42,27 +46,44 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public void taskDown(Integer deviceId) {
-        List<Task> tasks = deviceTasks.get(deviceId);
+    public int taskDown(Integer deviceId) {
+        Task task=new Task();
+        List<Task> tasks=taskDao.findByStatusIsST00ByDevcId(deviceId);
         if (tasks == null || tasks.size() <= 0) {
-            return;
+            return 0;
         }
-
         Devc devc = devcMap.get(deviceId);
         if (devc == null) {
-            return;
+            return 0;
         }
 
-        Task task = tasks.get(0);
+        task = tasks.get(0);
+        // 移除相关数据
+        deviceTasks.put(deviceId,tasks);
+
         // 更新设备的taskId
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
+        deviceTasks.put(deviceId,tasks);
         if (devcDao.updateTaskId(devc.getDeviceId(), task.getTaskId()) != 0) {
-            return;
+            return task.getTaskId();
         }
-        // 移除相关数据
-        tasks.remove(task);
-        taskMap.remove(task.getTaskId());
-
+        return 0;
     }
+
+
+    @Override
+    public Task updateTaskFromSql(int devcId,int taskId) {
+        Task task=new Task();
+        Devc devc = devcMap.get(devcId);
+        if (devc == null) {
+            return task;
+        }
+        task=taskDao.findByTaskId(taskId);
+        devc.setTaskId(task.getTaskId());
+        devc.setTask(task);
+        devcMap.put(devcId,devc);
+        return task;
+    }
+
 }

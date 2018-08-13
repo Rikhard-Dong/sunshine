@@ -208,9 +208,8 @@ public interface OptionWebService {
     String updateTSServToLocal(@WebParam(name = "taskId") String taskId);
 
     /* *****************************************************
-     * 工单下发
+     * 工单下发/服务器兑对象更新操作
      *****************************************************/
-
 
     /**
      * 工单下操作
@@ -220,6 +219,27 @@ public interface OptionWebService {
      */
     @WebMethod
     String taskDown(@WebParam(name = "devcId") String devcId);
+
+    /**
+     * 更新服务器中设备对象
+     *
+     * @param devcId 设备ID
+     * @return 更新完后的设备对象
+     */
+    @WebMethod
+    String updateDevcFromSql(@WebParam(name = "devcId") String devcId);
+
+    /**
+     * 更新服务器中task对象
+     *
+     * @param taskId 工单ID
+     * @return 更新完后的工单对象
+     */
+    @WebMethod
+    String updateTaskFromSql(@WebParam(name = "devcId") String devcId,
+                             @WebParam(name = "taskId") String taskId);
+
+
 
     /* *****************************************************
      * 实现管理端强制转换状态机状态
@@ -263,5 +283,20 @@ public interface OptionWebService {
     String btnPressOpAction(@WebParam(name = "opId") String opId,
                             @WebParam(name = "optionId") String optionId,
                             @WebParam(name = "deviceId") String deviceId);
+
+
+
+    /* *****************************************************
+     * 计划详情先关接口
+     *****************************************************/
+
+
+    /**
+     * 根据id获取对应的计划详情
+     * @param planDtlId
+     * @return
+     */
+    @WebMethod
+    String getPlanDtlById(@WebParam(name = "planDtlId") String planDtlId);
 
 }
