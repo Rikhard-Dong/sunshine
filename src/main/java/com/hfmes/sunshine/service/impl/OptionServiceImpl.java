@@ -5,7 +5,6 @@ import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
 import com.hfmes.sunshine.dto.Result;
-import com.hfmes.sunshine.service.OptionExceService;
 import com.hfmes.sunshine.service.OptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +28,12 @@ public class OptionServiceImpl implements OptionService {
     private final SCMethodDao methodDao;
     private final SCOptCondDao scOptCondDao;
     private final Map<Integer, Devc> devcs;
-    private final OptionExceService optionExceService;
 
     private static final String MLD = "MLD";            // 模具工
     private static final String PUNCH = "PUNCH";        // 冲床工
     private static final String OVERHAUL = "OVERHAUL";  // 检修工
     private static final String PDCN = "PDCB";          // 生产管理员
     private static final String UNKNOWN = "UNKNOWN";    // 未知类型
-
 
     @Autowired
     public OptionServiceImpl(SCOptionDao optionDao,
@@ -45,8 +42,7 @@ public class OptionServiceImpl implements OptionService {
                              SCConditionDao conditionDao,
                              SCMethodDao methodDao,
                              SCOptCondDao scOptCondDao,
-                             @Qualifier("devcs") Map<Integer, Devc> devcs,
-                             OptionExceService optionExceService) {
+                             @Qualifier("devcs") Map<Integer, Devc> devcs) {
         this.optionDao = optionDao;
         this.roleDao = roleDao;
         this.taskDao = taskDao;
@@ -54,7 +50,6 @@ public class OptionServiceImpl implements OptionService {
         this.methodDao = methodDao;
         this.scOptCondDao = scOptCondDao;
         this.devcs = devcs;
-        this.optionExceService = optionExceService;
     }
 
     /**
@@ -75,8 +70,7 @@ public class OptionServiceImpl implements OptionService {
         }
 
         String deviceStatus = devc.getStatus();
-        // Task task = taskDao.findByTaskId(devc.getTaskId());
-        Task task = devc.getTask();
+        Task task = taskDao.findByTaskId(devc.getTaskId());
         String taskStatus = task.getStatus();
         String mouldStatus = task.getMldDtl() != null ? task.getMldDtl().getStatus() : null;
 
@@ -135,20 +129,10 @@ public class OptionServiceImpl implements OptionService {
      * @param opId     操作员id
      * @param optionId 操作id
      * @param deviceId 设备id
-     * @param mldDtlId 模具id
      * @return
      */
     @Override
-    public Result exceOption(Integer opId, Integer optionId, Integer deviceId, Integer mldDtlId) {
-
-        switch (opId) {
-            case 1:     // 装模/料 操作
-                optionExceService.mouldFilling(opId, optionId, deviceId, mldDtlId);
-                break;
-            default:
-
-        }
-
+    public Result exceOption(Integer opId, Integer optionId, Integer deviceId) {
         return null;
     }
 
