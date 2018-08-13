@@ -261,7 +261,7 @@ public class BeanConfig {
                 StateMachine<MouldStatus, MouldEvents> stateMachine = mouldStateMachineFactory.getStateMachine(mldDtl.getCode());
                 // 从数据库中恢复模具的状态
                 stateMachine.start();
-                if (mldDtl.getStatus() != null) {
+                if (StringUtils.isNotEmpty(mldDtl.getStatus().trim())) {
                     MouldStatus status = MouldStatus.valueOf(mldDtl.getStatus());
                     StateMachineUtils.setMouldStateMachineState(stateMachine, status);
                 }

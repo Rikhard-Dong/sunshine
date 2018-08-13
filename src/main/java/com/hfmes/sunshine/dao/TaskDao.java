@@ -24,8 +24,8 @@ public interface TaskDao {
      * @param status 更新状态
      * @return 更新行数
      */
-    Integer updateStaus(@Param("taskId") Integer taskId,
-                        @Param("status") String status);
+    Integer updateStatus(@Param("taskId") Integer taskId,
+                         @Param("status") String status);
 
 
     /* ****************************************

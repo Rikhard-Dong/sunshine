@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * option和condition表的连接表
  */
 @Data
+@JsonIgnoreProperties(value = { "handler" })
 public class SCOptCond {
     private Integer scOptCondId;
     private Integer idx;

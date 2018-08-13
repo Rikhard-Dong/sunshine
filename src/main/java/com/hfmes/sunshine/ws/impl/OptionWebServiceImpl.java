@@ -237,8 +237,6 @@ public class OptionWebServiceImpl implements OptionWebService {
     }
 
 
-
-
     /* *****************************************************
      * 实现状态同步接口
      *****************************************************/
@@ -248,7 +246,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         Devc devc = syncStatusService.syncDevc(Integer.valueOf(devcId));
 
         Result result = Result.success(devc);
-        return JacksonUtils.toJSon(result);
+        return JacksonUtils.toJSon(devc);
     }
 
     @Override
@@ -256,7 +254,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         MldDtl mldDtl = syncStatusService.syncMldDtl(Integer.valueOf(mldId));
 
         Result result = Result.success(mldDtl);
-        return JacksonUtils.toJSon(result);
+        return JacksonUtils.toJSon(mldDtl);
     }
 
     @Override
@@ -264,7 +262,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         Task task = syncStatusService.syncTask(Integer.valueOf(taskId));
 
         Result result = Result.success(task);
-        return JacksonUtils.toJSon(result);
+        return JacksonUtils.toJSon(task);
     }
 
     /* *****************************************************
@@ -272,12 +270,12 @@ public class OptionWebServiceImpl implements OptionWebService {
      *****************************************************/
 
     /**
-     * @param deviceId 设备ID
-     * @return
+     * @param devcId 设备ID
+     * @return result
      */
     @Override
-    public String taskDown(String deviceId) {
-        taskService.taskDown(Integer.valueOf(deviceId));
+    public String taskDown(String devcId) {
+        taskService.taskDown(Integer.valueOf(devcId));
         return JacksonUtils.toJSon(Result.success());
     }
 
@@ -288,7 +286,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     /**
      * @param deviceId 设备id
      * @param status   强制更新设备状态
-     * @return
+     * @return result
      */
     @Override
     public String changeDeviceStateMachineStatus(String deviceId, String status) {
@@ -300,12 +298,30 @@ public class OptionWebServiceImpl implements OptionWebService {
     /**
      * @param mouldId 模具id
      * @param status  模具状态
-     * @return
+     * @return result
      */
     @Override
     public String changeMouldStateMachineStatus(String mouldId, String status) {
         statusChangeService.changeMouldStateMachineStatus(Integer.valueOf(mouldId), status);
         return JacksonUtils.toJSon(Result.success());
+    }
+
+    /* *****************************************************
+     * 执行动作
+     *****************************************************/
+
+    /**
+     * @param opIdStr     操作员id
+     * @param optionIdStr 操作id
+     * @param deviceIdStr 设备id
+     * @return
+     */
+    @Override
+    public String btnPressOpAction(String opIdStr, String optionIdStr, String deviceIdStr) {
+        Integer opId = Integer.valueOf(opIdStr);
+        Integer optionId = Integer.valueOf(optionIdStr);
+        Integer deviceId = Integer.valueOf(deviceIdStr);
+        return null;
     }
 
 

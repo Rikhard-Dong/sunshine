@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,6 +11,7 @@ import java.util.Date;
  * @date 2018/8/8 20:56
  */
 @Data
+@JsonIgnoreProperties(value = { "handler" })
 public class MldDtl {
     private Integer mldDtlId;
     private Integer mldTypeId;
@@ -22,6 +25,7 @@ public class MldDtl {
     private Float weight;
     private Integer num;
     private String model;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date enDate;
     private String operator;
     private String status;

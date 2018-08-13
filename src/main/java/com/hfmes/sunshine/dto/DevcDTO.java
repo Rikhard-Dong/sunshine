@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hfmes.sunshine.domain.Devc;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class DevcDTO {
     private String status;
     private String memo;
     private Integer taskId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date taskSetDate;
     private String mldStatus;
     private Integer weightTun;

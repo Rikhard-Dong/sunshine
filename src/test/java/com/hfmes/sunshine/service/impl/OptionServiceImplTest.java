@@ -30,7 +30,8 @@ public class OptionServiceImplTest {
 
     @Test
     public void obtainOptions() {
-        List<OptionDTO> result = optionService.obtainOptions("1186200375", 2);
+//        List<OptionDTO> result = optionService.obtainOptions("1186200375", 2);
+        List<OptionDTO> result = optionService.obtainOptions("1296880245", 2);
 
         log.debug("{}", result);
 

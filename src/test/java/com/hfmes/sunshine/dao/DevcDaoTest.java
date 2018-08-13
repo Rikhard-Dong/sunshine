@@ -2,6 +2,7 @@ package com.hfmes.sunshine.dao;
 
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.enums.DeviceStatus;
+import com.hfmes.sunshine.utils.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,9 @@ public class DevcDaoTest {
         log.debug("devc --> {}", devc);
         log.debug("devc dept --> {}", devc.getDept());
         log.debug("devc task --> {}", devc.getTask());
+
+        String json = JacksonUtils.toJSon(devc);
+        log.debug("devc json --> {}", json);
 
     }
 

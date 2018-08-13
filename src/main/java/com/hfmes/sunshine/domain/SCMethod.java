@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @date 2018/8/9 18:55
  */
 @Data
+@JsonIgnoreProperties(value = { "handler" })
 public class SCMethod {
     private Integer scMethodId;
     private String methodName;

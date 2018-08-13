@@ -145,7 +145,5 @@ public class DeviceStateMachineConfig extends EnumStateMachineConfigurerAdapter<
                 .withExternal()     // 模具维修完成
                 .source(DeviceStatus.SD30).target(DeviceStatus.SD00).event(DeviceEvents.MOULD_REPAIR_COMPLETE)
                 .action(mouldRepairCompleteAction);
-
-
     }
 }

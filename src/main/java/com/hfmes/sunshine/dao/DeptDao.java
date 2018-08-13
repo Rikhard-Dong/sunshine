@@ -8,5 +8,11 @@ import com.hfmes.sunshine.domain.Dept;
  */
 public interface DeptDao {
 
+    /**
+     * 根据部门id查找
+     *
+     * @param deptId 部门id
+     * @return Dept
+     */
     Dept findByDeptId(Integer deptId);
 }

@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * @date 2018/8/8 21:47
  */
 @Data
+@JsonIgnoreProperties(value = { "handler" })
 public class Dept {
     private Integer deptId;
     private String title;

@@ -215,11 +215,11 @@ public interface OptionWebService {
     /**
      * 工单下操作
      *
-     * @param deviceId 设备ID
+     * @param devcId 设备ID
      * @return
      */
     @WebMethod
-    String taskDown(@WebParam(name = "deviceId") String deviceId);
+    String taskDown(@WebParam(name = "devcId") String devcId);
 
     /* *****************************************************
      * 实现管理端强制转换状态机状态
@@ -247,5 +247,21 @@ public interface OptionWebService {
     String changeMouldStateMachineStatus(@WebParam(name = "mouldId") String mouldId,
                                          @WebParam(name = "status") String status);
 
+    /* *****************************************************
+     * 执行动作
+     *****************************************************/
+
+    /**
+     * 执行动作
+     *
+     * @param opId     操作员id
+     * @param optionId 操作ID
+     * @param deviceId 设备id
+     * @return
+     */
+    @WebMethod
+    String btnPressOpAction(@WebParam(name = "opId") String opId,
+                            @WebParam(name = "optionId") String optionId,
+                            @WebParam(name = "deviceId") String deviceId);
 
 }

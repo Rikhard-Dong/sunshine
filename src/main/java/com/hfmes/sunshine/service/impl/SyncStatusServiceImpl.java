@@ -59,6 +59,8 @@ public class SyncStatusServiceImpl implements SyncStatusService {
      */
     @Override
     public Task syncTask(Integer taskId) {
-        return taskMap.get(taskId);
+        Task task = taskMap.get(taskId);
+//        task.setMldDtl(task.getMldDtl());
+        return task;
     }
 }

@@ -1,7 +1,6 @@
 package com.hfmes.sunshine.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,6 +10,7 @@ import java.util.Date;
  * @date 2018/8/8 22:03
  */
 @Data
+@JsonIgnoreProperties(value = {"handler"})
 public class Task {
     // 数据库字段
     private Integer taskId;
@@ -20,31 +20,48 @@ public class Task {
     private Integer mldDtlId;
     private Integer devOpId;
     private Integer mldOpId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date arrDate;
     private Integer num;
     private Float matNum;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     private Integer procNum;
     private String status;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date mldStartTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date mldEndTime;
     private Integer testNum;
     private Integer setNum;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date prdPlanStart;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date prdPlanEnd;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date mldPlanStart;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date mldPlanEnd;
     private Integer bindNum;
 
     //其他冲压数量  包括架模/维修等数量
     private Integer otherNum;
 
-    // 级联属性, 序列化时忽略
-    @JsonIgnore
+    // 级联属性
+    private PlanDtl planDtl;
+    //    @JsonIgnore
     private Person devOp;
-    @JsonIgnore
+    //    @JsonIgnore
     private Person mldOp;
+    //    @JsonIgnore
+    private MldDtl mldDtl;
+
+//    @JsonGetter(value = "mdlDtl")
+//    public MldDtl getMldDtlDetail() {
+//        return mldDtl;
+//    }
 
     @Override
     public String toString() {

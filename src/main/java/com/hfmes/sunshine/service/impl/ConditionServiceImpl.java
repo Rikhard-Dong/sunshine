@@ -6,6 +6,7 @@ import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldStatus;
 import com.hfmes.sunshine.service.ConditionService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,8 @@ public class ConditionServiceImpl implements ConditionService {
     @Override
     public Boolean hasMould(Integer deviceId) {
         Devc devc = devcMap.get(deviceId);
-        return devc != null && devc.getMldStatus() != null;
+        log.debug("devc --> {}", devc);
+        return devc != null && StringUtils.isNotEmpty(devc.getMldStatus());
     }
 
     /**
@@ -149,8 +151,7 @@ public class ConditionServiceImpl implements ConditionService {
             log.warn("设备不存在...");
             return false;
         }
-
-
+        
         Task task = devc.getTask();
 
         return task != null && task.getProcNum() != null && task.getSetNum() != null

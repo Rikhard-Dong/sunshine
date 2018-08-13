@@ -16,4 +16,11 @@
         from T_DicType
         where dic_type_id = #{title}
     </select>
+
+    <select id="findByCode" resultType="com.hfmes.sunshine.domain.DicType">
+        select *
+        from T_DicType type
+        where type.code = #{code}
+    </select>
+
 </mapper>

@@ -8,24 +8,28 @@ import java.util.Date;
 
 /**
  * @author supreDong@gmail.com
- * @date 2018/8/8 22:10
+ * @date 2018/8/13 10:36
  */
 @Data
-@JsonIgnoreProperties(value = { "handler" })
-public class Plan {
+@JsonIgnoreProperties(value = {"handler"})
+public class PlanDtl {
+    private Integer planDtlId;
     private Integer planId;
-    private String oderNo;
+    private Integer prdtTypeId;
     private Integer reqNum;
+    private String explain;
     private Integer cmpNum;
     private String status;
+    private Integer devReq;
+    private Integer mldReq;
+    private String color;
+    private String lr;
+    private String mark;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date sendTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date reqTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date cmpTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date inTime;
-    private String operator;
-    private String source;
-    private String type;
-    private Integer deptId;
+    private String pin;
 }

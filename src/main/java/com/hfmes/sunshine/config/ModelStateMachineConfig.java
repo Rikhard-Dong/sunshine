@@ -125,6 +125,5 @@ public class ModelStateMachineConfig extends EnumStateMachineConfigurerAdapter<M
                 .withExternal()     // 模具修复, 到领用状态
                 .source(MouldStatus.SM60).target(MouldStatus.SM10).event(MouldEvents.MOULD_REPAIR_COMPLETE2SM10)
                 .action(mouldRepairComplete2SM10Action);
-
     }
 }

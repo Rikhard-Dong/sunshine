@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.PlanDtlDao">
+
+    <resultMap id="planDtlResult" type="com.hfmes.sunshine.domain.PlanDtl">
+        <result property="planDtlId" column="PlanDtlId"/>
+        <result property="planId" column="PlanId"/>
+        <result property="prdtTypeId" column="PrdtTypeId"/>
+        <result property="reqNum" column="ReqNum"/>
+        <result property="explain" column="Explain"/>
+        <result property="cmpNum" column="CmpNum"/>
+        <result property="status" column="Status"/>
+        <result property="devReq" column="DevReq"/>
+        <result property="mldReq" column="MldReq"/>
+        <result property="color" column="Color"/>
+        <result property="lr" column="LR"/>
+        <result property="mark" column="Mark"/>
+        <result property="sendTime" column="SendTime"/>
+        <result property="reqTime" column="ReqTime"/>
+        <result property="cmpTime" column="CmpTime"/>
+        <result property="pin" column="PIN"/>
+    </resultMap>
+
+    <select id="findById" resultMap="planDtlResult">
+        select *
+        from T_PlanDtl
+        where PlanDtlId = #{planDtlId}
+    </select>
+
+</mapper>

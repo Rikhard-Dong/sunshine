@@ -22,13 +22,13 @@ public class StatusChangeServiceImpl implements StatusChangeService {
 
     private final Map<Integer, StateMachine<DeviceStatus, DeviceEvents>> deviceStatemachineMap;
 
-    private final Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStatemachienMap;
+    private final Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStatemachineMap;
 
     @Autowired
     public StatusChangeServiceImpl(@Qualifier("deviceStateMachines") Map<Integer, StateMachine<DeviceStatus, DeviceEvents>> deviceStatemachineMap,
                                    @Qualifier("mouldStateMachines") Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStatemachienMap) {
         this.deviceStatemachineMap = deviceStatemachineMap;
-        this.mouldStatemachienMap = mouldStatemachienMap;
+        this.mouldStatemachineMap = mouldStatemachienMap;
     }
 
     /**
@@ -58,7 +58,7 @@ public class StatusChangeServiceImpl implements StatusChangeService {
      */
     @Override
     public void changeMouldStateMachineStatus(Integer mouldId, String statusStr) {
-        StateMachine<MouldStatus, MouldEvents> stateMachine = mouldStatemachienMap.get(mouldId);
+        StateMachine<MouldStatus, MouldEvents> stateMachine = mouldStatemachineMap.get(mouldId);
         if (stateMachine == null) {
             return;
         }

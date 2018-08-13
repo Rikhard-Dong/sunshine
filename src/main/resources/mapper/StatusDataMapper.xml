@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.StatusDataDao">
+
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="statusDataId"
+            parameterType="com.hfmes.sunshine.domain.StatusData">
+        insert into T_StatusData (StatusTypeId, CurStatus, NextStatus, Start, Stop, Hold, Count,
+                                  EventType, EventName, OpId, DevId, TaskId, MdlId)
+        VALUES
+            (#{statusTypeId}, #{curStatus}, #{nextStatus}, #{start}, #{stop}, #{hold}, #{count},
+                              #{eventType}, #{eventName}, #{opId}, #{devId}, #{taskId}, #{mldId})
+
+    </insert>
+</mapper>

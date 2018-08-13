@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Arrays;
@@ -11,6 +13,7 @@ import java.util.Date;
  * 用户
  */
 @Data
+@JsonIgnoreProperties(value = { "handler" })
 public class Person {
 
     private Integer personId;
@@ -20,6 +23,7 @@ public class Person {
     private String name;
     private String birth;
     private String born;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date enDate;
     private Integer deptId;
     private String memo;

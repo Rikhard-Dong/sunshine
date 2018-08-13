@@ -4,6 +4,7 @@ import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
+import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.OptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,11 @@ import java.util.*;
 public class OptionServiceImpl implements OptionService {
 
     private final SCOptionDao optionDao;
-
     private final RoleDao roleDao;
-
     private final TaskDao taskDao;
-
     private final SCConditionDao conditionDao;
-
     private final SCMethodDao methodDao;
-
     private final SCOptCondDao scOptCondDao;
-
     private final Map<Integer, Devc> devcs;
 
     private static final String MLD = "MLD";            // 模具工
@@ -66,10 +61,7 @@ public class OptionServiceImpl implements OptionService {
      */
     @Override
     public List<OptionDTO> obtainOptions(String cardNo, Integer deviceId) {
-
-
         Devc devc = devcs.get(deviceId);
-
 
         if (devc == null) {
             // TODO 传入的设备不在map中
@@ -78,9 +70,11 @@ public class OptionServiceImpl implements OptionService {
         }
 
         String deviceStatus = devc.getStatus();
-        String mouldStatus = devc.getMldStatus();
         Task task = taskDao.findByTaskId(devc.getTaskId());
         String taskStatus = task.getStatus();
+        String mouldStatus = task.getMldDtl() != null ? task.getMldDtl().getStatus() : null;
+
+        log.debug("deviceStatus --> {}, mouldStatus --> {}, taskStatus --> {}", deviceStatus, mouldStatus, taskStatus);
 
         // 获取操作的交集
         Set<SCOption> options = optionDao.findByCardNo(cardNo);
@@ -122,11 +116,24 @@ public class OptionServiceImpl implements OptionService {
 
     /**
      * @param opId opId
-     * @return
+     * @return list of method
      */
     @Override
     public List<SCMethod> obtainMethods(Integer opId) {
         return methodDao.findByOpId(opId);
+    }
+
+    /**
+     * 执行动作
+     *
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param deviceId 设备id
+     * @return
+     */
+    @Override
+    public Result exceOption(Integer opId, Integer optionId, Integer deviceId) {
+        return null;
     }
 
     /**

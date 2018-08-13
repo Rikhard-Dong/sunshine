@@ -2,6 +2,7 @@ package com.hfmes.sunshine.dao;
 
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.Task;
+import com.hfmes.sunshine.utils.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +30,15 @@ public class TaskDaoTest {
     @Test
     public void findByTaskId() {
         Task task = devcMap.get(2).getTask();
+        String result = JacksonUtils.toJSon(task);
+        log.debug("task json --> {}", result);
+
         log.debug("task --> {}", task);
         log.debug("task devOpId --> {}, devOp --> {}", task.getDevOpId(), task.getDevOp());
         log.debug("task mldOpId --> {}, mldOp --> {}", task.getMldOpId(), task.getMldOp());
+        log.debug("task mldDtlId --> {}, mldDtl --> {}", task.getMldDtlId(), task.getMldDtl());
+
+        result = JacksonUtils.toJSon(task);
+        log.debug("task json --> {}", result);
     }
 }

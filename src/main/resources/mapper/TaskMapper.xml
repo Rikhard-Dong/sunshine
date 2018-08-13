@@ -35,9 +35,15 @@
 
         <association property="devOp" column="DevOpId" javaType="com.hfmes.sunshine.domain.Person"
                      select="com.hfmes.sunshine.dao.PersonDao.findByPersonId"/>
+
+        <association property="mldDtl" column="MldDtlId" javaType="com.hfmes.sunshine.domain.MldDtl"
+                     select="com.hfmes.sunshine.dao.MldDtlDao.findByMldDtlId"/>
+
+        <association property="planDtl" column="PlanDtlId" javaType="com.hfmes.sunshine.domain.PlanDtl"
+                     select="com.hfmes.sunshine.dao.PlanDtlDao.findById"/>
     </resultMap>
 
-    <update id="updateStaus">
+    <update id="updateStatus">
         update T_Task task
         set task.Status = #{status}
         where task.TaskId = #{taskId}
@@ -49,12 +55,12 @@
         where TaskId = #{taskid}
     </select>
 
-    <select id="findAll" resultType="com.hfmes.sunshine.domain.Task">
+    <select id="findAll" resultMap="taskResult">
         select *
         from T_Task
     </select>
 
-    <select id="findAllStatusNotEqualST40" resultType="com.hfmes.sunshine.domain.Task">
+    <select id="findAllStatusNotEqualST40" resultMap="taskResult">
         select *
         from T_Task task
         where task.Status != 'ST40'
@@ -65,7 +71,7 @@
         from T_Task task
         where task.TaskId = #{taskId}
     </select>
-    <select id="findByStatusIsST00" resultType="com.hfmes.sunshine.domain.Task">
+    <select id="findByStatusIsST00" resultMap="taskResult">
         select *
         from T_Task
         where Status = 'ST00'

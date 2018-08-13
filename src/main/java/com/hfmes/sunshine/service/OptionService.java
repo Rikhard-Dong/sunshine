@@ -3,6 +3,7 @@ package com.hfmes.sunshine.service;
 import com.hfmes.sunshine.domain.SCMethod;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
+import com.hfmes.sunshine.dto.Result;
 
 import java.util.List;
 
@@ -36,4 +37,14 @@ public interface OptionService {
      * @return list of method
      */
     List<SCMethod> obtainMethods(Integer opId);
+
+    /**
+     * 执行动作
+     *
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param deviceId 设备id
+     * @return result结果
+     */
+    Result exceOption(Integer opId, Integer optionId, Integer deviceId);
 }
