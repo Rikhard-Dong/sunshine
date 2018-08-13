@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.action.mould;
 
+import com.hfmes.sunshine.action.BaseAction;
 import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class StartDemouldingAction implements Action<MouldStatus, MouldEvents> {
+public class StartDemouldingAction extends BaseAction implements Action<MouldStatus, MouldEvents> {
     @Override
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
-        log.debug("撤销模具报修action");
+        log.debug("撤销模具报修action...");
     }
 }
