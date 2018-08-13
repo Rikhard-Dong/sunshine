@@ -57,7 +57,8 @@ public class TaskServiceImpl implements TaskService {
         // 更新设备的taskId
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
-        if (devcDao.updateTaskId(devc.getDeviceId(), task.getTaskId()) != 0) {
+        if (devcDao.updateTaskId(devc.getDeviceId(), task.getTaskId()) == 0) {
+            // TODO 更新条数为0, 抛出异常回滚
             return;
         }
         // 移除相关数据

@@ -26,7 +26,7 @@ public class MldDtl {
     private Integer num;
     private String model;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date enDate;
+    private Date enDate = new Date();
     private String operator;
     private String status;
     private String memo;

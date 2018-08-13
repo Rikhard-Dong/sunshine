@@ -41,6 +41,12 @@
 
         <association property="planDtl" column="PlanDtlId" javaType="com.hfmes.sunshine.domain.PlanDtl"
                      select="com.hfmes.sunshine.dao.PlanDtlDao.findById"/>
+
+        <association property="matDtl" column="MatDtlId" javaType="com.hfmes.sunshine.domain.MatDtl"
+                     select="com.hfmes.sunshine.dao.MatDtlDao.findById"/>
+
+        <association property="devc" column="DevcId" javaType="com.hfmes.sunshine.domain.Devc"
+                     select="com.hfmes.sunshine.dao.DevcDao.findByDeviceId"/>
     </resultMap>
 
     <update id="updateStatus">

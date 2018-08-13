@@ -13,4 +13,17 @@
                               #{eventType}, #{eventName}, #{opId}, #{devId}, #{taskId}, #{mldId})
 
     </insert>
+
+    <update id="updateEndAdnHold">
+        update T_StatusData
+        set end = #{end}, hold = #{hold}
+        where StatusDataId = #{statudDataId}
+    </update>
+
+    <select id="findByDevcIdAndTypeTop1" resultType="com.hfmes.sunshine.domain.StatusData">
+        select top 1 *
+        from T_StatusData sd
+        where sd.DevId = #{devcId} and sd.statusTypeId = #{statusTypeId} and sd.Stop is null
+        order by sd.Start desc
+    </select>
 </mapper>

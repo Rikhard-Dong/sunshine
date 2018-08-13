@@ -27,6 +27,7 @@ public class DevcDTO {
     private Integer weightTun;
     private String statusStr;
     private String mldStatusStr;
+    private Integer mldDtlId;
 
     public DevcDTO() {
     }
@@ -42,6 +43,7 @@ public class DevcDTO {
         this.taskId = devc.getTaskId();
         this.taskSetDate = devc.getTaskSetDate();
         this.mldStatus = devc.getMldStatus();
+        this.mldDtlId = devc.getMldDtlId();
 
         switch (this.status) {
             case "SD00":

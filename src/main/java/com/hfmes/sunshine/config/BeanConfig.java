@@ -1,13 +1,7 @@
 package com.hfmes.sunshine.config;
 
-import com.hfmes.sunshine.dao.DevcDao;
-import com.hfmes.sunshine.dao.MldDtlDao;
-import com.hfmes.sunshine.dao.PersonDao;
-import com.hfmes.sunshine.dao.TaskDao;
-import com.hfmes.sunshine.domain.Devc;
-import com.hfmes.sunshine.domain.MldDtl;
-import com.hfmes.sunshine.domain.Person;
-import com.hfmes.sunshine.domain.Task;
+import com.hfmes.sunshine.dao.*;
+import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldEvents;
@@ -15,17 +9,18 @@ import com.hfmes.sunshine.enums.MouldStatus;
 import com.hfmes.sunshine.utils.StateMachineUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.hfmes.sunshine.utils.Constants.SD;
+import static com.hfmes.sunshine.utils.Constants.SM;
+import static com.hfmes.sunshine.utils.Constants.ST;
 
 /**
  * @author supreDong@gmail.com
@@ -36,16 +31,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BeanConfig {
 
     private final StateMachineFactory<DeviceStatus, DeviceEvents> deviceStateMachineFactory;
-
     private final StateMachineFactory<MouldStatus, MouldEvents> mouldStateMachineFactory;
 
     private final DevcDao deviceDao;
-
     private final PersonDao personDao;
-
     private final MldDtlDao mldDtlDao;
-
     private final TaskDao taskDao;
+    private final StatusDataDao statusDataDao;
+
+    @Autowired
+    private final SCMethodDao methodDao;
+
 
     @Autowired
     public BeanConfig(StateMachineFactory<DeviceStatus, DeviceEvents> deviceStateMachineFactory,
@@ -53,13 +49,17 @@ public class BeanConfig {
                       DevcDao deviceDao,
                       PersonDao personDao,
                       MldDtlDao mldDtlDao,
-                      TaskDao taskDao) {
+                      TaskDao taskDao,
+                      StatusDataDao statusDataDao,
+                      SCMethodDao methodDao) {
         this.deviceStateMachineFactory = deviceStateMachineFactory;
         this.mouldStateMachineFactory = mouldStateMachineFactory;
         this.deviceDao = deviceDao;
         this.personDao = personDao;
         this.mldDtlDao = mldDtlDao;
         this.taskDao = taskDao;
+        this.statusDataDao = statusDataDao;
+        this.methodDao = methodDao;
     }
 
     /* **********************************************************
@@ -79,7 +79,7 @@ public class BeanConfig {
     }
 
     /**
-     * 注入所有人员 map bean
+     * 注入所有人员 map bean, 如果卡号为null则不注入
      * key cardNo 卡号
      * value person
      *
@@ -89,6 +89,19 @@ public class BeanConfig {
     public Map<String, Person> persons() {
         return initPersons();
     }
+
+    /**
+     * 注入所有员工
+     * key personId
+     * value person
+     *
+     * @return
+     */
+    @Bean(name = "persons2")
+    public Map<Integer, Person> personMap() {
+        return initPersons2();
+    }
+
 
     /**
      * 存储所有设备状态机实例
@@ -157,6 +170,33 @@ public class BeanConfig {
         return initTaskMap();
     }
 
+    /**
+     * 存放设备和对应的状态改变记录
+     * key 设备id
+     * value map, 保存每台设备的三种状态的状态改变的数据
+     * |------------- key 对应三种状态类型, SD 设备状态, SM 模具状态, ST 工单状态
+     * |------------- value 状态改变记录实体
+     *
+     * @return map
+     */
+    @Bean("deviceStatusDatas")
+    public Map<Integer, Map<Integer, StatusData>> deviceStatusDataMap() {
+        return initDeviceStatusDataMap();
+    }
+
+
+    /**
+     * key method 操作id
+     * value 操作名称
+     *
+     * @return
+     */
+    @Bean("methods")
+    public Map<Integer, String> methodMap() {
+        return initMethodMap();
+    }
+
+
 
     /* **********************************************************
      * 注入bean实现过程
@@ -181,6 +221,20 @@ public class BeanConfig {
         }
 
         return devcs;
+    }
+
+    /**
+     * 注入所有员工
+     *
+     * @return
+     */
+    private Map<Integer, Person> initPersons2() {
+        Map<Integer, Person> map = new ConcurrentHashMap<>();
+        List<Person> persons = personDao.findAll();
+        for (Person person : persons) {
+            map.put(person.getPersonId(), person);
+        }
+        return map;
     }
 
     /**
@@ -346,4 +400,40 @@ public class BeanConfig {
 
         return map;
     }
+
+    /**
+     * 创建记录设备和状态转换关系的map映射
+     *
+     * @return
+     */
+    private Map<Integer, Map<Integer, StatusData>> initDeviceStatusDataMap() {
+        Map<Integer, Map<Integer, StatusData>> map = new ConcurrentHashMap<>();
+
+        List<Devc> devcs = deviceDao.findAll();
+        List<Integer> statusType = new ArrayList<>(Arrays.asList(SD, SM, ST));
+        for (Devc devc : devcs) {
+            Map<Integer, StatusData> innerMap = new HashMap<>();
+            for (Integer type : statusType) {
+                StatusData data = statusDataDao.findByDevcIdAndTypeTop1(devc.getDeviceId(), type);
+                innerMap.put(type, data);
+            }
+            map.put(devc.getDeviceId(), innerMap);
+        }
+
+        return map;
+    }
+
+    /**
+     * key method 操作id
+     * value 操作名称
+     */
+    private Map<Integer, String> initMethodMap() {
+        Map<Integer, String> map = new HashMap<>();
+        List<SCMethod> methods = methodDao.findAll();
+        for (SCMethod method : methods) {
+            map.put(method.getScMethodId(), method.getMethodName());
+        }
+        return map;
+    }
+
 }

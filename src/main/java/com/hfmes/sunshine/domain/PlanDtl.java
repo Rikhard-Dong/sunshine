@@ -26,10 +26,10 @@ public class PlanDtl {
     private String lr;
     private String mark;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date sendTime;
+    private Date sendTime = new Date();
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date reqTime;
+    private Date reqTime = new Date();
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date cmpTime;
+    private Date cmpTime = new Date();
     private String pin;
 }

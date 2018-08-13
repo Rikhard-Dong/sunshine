@@ -21,8 +21,10 @@ public class MyTest {
     public void testEnum() {
         DeviceStatus a = DeviceStatus.valueOf("SD00");
         DeviceStatus b = DeviceStatus.SD00;
+
         log.debug("a --> {}, b --> {}, a == b --> {}", a, b, a == b);
         log.debug("{}", DeviceStatus.SD00);
+        log.debug("a.ordinal --> {}", a.ordinal());
     }
 
     @Test
@@ -30,5 +32,12 @@ public class MyTest {
         String a = "ac";
         a = StringUtils.capitalize(a);
         log.debug("{}", a);
+    }
+
+    @Test
+    public void testIntegerValueOf() {
+        Integer a = 0;
+        Integer b = Integer.valueOf("");
+        log.debug("a --> {}, b --> {}", a, b);
     }
 }

@@ -24,6 +24,12 @@
         <result property="capacity" column="Capacity"/>
     </resultMap>
 
+    <update id="updateStatus">
+        update T_MldDtl
+        set Status = #{status}
+        where MldDtlId = #{mldDtlId}
+    </update>
+
     <select id="findByMldDtlId" resultMap="MldDtlResult">
         select *
         from T_MldDtl

@@ -317,11 +317,16 @@ public class OptionWebServiceImpl implements OptionWebService {
      * @return
      */
     @Override
-    public String btnPressOpAction(String opIdStr, String optionIdStr, String deviceIdStr) {
-        Integer opId = Integer.valueOf(opIdStr);
-        Integer optionId = Integer.valueOf(optionIdStr);
-        Integer deviceId = Integer.valueOf(deviceIdStr);
-        return null;
+    public String btnPressOpAction(String opIdStr, String optionIdStr, String deviceIdStr, String mldIdStr) {
+        Integer opId = StringUtils.isNumeric(opIdStr) ? Integer.valueOf(opIdStr) : null;
+        Integer optionId = StringUtils.isNumeric(optionIdStr) ? Integer.valueOf(optionIdStr) : null;
+        Integer deviceId = StringUtils.isNumeric(deviceIdStr) ? Integer.valueOf(deviceIdStr) : null;
+        Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
+
+
+        optionService.exceOption(opId, optionId, deviceId, mldId);
+
+        return JacksonUtils.toJSon(Result.success());
     }
 
 
