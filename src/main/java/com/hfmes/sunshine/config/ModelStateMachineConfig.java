@@ -24,46 +24,32 @@ import java.util.EnumSet;
 public class ModelStateMachineConfig extends EnumStateMachineConfigurerAdapter<MouldStatus, MouldEvents> {
 
 
-    private final CompleteDemouldingAction completeDemouldingAction;
-    private final CompleteMouldFillingAction completeMouldFillingAction;
-    private final DemouldingAction demouldingAction;
-    private final MouldCollarAction mouldCollarAction;
-    @Qualifier("mouldRepairAction2")
-    private final MouldRepairAction mouldRepairAction;
-    private final MouldRepairComplete2SM10Action mouldRepairComplete2SM10Action;
-    private final MouldRepairComplete2SM40Action mouldRepairComplete2SM40Action;
-    private final MouldReportRepairAction mouldReportRepairAction;
-    private final MouldReturnAction mouldReturnAction;
-    private final MouldRevokeReportRepairAction mouldRevokeReportRepairAction;
-    private final StartDemouldingAction startDemouldingAction;
-    private final StartMouldFillingAction startMouldFillingAction;
-
     @Autowired
-    public ModelStateMachineConfig(CompleteDemouldingAction completeDemouldingAction,
-                                   CompleteMouldFillingAction completeMouldFillingAction,
-                                   DemouldingAction demouldingAction,
-                                   MouldCollarAction mouldCollarAction,
-                                   MouldRepairAction mouldRepairAction,
-                                   MouldRepairComplete2SM10Action mouldRepairComplete2SM10Action,
-                                   MouldRepairComplete2SM40Action mouldRepairComplete2SM40Action,
-                                   MouldReportRepairAction mouldReportRepairAction,
-                                   MouldReturnAction mouldReturnAction,
-                                   MouldRevokeReportRepairAction mouldRevokeReportRepairAction,
-                                   StartDemouldingAction startDemouldingAction,
-                                   StartMouldFillingAction startMouldFillingAction) {
-        this.completeDemouldingAction = completeDemouldingAction;
-        this.completeMouldFillingAction = completeMouldFillingAction;
-        this.demouldingAction = demouldingAction;
-        this.mouldCollarAction = mouldCollarAction;
-        this.mouldRepairAction = mouldRepairAction;
-        this.mouldRepairComplete2SM10Action = mouldRepairComplete2SM10Action;
-        this.mouldRepairComplete2SM40Action = mouldRepairComplete2SM40Action;
-        this.mouldReportRepairAction = mouldReportRepairAction;
-        this.mouldReturnAction = mouldReturnAction;
-        this.mouldRevokeReportRepairAction = mouldRevokeReportRepairAction;
-        this.startDemouldingAction = startDemouldingAction;
-        this.startMouldFillingAction = startMouldFillingAction;
-    }
+    private CompleteDemouldingAction completeDemouldingAction;
+    @Autowired
+    private CompleteMouldFillingAction completeMouldFillingAction;
+    @Autowired
+    private DemouldingAction demouldingAction;
+    @Autowired
+    private MouldCollarAction mouldCollarAction;
+    @Autowired
+    @Qualifier("mouldRepairAction2")
+    private MouldRepairAction mouldRepairAction;
+    @Autowired
+    private MouldRepairComplete2SM10Action mouldRepairComplete2SM10Action;
+    @Autowired
+    private MouldRepairComplete2SM40Action mouldRepairComplete2SM40Action;
+    @Autowired
+    private MouldReportRepairAction mouldReportRepairAction;
+    @Autowired
+    private MouldReturnAction mouldReturnAction;
+    @Autowired
+    private MouldRevokeReportRepairAction mouldRevokeReportRepairAction;
+    @Autowired
+    private StartDemouldingAction startDemouldingAction;
+    @Autowired
+    private StartMouldFillingAction startMouldFillingAction;
+
 
     @Override
     public void configure(StateMachineStateConfigurer<MouldStatus, MouldEvents> states) throws Exception {

@@ -30,8 +30,10 @@ import static com.hfmes.sunshine.utils.Constants.ST;
 @Slf4j
 public class BeanConfig {
 
-    private final StateMachineFactory<DeviceStatus, DeviceEvents> deviceStateMachineFactory;
-    private final StateMachineFactory<MouldStatus, MouldEvents> mouldStateMachineFactory;
+    @Autowired
+    private StateMachineFactory<DeviceStatus, DeviceEvents> deviceStateMachineFactory;
+    @Autowired
+    private StateMachineFactory<MouldStatus, MouldEvents> mouldStateMachineFactory;
 
     private final DevcDao deviceDao;
     private final PersonDao personDao;
@@ -39,21 +41,15 @@ public class BeanConfig {
     private final TaskDao taskDao;
     private final StatusDataDao statusDataDao;
 
-    @Autowired
     private final SCMethodDao methodDao;
 
-
     @Autowired
-    public BeanConfig(StateMachineFactory<DeviceStatus, DeviceEvents> deviceStateMachineFactory,
-                      StateMachineFactory<MouldStatus, MouldEvents> mouldStateMachineFactory,
-                      DevcDao deviceDao,
+    public BeanConfig(DevcDao deviceDao,
                       PersonDao personDao,
                       MldDtlDao mldDtlDao,
                       TaskDao taskDao,
                       StatusDataDao statusDataDao,
                       SCMethodDao methodDao) {
-        this.deviceStateMachineFactory = deviceStateMachineFactory;
-        this.mouldStateMachineFactory = mouldStateMachineFactory;
         this.deviceDao = deviceDao;
         this.personDao = personDao;
         this.mldDtlDao = mldDtlDao;
@@ -61,6 +57,9 @@ public class BeanConfig {
         this.statusDataDao = statusDataDao;
         this.methodDao = methodDao;
     }
+
+
+
 
     /* **********************************************************
      * 所有注入的bean
