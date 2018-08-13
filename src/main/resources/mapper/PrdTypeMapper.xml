@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.PrdtTypeDao">
+
+    <resultMap id="BaseResultMap" type="com.hfmes.sunshine.domain.PrdtType">
+
+        <id column="PrdtTypeId" jdbcType="INTEGER" property="prdtTypeId" />
+        <result column="Title" jdbcType="VARCHAR" property="title" />
+        <result column="Spec" jdbcType="VARCHAR" property="spec" />
+        <result column="Type" jdbcType="VARCHAR" property="type" />
+        <result column="Serial" jdbcType="VARCHAR" property="serial" />
+        <result column="Rat" jdbcType="DOUBLE" property="rat" />
+
+    </resultMap>
+    <select id="findById" resultMap="BaseResultMap">
+        select *
+        from T_PrdtType
+        where PrdtTypeId = #{PrdtTypeId}
+    </select>
+
+</mapper>
