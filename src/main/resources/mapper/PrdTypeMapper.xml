@@ -6,12 +6,12 @@
 
     <resultMap id="BaseResultMap" type="com.hfmes.sunshine.domain.PrdtType">
 
-        <id column="PrdtTypeId" jdbcType="INTEGER" property="prdtTypeId" />
-        <result column="Title" jdbcType="VARCHAR" property="title" />
-        <result column="Spec" jdbcType="VARCHAR" property="spec" />
-        <result column="Type" jdbcType="VARCHAR" property="type" />
-        <result column="Serial" jdbcType="VARCHAR" property="serial" />
-        <result column="Rat" jdbcType="DOUBLE" property="rat" />
+        <id column="PrdtTypeId" jdbcType="INTEGER" property="prdtTypeId"/>
+        <result column="Title" jdbcType="VARCHAR" property="title"/>
+        <result column="Spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="Type" jdbcType="VARCHAR" property="type"/>
+        <result column="Serial" jdbcType="VARCHAR" property="serial"/>
+        <result column="Rat" jdbcType="DOUBLE" property="rat"/>
 
     </resultMap>
     <select id="findById" resultMap="BaseResultMap">

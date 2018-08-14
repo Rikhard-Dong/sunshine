@@ -12,7 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.hfmes.sunshine.utils.Constants.*;
 
 /**
  * @author supreDong@gmail.com
@@ -31,11 +36,7 @@ public class OptionServiceImpl implements OptionService {
     private final Map<Integer, Devc> devcs;
     private final OptionExceService optionExceService;
 
-    private static final String MLD = "MLD";            // 模具工
-    private static final String PUNCH = "PUNCH";        // 冲床工
-    private static final String OVERHAUL = "OVERHAUL";  // 检修工
-    private static final String PDCN = "PDCB";          // 生产管理员
-    private static final String UNKNOWN = "UNKNOWN";    // 未知类型
+
 
 
     @Autowired
@@ -141,10 +142,71 @@ public class OptionServiceImpl implements OptionService {
     @Override
     public Result exceOption(Integer opId, Integer optionId, Integer deviceId, Integer mldDtlId) {
 
-        switch (opId) {
+        switch (optionId) {
             case 1:     // 装模/料 操作
                 optionExceService.mouldFilling(opId, optionId, deviceId, mldDtlId);
                 break;
+            case 2:
+                optionExceService.completeDemoulding(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 3:
+                optionExceService.demoulding(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 4:
+                optionExceService.completeDemoulding(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 5:
+                optionExceService.mouldRepair(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 6:
+                optionExceService.demoulding2(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 7:
+                optionExceService.mouldRepairComplete(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 8:
+                optionExceService.mouldRepairComplete2(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 9:
+                optionExceService.startProduce(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 10:
+                optionExceService.continueProduce(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 11:
+                optionExceService.completeProduce(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 12:
+                optionExceService.suspendProduce(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 13:
+                optionExceService.deviceFault(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 14:
+                optionExceService.mouldFault(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 15:
+                optionExceService.revokeDeviceReportRepair(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 16:
+                optionExceService.revokeDeviceReportRepair2(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 17:
+                optionExceService.repairDevice(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 18:
+                optionExceService.completeRepairDevice(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 19:
+                optionExceService.checkProduce(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 20:
+                optionExceService.continueProduce2(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 21:
+                optionExceService.stopProduce(opId, optionId, deviceId, mldDtlId);
+                break;
+
             default:
 
         }

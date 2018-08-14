@@ -33,8 +33,9 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final CountNumService countNumService;
     private final StatusChangeService statusChangeService;
     private final TaskService taskService;
-    private final  PlanDtlService planDtlService;
+    private final PlanDtlService planDtlService;
     private final DevcService devcService;
+
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
                                 ConditionService conditionService,
@@ -52,8 +53,8 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.countNumService = countNumService;
         this.statusChangeService = statusChangeService;
         this.taskService = taskService;
-        this.planDtlService=planDtlService;
-        this.devcService=devcService;
+        this.planDtlService = planDtlService;
+        this.devcService = devcService;
     }
 
     /**
@@ -277,20 +278,20 @@ public class OptionWebServiceImpl implements OptionWebService {
      */
     @Override
     public String taskDown(String devcId) {
-       int taskId= taskService.taskDown(Integer.valueOf(devcId));
+        int taskId = taskService.taskDown(Integer.valueOf(devcId));
         return String.valueOf(taskId);
     }
 
     @Override
     public String updateDevcFromSql(String devcId) {
-        Devc devc=devcService.updateDevcFromSql(Integer.parseInt(devcId));
+        Devc devc = devcService.updateDevcFromSql(Integer.parseInt(devcId));
         //Result result = Result.success(devc);
         return JacksonUtils.toJSon(devc);
     }
 
     @Override
-    public String updateTaskFromSql(String devcId,String taskId) {
-        Task task=taskService.updateTaskFromSql(Integer.parseInt(devcId),Integer.parseInt(taskId));
+    public String updateTaskFromSql(String devcId, String taskId) {
+        Task task = taskService.updateTaskFromSql(Integer.parseInt(devcId), Integer.parseInt(taskId));
         return JacksonUtils.toJSon(task);
     }
 
@@ -346,7 +347,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     @Override
     public String getPlanDtlById(String planDtlId) {
-        PlanDtl planDtl=planDtlService.getPlanDtlById(Integer.parseInt(planDtlId));
+        PlanDtl planDtl = planDtlService.getPlanDtlById(Integer.parseInt(planDtlId));
 
         Result result = Result.success(planDtl);
         return JacksonUtils.toJSon(planDtl);

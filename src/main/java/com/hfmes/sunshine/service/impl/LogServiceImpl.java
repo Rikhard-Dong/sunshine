@@ -1,7 +1,9 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.dao.DevLogDao;
 import com.hfmes.sunshine.dao.MldLogDao;
 import com.hfmes.sunshine.dao.StatusDataDao;
+import com.hfmes.sunshine.domain.DevLog;
 import com.hfmes.sunshine.domain.MldLog;
 import com.hfmes.sunshine.domain.StatusData;
 import com.hfmes.sunshine.service.LogService;
@@ -26,6 +28,7 @@ public class LogServiceImpl implements LogService {
 
     private final MldLogDao mldLogDao;
     private final StatusDataDao statusDataDao;
+    private final DevLogDao devLogDao;
 
     @Autowired
     @Qualifier("methods")
@@ -41,13 +44,15 @@ public class LogServiceImpl implements LogService {
 
     @Autowired
     public LogServiceImpl(MldLogDao mldLogDao,
-                          StatusDataDao statusDataDao) {
+                          StatusDataDao statusDataDao,
+                          DevLogDao devLogDao) {
         this.mldLogDao = mldLogDao;
         this.statusDataDao = statusDataDao;
+        this.devLogDao = devLogDao;
     }
 
     @Override
-    public Boolean mkdLog(MldLog mldLog) {
+    public Boolean mldLog(MldLog mldLog) {
         return mldLogDao.insertOne(mldLog) == 1;
     }
 
@@ -76,5 +81,10 @@ public class LogServiceImpl implements LogService {
         statusDataMap.put(statusData.getStatusTypeId(), statusData);
 
         return statusDataDao.insertOne(statusData) == 1;
+    }
+
+    @Override
+    public Boolean devLog(DevLog devLog) {
+        return devLogDao.insertOne(devLog) == 1;
     }
 }

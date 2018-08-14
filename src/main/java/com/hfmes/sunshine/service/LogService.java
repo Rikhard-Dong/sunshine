@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.service;
 
+import com.hfmes.sunshine.domain.DevLog;
 import com.hfmes.sunshine.domain.MldLog;
 import com.hfmes.sunshine.domain.StatusData;
 
@@ -15,7 +16,7 @@ public interface LogService {
      * @param mldLog 模具操作
      * @return 日志记录
      */
-    Boolean mkdLog(MldLog mldLog);
+    Boolean mldLog(MldLog mldLog);
 
     /**
      * 操作状态转换
@@ -24,4 +25,12 @@ public interface LogService {
      * @return 状态转换记录
      */
     Boolean statusDataLog(StatusData statusData);
+
+    /**
+     * 设备操作日志记录
+     *
+     * @param devLog 设备操作
+     * @return
+     */
+    Boolean devLog(DevLog devLog);
 }

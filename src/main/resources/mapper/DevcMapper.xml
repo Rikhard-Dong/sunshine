@@ -42,6 +42,12 @@
         where DevcId = #{devcId}
     </update>
 
+    <update id="updateStatus">
+        update T_Devc
+        set Status = #{status}
+        where devcId = #{devcId}
+    </update>
+
     <select id="findByDeviceId" resultMap="DevcResult">
         select *
         from T_Devc

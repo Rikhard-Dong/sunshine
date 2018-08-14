@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.DevLogDao">
+
+    <resultMap id="DevLogResult" type="com.hfmes.sunshine.domain.DevLog">
+        <result property="devLogId" column="DevLogId"/>
+        <result property="devcId" column="DevcId"/>
+        <result property="taskId" column="TaskId"/>
+        <result property="opId" column="OpId"/>
+        <result property="opTime" column="opTime"/>
+        <result property="opName" column="opName"/>
+        <result property="opType" column="opType"/>
+    </resultMap>
+
+    <insert id="insertOne" useGeneratedKeys="true" parameterType="com.hfmes.sunshine.domain.DevLog"
+            keyProperty="devLogId" keyColumn="DevLogId">
+        insert into T_DevLog (DevcId, TaskId, OpId, OpTime, OpDesc, OpName, OpType) values
+            (#{devcId}, #{taskId}, #{opId}, #{opTime}, #{opDesc}, #{opName}, #{opType})
+    </insert>
+</mapper>

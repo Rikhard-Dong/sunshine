@@ -16,8 +16,8 @@
     </resultMap>
 
 
-    <insert id="insertOne" keyProperty="MldLogId" parameterType="com.hfmes.sunshine.domain.MldLog"
-            useGeneratedKeys="true">
+    <insert id="insertOne" keyProperty="mldLogId" parameterType="com.hfmes.sunshine.domain.MldLog"
+            useGeneratedKeys="true" keyColumn="MldLogId">
         insert into T_MldLog (MldDtlId, TaskId, OpId, OpTime, OpDesc, OpName, OpType)
         values (#{mldDtlId}, #{taskId}, #{opId}, #{opTime}, #{opDesc}, #{opName}, #{opType})
     </insert>

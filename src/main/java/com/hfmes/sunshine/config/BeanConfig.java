@@ -135,6 +135,7 @@ public class BeanConfig {
 
 
     /**
+     * 只存放工单状态为ST00的工单
      * key deviceId
      * value 设备对应的工单list
      *

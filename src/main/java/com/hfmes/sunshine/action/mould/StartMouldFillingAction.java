@@ -26,7 +26,6 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
     @Transactional
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("开始装模action...");
-
         contextLoad(context);
 
         // 记录操作
@@ -35,14 +34,12 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
         // 记录状态转换
         statusDataLog(SM);
 
-
         // 更新相关数据表
         // 更新模具状态
         log.debug("before mldDtl status --> {}", mldDtlMap.get(mldDtlId).getStatus());
         mldDtl.setStatus(nextStatus);
         mldDtlDao.updateStatus(mldDtlId, nextStatus);
         log.debug("after mldDtl status --> {}", mldDtlMap.get(mldDtlId).getStatus());
-
 
         // 更新设备信息
         devc.setMldDtlId(mldDtlId);

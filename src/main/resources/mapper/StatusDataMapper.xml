@@ -5,7 +5,7 @@
 <mapper namespace="com.hfmes.sunshine.dao.StatusDataDao">
 
     <insert id="insertOne" useGeneratedKeys="true" keyProperty="statusDataId"
-            parameterType="com.hfmes.sunshine.domain.StatusData">
+            parameterType="com.hfmes.sunshine.domain.StatusData" keyColumn="StatusDataId">
         insert into T_StatusData (StatusTypeId, CurStatus, NextStatus, Start, Stop, Hold, Count,
                                   EventType, EventName, OpId, DevId, TaskId, MdlId)
         VALUES

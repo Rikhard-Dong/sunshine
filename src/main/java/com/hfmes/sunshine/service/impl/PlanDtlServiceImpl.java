@@ -14,10 +14,9 @@ public class PlanDtlServiceImpl implements PlanDtlService {
     private final PlanDtlDao planDtlDao;
 
     @Autowired
-    public  PlanDtlServiceImpl(
-            PlanDtlDao planDtlDao){
+    public PlanDtlServiceImpl(PlanDtlDao planDtlDao) {
 
-        this.planDtlDao=planDtlDao;
+        this.planDtlDao = planDtlDao;
     }
 
 

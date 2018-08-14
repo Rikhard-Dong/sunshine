@@ -38,6 +38,17 @@ public interface DevcDao {
                                        @Param("mldDtlId") Integer mldDtlId,
                                        @Param("mldDtlStatus") String mldStatus);
 
+    /**
+     * 更新设备状态
+     *
+     * @param deviceId
+     * @param status
+     * @return
+     */
+    Integer updateStatus(@Param("devcId") Integer deviceId,
+                         @Param("status") String status);
+
+
     /* ****************************************
      * Select
      ******************************************/
@@ -64,4 +75,6 @@ public interface DevcDao {
      * @return 设备状态
      */
     DeviceStatus getStatusByDeviceId(Integer deviceId);
+
+
 }

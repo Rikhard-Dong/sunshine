@@ -1,11 +1,15 @@
 package com.hfmes.sunshine.action.mould;
 
+import com.hfmes.sunshine.action.BaseAction;
 import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.hfmes.sunshine.utils.Constants.SM;
 
 /**
  * @author supreDong@gmail.com
@@ -14,10 +18,23 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class MouldRepairComplete2SM10Action implements Action<MouldStatus, MouldEvents> {
+public class MouldRepairComplete2SM10Action extends BaseAction implements Action<MouldStatus, MouldEvents> {
+
     @Override
+    @Transactional
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
-        log.debug("模具修复到领用状态");
+        log.debug("模具修复到领用状态....");
+        contextLoad(context);
+
+        // 记录操作
+        mldLog();
+
+        // 记录转换
+        statusDataLog(SM);
+
+        // 更新模具状态
+        mldDtl.setStatus(nextStatus);
+        mldDtlDao.updateStatus(mldDtl.getMldDtlId(), nextStatus);
     }
 }
 
