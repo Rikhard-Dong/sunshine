@@ -59,8 +59,6 @@ public class TaskServiceImpl implements TaskService {
         }
 
         task = tasks.get(0);
-        // 移除相关数据
-        deviceTasks.put(deviceId,tasks);
 
         // 更新设备的taskId
         devc.setTaskId(task.getTaskId());
@@ -84,6 +82,7 @@ public class TaskServiceImpl implements TaskService {
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
         devcMap.put(devcId,devc);
+        taskMap.put(taskId,task);
         return task;
     }
 

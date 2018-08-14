@@ -78,9 +78,16 @@
         where task.TaskId = #{taskId}
     </select>
     <select id="findByStatusIsST00" resultMap="taskResult">
-        select *
-        from T_Task
-        where Status = 'ST00' and DateDiff(dd,ArrDate,getdate())=0
+        (select *
+			from T_Task
+			where Status = 'ST00' and DateDiff(dd,ArrDate,getdate())=10
+        )
+        UNION
+        (
+        select T_Task.* from T_Devc
+        LEFT JOIN T_Task on T_Devc.TaskId=T_Task.TaskId
+        where T_Devc.TaskId>0
+        )
     </select>
 
     <select id="findByStatusIsST00ByDevcId" resultMap="taskResult">

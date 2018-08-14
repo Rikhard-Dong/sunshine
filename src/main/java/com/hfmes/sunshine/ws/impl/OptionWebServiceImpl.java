@@ -212,7 +212,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     @Override
     public String checkDSSame(String devcId, String devcStatus) {
         Boolean result = checkStatusService.checkDevcStatus(Integer.valueOf(devcId), devcStatus);
-        return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
+        return StringUtils.capitalize(result.toString());
     }
 
     /**
@@ -224,7 +224,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     public String checkMSSame(String mldId, String mldStatus) {
         Boolean result = checkStatusService.checkMldStatus(Integer.valueOf(mldId), mldStatus);
 
-        return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
+        return StringUtils.capitalize(result.toString());
     }
 
     /**
@@ -235,7 +235,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     @Override
     public String checkTSSame(String taskId, String taskStatus) {
         Boolean result = checkStatusService.checkTaskMldStatus(Integer.valueOf(taskId), taskStatus);
-        return JacksonUtils.toJSon(Result.success(StringUtils.capitalize(result.toString())));
+        return StringUtils.capitalize(result.toString());
     }
 
 
@@ -339,7 +339,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
 
 
-        optionService.exceOption(opId, optionId, deviceId, mldId);
+        optionService.exceOption(opId, optionId, deviceId);
 
         return JacksonUtils.toJSon(Result.success());
     }
@@ -351,6 +351,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         Result result = Result.success(planDtl);
         return JacksonUtils.toJSon(planDtl);
     }
+
 
 
 
