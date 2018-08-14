@@ -340,7 +340,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
 
 
-        optionService.exceOption(opId, optionId, deviceId);
+        optionService.exceOption(opId, optionId, deviceId, mldId);
 
         return JacksonUtils.toJSon(Result.success());
     }

@@ -46,5 +46,5 @@ public interface OptionService {
      * @param deviceId 设备id
      * @return result结果
      */
-    Result exceOption(Integer opId, Integer optionId, Integer deviceId);
+    Result exceOption(Integer opId, Integer optionId, Integer deviceId, Integer mldDtlId);
 }
