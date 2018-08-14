@@ -72,7 +72,7 @@ public class BaseAction {
     protected String curTaskStatus;
     protected String nextTaskStatus;
 
-    protected StatusData statusData;
+    protected StatusData statusData = new StatusData();
 
     protected Devc devc;
     protected MldDtl mldDtl;
@@ -139,13 +139,16 @@ public class BaseAction {
     /**
      * 记录设备操作
      */
-    protected void devLog() {
+    protected void devLog(String opDesc, String opName, String opType) {
         DevLog devLog = new DevLog();
         devLog.setDevcId(devcId);
         devLog.setTaskId(taskId);
         devLog.setOpId(opId);
         devLog.setOpTime(new Date());
         devLog.setOpName(person == null ? "" : person.getName());
+        devLog.setOpDesc(opDesc);
+        devLog.setOpName(opName);
+        devLog.setOpType(opType);
         logService.devLog(devLog);
     }
 
@@ -194,6 +197,7 @@ public class BaseAction {
 
         // 更新工单信息
         devc.setTask(task);
+        devcMap.put(devc.getDeviceId(), devc);
     }
 
     /**
@@ -202,6 +206,7 @@ public class BaseAction {
     protected void updateMldStatus() {
         mldDtl.setStatus(nextStatus);
         mldDtlDao.updateStatus(mldDtlId, nextStatus);
+        mldDtlMap.put(mldDtl.getMldDtlId(), mldDtl);
     }
 
     /**
@@ -213,6 +218,7 @@ public class BaseAction {
         devc.setMldStatus(mldDtl.getStatus());
 
         devcDao.updateMldDtlIdAndMldStatus(devcId, mldDtlId, nextStatus);
+        devcMap.put(devc.getDeviceId(), devc);
     }
 
     /**
@@ -224,6 +230,8 @@ public class BaseAction {
         devc.setMldStatus(null);
 
         devcDao.updateMldDtlIdAndMldStatus(devcId, null, null);
+        devcMap.put(devc.getDeviceId(), null);
+
     }
 
     /**
@@ -232,5 +240,7 @@ public class BaseAction {
     protected void updateDevcStatus() {
         devc.setStatus(nextStatus);
         devcDao.updateStatus(devc.getDeviceId(), nextStatus);
+
+        devcMap.put(devc.getDeviceId(), devc);
     }
 }

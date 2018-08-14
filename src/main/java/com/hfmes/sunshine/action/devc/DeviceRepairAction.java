@@ -26,7 +26,7 @@ public class DeviceRepairAction extends BaseAction implements Action<DeviceStatu
         log.debug("设备维修...");
         contextLoad(context);
 
-        devLog();
+        devLog("设备维修", "", "操作");
 
         statusDataLog(SD);
 

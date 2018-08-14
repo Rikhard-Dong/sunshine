@@ -28,7 +28,7 @@ public class ProduceRecoveryAction extends BaseAction implements Action<DeviceSt
         log.debug("恢复生产...");
         contextLoad(context);
 
-        devLog();
+        devLog("恢复生产/继续生产", "", "操作");
         statusDataLog(SD);
         statusDataLog(ST);
 

@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface SCMethodDao {
 
+    /**
+     * @param opId
+     * @return
+     */
     List<SCMethod> findByOpId(Integer opId);
 
     /**

@@ -29,7 +29,7 @@ public class DeviceReportRePairAction extends BaseAction implements Action<Devic
         contextLoad(context);
 
         // 记录devLog
-        devLog();
+        devLog("设备报修", "", "操作");
         // 记录状态转换
         statusDataLog(SD);
         statusDataLog(ST);

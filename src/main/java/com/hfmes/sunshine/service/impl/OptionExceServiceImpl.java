@@ -508,7 +508,7 @@ public class OptionExceServiceImpl implements OptionExceService {
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = mouldStateMachineMap.get(mldDtlId);
 
         if (mouldStateMachine == null ||
-                StringUtils.equals(mouldStateMachine.getState().getId().toString(), status.toString())) {
+                !StringUtils.equals(mouldStateMachine.getState().getId().toString(), status.toString())) {
             // TODO 当前状态机为空或者状态机的状态错误, 抛出异常
             log.error("模具id为#{}#的状态机为空或者状态机异常", mldDtlId);
 
@@ -527,7 +527,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     private StateMachine<DeviceStatus, DeviceEvents> getDeviceMachine(Integer deviceId, DeviceStatus status) {
         StateMachine<DeviceStatus, DeviceEvents> devcStateMachine = deviceStateMachineMap.get(deviceId);
         if (devcStateMachine == null ||
-                StringUtils.equals(devcStateMachine.getState().getId().toString(), status.toString())) {
+                !StringUtils.equals(devcStateMachine.getState().getId().toString(), status.toString())) {
             // TODO 当前状态机为空或者状态机的状态错误, 抛出异常
             log.error("设备id为#{}#的状态机为空或者状态机异常", deviceId);
         }

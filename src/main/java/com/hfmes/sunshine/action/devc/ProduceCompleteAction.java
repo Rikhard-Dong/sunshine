@@ -30,7 +30,7 @@ public class ProduceCompleteAction extends BaseAction implements Action<DeviceSt
         contextLoad(context);
 
         // 记录devLog日志
-        devLog();
+        devLog("生产完成", "", "操作");
 
         // 记录状态转换
         statusDataLog(SD);

@@ -29,7 +29,7 @@ public class DeviceRevokeReportRepairAction extends BaseAction implements Action
         contextLoad(context);
 
         // 记录devLog
-        devLog();
+        devLog("设备撤销报修", "", "操作");
         // 记录状态转换
         statusDataLog(ST);
         statusDataLog(SD);

@@ -27,7 +27,7 @@ public class DeviceRepairCompleteAction extends BaseAction implements Action<Dev
         log.info("设备维修完成");
         contextLoad(context);
 
-        devLog();
+        devLog("设备维修完成", "", "操作");
         statusDataLog(SD);
         updateDevcStatus();
     }

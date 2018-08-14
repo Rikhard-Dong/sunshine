@@ -20,9 +20,12 @@ public class DateUtilsTest {
         Date curDate = new Date();
         Date beforeDate = new Date();
 
-        beforeDate.setTime((curDate.getTime() - 1000 * 60 * 12));
+        beforeDate.setTime((curDate.getTime() - 1000  * 12));
 
         Long diff = DateUtils.calculateMinuteDifference(beforeDate, curDate);
         log.debug("diff --> {}", diff);
+
+
+        log.debug("diff --> {}",  Math.toIntExact(diff));
     }
 }

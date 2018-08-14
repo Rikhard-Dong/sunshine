@@ -40,6 +40,7 @@ public class BeanConfig {
     private final MldDtlDao mldDtlDao;
     private final TaskDao taskDao;
     private final StatusDataDao statusDataDao;
+    private final DevRprDao devRprDao;
 
     private final SCMethodDao methodDao;
 
@@ -49,12 +50,14 @@ public class BeanConfig {
                       MldDtlDao mldDtlDao,
                       TaskDao taskDao,
                       StatusDataDao statusDataDao,
+                      DevRprDao devRprDao,
                       SCMethodDao methodDao) {
         this.deviceDao = deviceDao;
         this.personDao = personDao;
         this.mldDtlDao = mldDtlDao;
         this.taskDao = taskDao;
         this.statusDataDao = statusDataDao;
+        this.devRprDao = devRprDao;
         this.methodDao = methodDao;
     }
 

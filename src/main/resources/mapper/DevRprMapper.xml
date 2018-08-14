@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.DevRprDao">
+
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="devRprId" keyColumn="DevRprId"
+            parameterType="com.hfmes.sunshine.domain.DevRpr">
+        insert into T_DevRpr (DevcId, FaltTime, Reporter, Fault, RepairerId, RprName, StartTime, EndTime,
+                              FaltDesc, ReprDesc, DescTime)
+        values
+            (#{devcId}, #{faltTime}, #{reporter}, #{falut}, #{repairerId}, #{rprName}, #{startTime}, #{endTime},
+                #{faltDesc}, #{reprDesc}, #{descTime})
+    </insert>
+    <update id="updateRepairer">
+        update T_DevRpr
+        set RepairerId = #{repairerId}, RprName = #{rprName}, StartTime = #{startTime}
+        where DevRprId = #{devRprId}
+    </update>
+
+    <update id="updateCompleteRepair">
+        update T_DevRpr
+        set EndTime = #{endTime}
+        where DevRprId = #{devRprId}
+    </update>
+
+    <select id="getUnComplete" resultType="com.hfmes.sunshine.domain.DevRpr">
+        select *
+        from T_DevRpr
+        where EndTime is null
+    </select>
+</mapper>
