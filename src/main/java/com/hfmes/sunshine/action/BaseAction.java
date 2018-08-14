@@ -1,9 +1,6 @@
 package com.hfmes.sunshine.action;
 
-import com.hfmes.sunshine.dao.DevLogDao;
-import com.hfmes.sunshine.dao.DevcDao;
-import com.hfmes.sunshine.dao.MldDtlDao;
-import com.hfmes.sunshine.dao.TaskDao;
+import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.enums.TaskStatus;
 import com.hfmes.sunshine.service.LogService;
@@ -38,6 +35,8 @@ public class BaseAction {
     protected DevLogDao devLogDao;
     @Autowired
     protected TaskDao taskDao;
+    @Autowired
+    protected DevRprDao devRprDao;
 
 
     @Autowired
@@ -59,6 +58,10 @@ public class BaseAction {
     @Autowired
     @Qualifier("tasks")
     protected Map<Integer, Task> tasks;
+
+    @Autowired
+    @Qualifier("devRprs")
+    protected Map<Integer, DevRpr> devRprMap;
 
     protected Integer devcId;
     protected Integer opId;
@@ -242,5 +245,43 @@ public class BaseAction {
         devcDao.updateStatus(devc.getDeviceId(), nextStatus);
 
         devcMap.put(devc.getDeviceId(), devc);
+    }
+
+    /**
+     * 添加一条设备维修记录
+     */
+    protected void addDevRpr() {
+        DevRpr devRpr = new DevRpr();
+        devRpr.setDevcId(devcId);
+        devRpr.setFaltTime(new Date());
+        devRpr.setReporter(String.valueOf(opId));
+        devRprDao.insertOne(devRpr);
+        devRprMap.put(devcId, devRpr);
+    }
+
+    /**
+     * 开始维修设备, 更新开始时间及维修人员
+     */
+    protected void startDevRpr() {
+        DevRpr devRpr = devRprMap.get(devcId);
+        if (devRpr == null) {
+            log.error("没有设备维修信息, devcId --> {}", devcId);
+            return;
+        }
+        devRpr.setStartTime(new Date());
+        devRpr.setRepairerId(opId);
+        devRprDao.updateRepairer(devRpr.getDevRprId(), opId, null, devRpr.getStartTime());
+        devRprMap.put(devcId, devRpr);
+    }
+
+    /**
+     * 设备维修结束, 记录结束时间
+     */
+    protected void endDevRpr() {
+        DevRpr devRpr = devRprMap.get(devcId);
+
+        devRprDao.updateCompleteRepair(devRpr.getDevRprId(), new Date());
+
+        devRprMap.remove(devcId);
     }
 }

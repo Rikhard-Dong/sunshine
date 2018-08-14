@@ -24,8 +24,8 @@
         where DevRprId = #{devRprId}
     </update>
 
-    <select id="getUnComplete" resultType="com.hfmes.sunshine.domain.DevRpr">
-        select *
+    <select id="findUnComplete" resultType="com.hfmes.sunshine.domain.DevRpr">
+        select top 1 *
         from T_DevRpr
         where EndTime is null
     </select>

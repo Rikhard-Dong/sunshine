@@ -18,20 +18,21 @@ public class DevcServiceImpl implements DevcService {
 
     @Autowired
     public DevcServiceImpl(DevcDao devcDao,
-                          @Qualifier("devcs") Map<Integer, Devc> devcMap){
-        this.devcDao=devcDao;
-        this.devcMap=devcMap;
+                           @Qualifier("devcs") Map<Integer, Devc> devcMap) {
+        this.devcDao = devcDao;
+        this.devcMap = devcMap;
     }
 
     /**
-     *更新设备对应的设备信息
+     * 更新设备对应的设备信息
+     *
      * @param devcId
      * @return
      */
     @Override
     public Devc updateDevcFromSql(int devcId) {
-        Devc devc=devcDao.findByDeviceId(devcId);
-        devcMap.put(devcId,devc);
+        Devc devc = devcDao.findByDeviceId(devcId);
+        devcMap.put(devcId, devc);
         return devc;
     }
 

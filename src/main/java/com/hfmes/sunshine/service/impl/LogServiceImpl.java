@@ -80,6 +80,8 @@ public class LogServiceImpl implements LogService {
         // 将本次操作记录
         statusDataMap.put(statusData.getStatusTypeId(), statusData);
 
+        deviceStatusDataMap.put(statusData.getDevId(), statusDataMap);
+
         return statusDataDao.insertOne(statusData) == 1;
     }
 

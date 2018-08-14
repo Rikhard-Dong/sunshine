@@ -147,7 +147,7 @@ public class OptionServiceImpl implements OptionService {
                 optionExceService.mouldFilling(opId, optionId, deviceId, mldDtlId);
                 break;
             case 2:
-                optionExceService.completeDemoulding(opId, optionId, deviceId, mldDtlId);
+                optionExceService.completeMouldFilling(opId, optionId, deviceId, mldDtlId);
                 break;
             case 3:
                 optionExceService.demoulding(opId, optionId, deviceId, mldDtlId);

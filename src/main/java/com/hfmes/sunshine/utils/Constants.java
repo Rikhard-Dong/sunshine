@@ -14,7 +14,8 @@ public class Constants {
     public static final Integer ST = 4;
 
     // 触发类型
-    public static final String BTN_EVENT_TYPE = "按钮";
+    // 按钮
+    public static final String BTN_EVENT_TYPE = "01";
 
 
     // 对应的操作
@@ -40,11 +41,11 @@ public class Constants {
     public static final Integer CONTINUE_PRODUCE2 = 20;             // opId --> 20 继续生产
     public static final Integer STOP_PRODUCE = 21;                  // opID --> 21 中止生产
 
-    public  static final String MLD = "MLD";            // 模具工
-    public  static final String PUNCH = "PUNCH";        // 冲床工
-    public  static final String OVERHAUL = "OVERHAUL";  // 检修工
-    public  static final String PDCN = "PDCB";          // 生产管理员
-    public  static final String UNKNOWN = "UNKNOWN";    // 未知类型
+    public static final String MLD = "MLD";            // 模具工
+    public static final String PUNCH = "PUNCH";        // 冲床工
+    public static final String OVERHAUL = "OVERHAUL";  // 检修工
+    public static final String PDCN = "PDCB";          // 生产管理员
+    public static final String UNKNOWN = "UNKNOWN";    // 未知类型
 
 
     private Constants() {

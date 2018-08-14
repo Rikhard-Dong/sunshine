@@ -54,7 +54,7 @@ public class SunshineApplicationTests {
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = mouldEventMachines.get(19);
         assertNotNull(mouldStateMachine);
         String state = mouldStateMachine.getState().getId().toString();
-        log.debug("mould get state {}, equals --> {}", state, state.equals(MouldStatus.SM10.toString()));
+        log.debug("mould get state {}, equals --> {}", state, state.equals(MouldStatus.SM20.toString()));
     }
 
 }

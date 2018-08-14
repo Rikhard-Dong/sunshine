@@ -200,6 +200,18 @@ public class BeanConfig {
     }
 
 
+    /**
+     * key deviceId, value 报修信息
+     *
+     * @return
+     */
+    @Bean("devRprs")
+    public Map<Integer, DevRpr> devRprMap() {
+        return initDevRprMap();
+    }
+
+
+
 
     /* **********************************************************
      * 注入bean实现过程
@@ -437,6 +449,20 @@ public class BeanConfig {
             map.put(method.getScMethodId(), method.getMethodName());
         }
         return map;
+    }
+
+    /**
+     * 设备报修信息map
+     *
+     * @return
+     */
+    private Map<Integer, DevRpr> initDevRprMap() {
+        Map<Integer, DevRpr> devRprMap = new ConcurrentHashMap<>();
+        List<DevRpr> devRprs = devRprDao.findUnComplete();
+        for (DevRpr devRpr : devRprs) {
+            devRprMap.put(devRpr.getDevcId(), devRpr);
+        }
+        return devRprMap;
     }
 
 }

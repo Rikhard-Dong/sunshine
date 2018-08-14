@@ -51,9 +51,9 @@ public interface DevRprDao {
      ******************************************/
 
     /**
-     * 获取所有为修复完成的报修信息
+     * 获取所有未修复完成的报修信息
      *
      * @return
      */
-    List<DevRpr> getUnComplete();
+    List<DevRpr> findUnComplete();
 }

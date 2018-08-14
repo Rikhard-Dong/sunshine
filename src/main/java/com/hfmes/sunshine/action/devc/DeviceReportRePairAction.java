@@ -39,5 +39,8 @@ public class DeviceReportRePairAction extends BaseAction implements Action<Devic
 
         // 更新设备
         updateDevcStatus();
+
+        // 记录报修
+        addDevRpr();
     }
 }

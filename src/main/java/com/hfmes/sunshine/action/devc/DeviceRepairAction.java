@@ -31,5 +31,7 @@ public class DeviceRepairAction extends BaseAction implements Action<DeviceStatu
         statusDataLog(SD);
 
         updateDevcStatus();
+
+        startDevRpr();
     }
 }
