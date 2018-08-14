@@ -29,7 +29,7 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
         contextLoad(context);
 
         // 记录操作
-        mldLog();
+        mldLog("装模操作开始", "", "操作");
 
         // 记录状态转换
         statusDataLog(SM);
@@ -37,15 +37,10 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
         // 更新相关数据表
         // 更新模具状态
         log.debug("before mldDtl status --> {}", mldDtlMap.get(mldDtlId).getStatus());
-        mldDtl.setStatus(nextStatus);
-        mldDtlDao.updateStatus(mldDtlId, nextStatus);
+        updateMldStatus();
         log.debug("after mldDtl status --> {}", mldDtlMap.get(mldDtlId).getStatus());
 
         // 更新设备信息
-        devc.setMldDtlId(mldDtlId);
-        devc.setMldDtl(mldDtl);
-        devc.setMldStatus(mldDtl.getStatus());
-
-        devcDao.updateMldDtlIdAndMldStatus(devcId, mldDtlId, nextStatus);
+        updateDevcMldDltStatus();
     }
 }

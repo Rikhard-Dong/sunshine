@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.hfmes.sunshine.utils.Constants.SD;
 import static com.hfmes.sunshine.utils.Constants.ST;
@@ -24,7 +25,7 @@ import static com.hfmes.sunshine.utils.Constants.ST;
 public class ProduceSuspendAction extends BaseAction implements Action<DeviceStatus, DeviceEvents> {
 
     @Override
-    @Autowired
+    @Transactional
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("暂停生产....");
         contextLoad(context);

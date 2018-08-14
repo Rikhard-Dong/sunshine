@@ -17,8 +17,8 @@ public class DevLog {
     private Integer devcId;
     private Integer taskId;
     private Integer opId;
-    private Date opTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date opTime;
     private String opDesc;
     private String opName;
     private String opType;

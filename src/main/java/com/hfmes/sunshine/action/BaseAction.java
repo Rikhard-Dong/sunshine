@@ -122,13 +122,17 @@ public class BaseAction {
     /**
      * 记录模具操作
      */
-    protected void mldLog() {
+    protected void mldLog(String opDesc, String opName, String opType) {
         // 模具操作记录
         MldLog mldLog = new MldLog();
         mldLog.setOpId(opId);
+        mldLog.setTaskId(taskId == null ? 0 : taskId);
         mldLog.setMldDtlId(mldDtlId);
         mldLog.setOpTime(new Date());
         mldLog.setOpName(person == null ? "" : person.getName());
+        mldLog.setOpDesc(opDesc);
+        mldLog.setOpName(opName);
+        mldLog.setOpType(opType);
         logService.mldLog(mldLog);
     }
 
@@ -192,6 +196,39 @@ public class BaseAction {
         devc.setTask(task);
     }
 
+    /**
+     * 更新模具状态
+     */
+    protected void updateMldStatus() {
+        mldDtl.setStatus(nextStatus);
+        mldDtlDao.updateStatus(mldDtlId, nextStatus);
+    }
+
+    /**
+     * 更新设备中模具状态信息
+     */
+    protected void updateDevcMldDltStatus() {
+        devc.setMldDtlId(mldDtlId);
+        devc.setMldDtl(mldDtl);
+        devc.setMldStatus(mldDtl.getStatus());
+
+        devcDao.updateMldDtlIdAndMldStatus(devcId, mldDtlId, nextStatus);
+    }
+
+    /**
+     * 移除模具
+     */
+    protected void removeDevcMld() {
+        devc.setMldDtlId(null);
+        devc.setMldDtl(null);
+        devc.setMldStatus(null);
+
+        devcDao.updateMldDtlIdAndMldStatus(devcId, null, null);
+    }
+
+    /**
+     * 更新设备状态
+     */
     protected void updateDevcStatus() {
         devc.setStatus(nextStatus);
         devcDao.updateStatus(devc.getDeviceId(), nextStatus);

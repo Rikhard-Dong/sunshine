@@ -27,14 +27,13 @@ public class MouldRepairComplete2SM10Action extends BaseAction implements Action
         contextLoad(context);
 
         // 记录操作
-        mldLog();
+        mldLog("模具维修完成, 当前为领用状态", "", "操作");
 
         // 记录转换
         statusDataLog(SM);
 
         // 更新模具状态
-        mldDtl.setStatus(nextStatus);
-        mldDtlDao.updateStatus(mldDtl.getMldDtlId(), nextStatus);
+        updateMldStatus();
     }
 }
 

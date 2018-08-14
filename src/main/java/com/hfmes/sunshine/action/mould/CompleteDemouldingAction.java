@@ -31,18 +31,14 @@ public class CompleteDemouldingAction extends BaseAction implements Action<Mould
         contextLoad(context);
 
         // 记录模具操作
-        mldLog();
+        mldLog("模具拆卸完成", "", "操作");
         // 记录状态转换
         statusDataLog(SM);
 
         // 更新模具状态
-        mldDtl.setStatus(nextStatus);
-        mldDtlDao.updateStatus(mldDtl.getMldDtlId(), nextStatus);
+        updateMldStatus();
 
         // 设备去除模具
-        devc.setMldDtl(null);
-        devc.setMldDtlId(null);
-        devc.setMldStatus(null);
-        devcDao.updateMldDtlIdAndMldStatus(devc.getDeviceId(), null, null);
+        removeDevcMld();
     }
 }

@@ -27,13 +27,10 @@ public class DemouldingAction extends BaseAction implements Action<MouldStatus, 
         contextLoad(context);
 
         // 记录mldLog日志信息
-        mldLog();
+        mldLog("卸模/料", "", "操作");
 
         // 将模具置空
-        devc.setMldDtl(null);
-        devc.setMldStatus(null);
-        devc.setMldDtlId(null);
-        devcDao.updateMldDtlIdAndMldStatus(devc.getDeviceId(), null, null);
+        removeDevcMld();
     }
 }
 

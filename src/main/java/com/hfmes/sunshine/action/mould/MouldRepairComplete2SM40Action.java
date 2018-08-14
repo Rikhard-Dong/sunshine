@@ -29,20 +29,17 @@ public class MouldRepairComplete2SM40Action extends BaseAction implements Action
         contextLoad(context);
 
         // 记录日志信息
-        mldLog();
+        mldLog("模具维修完成, 当前为使用状态", "", "操作");
 
         // 记录状态转换
         statusDataLog(SM);
 
         // 更新模具状态
-        mldDtl.setStatus(nextStatus);
-        mldDtlDao.updateStatus(mldDtl.getMldDtlId(), nextStatus);
+        updateMldStatus();
 
         // 更新设备中的模具状态
         if (mldDtl.getMldDtlId().equals(devc.getMldDtlId())) {
-            devc.setMldDtl(mldDtl);
-            devc.setStatus(nextStatus);
-            devcDao.updateMldDtlIdAndMldStatus(devc.getDeviceId(), mldDtl.getMldDtlId(), nextStatus);
+            updateDevcMldDltStatus();
         } else {
             log.error("模具id#{}# 与设备#{}#中的模具id不符合", mldDtl.getMldDtlId(), devc.getDeviceId());
         }

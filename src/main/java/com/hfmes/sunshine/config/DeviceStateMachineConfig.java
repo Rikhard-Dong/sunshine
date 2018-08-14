@@ -99,7 +99,7 @@ public class DeviceStateMachineConfig extends EnumStateMachineConfigurerAdapter<
                 .action(produceCheckAndAcceptAction)
                 .and()
                 .withExternal()     // 继续生产
-                .source(DeviceStatus.SD00).target(DeviceStatus.SD10).event(DeviceEvents.PRODUCE_CONTINUE)
+                .source(DeviceStatus.SD00).target(DeviceStatus.SD00).event(DeviceEvents.PRODUCE_CONTINUE)
                 .action(produceContinueAction)
                 .and()
                 .withExternal()     // 中止并新单

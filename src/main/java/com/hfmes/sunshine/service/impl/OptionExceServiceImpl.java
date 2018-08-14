@@ -261,7 +261,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Transactional
     public void continueProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
-        Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_CONTINUE, opId, optionId, devcId, mldDtlId,
+        Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_RECOVERY, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST20.toString(), TaskStatus.ST10.toString());
         deviceStateMachine.sendEvent(message);
     }
@@ -293,7 +293,7 @@ public class OptionExceServiceImpl implements OptionExceService {
      * 执行操作
      * |--- 1. 设备状态从运行SD10 -> 待机SD00, 并记录状态转换
      * |--- 2. 记录devLog日志
-     * |--- 3. 更新工单状态 ST10 -> ST20 并记录状态转换
+     * |--- 3. 更新工单状态 ST10执行 -> ST20暂停 并记录状态转换
      * |--- 4. 更新设备状态, 工单
      *
      * @param opId     操作员id
@@ -313,6 +313,11 @@ public class OptionExceServiceImpl implements OptionExceService {
 
     /**
      * opId --> 13 设备故障
+     * 执行操作
+     * |--- 1. 设备状态从运行SD10 -> 故障SD20, 记录状态转换过程
+     * |--- 2. 纪录devLog日志
+     * |--- 3. 更新工单状态 ST10执行 -> ST20暂停 并记录状态转换
+     * |--- 4. 更新设备状态, 工单信息
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -322,11 +327,23 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void deviceFault(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD10);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REPORT_REPAIR, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST10.toString(), TaskStatus.ST20.toString());
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
      * opId --> 14 模具故障
+     * 执行操作
+     * |--- 1. 设备状态从运行SD10 -> 待机SD00, 记录状态转换
+     * |--- 2. 记录devLog
+     * |--- 3. 模具状态从使用SM40 -> 故障SM50, 记录状态转换
+     * |--- 4. 记录mldLog
+     * |--- 5. 更新工单状态 ST10执行 -> ST20暂停 并记录状态转换
+     * |--- 6. 更新设备状态, 工单信息
+     * |--- 7. 更新模具状态信息
+     * |--- 8. 更新设备模具状态
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -336,11 +353,23 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void mouldFault(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM40);
+        Message<MouldEvents> message1 = getMessage(MouldEvents.MOULD_REPORT_REPAIR, opId, optionId, devcId, mldDtlId);
+        mouldStateMachine.sendEvent(message1);
 
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD10);
+        Message<DeviceEvents> message2 = getMessage(DeviceEvents.PRODUCE_SUSPEND, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST10.toString(), TaskStatus.ST20.toString());
+        deviceStateMachine.sendEvent(message2);
     }
 
     /**
      * opId --> 15 设备撤销报修
+     * 执行操作
+     * |--- 1. 设备状态故障SD20 -> 运行SD10 记录状态转换
+     * |--- 2. 记录devLog
+     * |--- 3. 更新工单状态 暂停ST20 -> 执行ST10 记录状态转换
+     * |--- 4. 更新设备状态
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -350,11 +379,20 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void revokeDeviceReportRepair(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD20);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REVOKE_REPORT_REPAIR, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST20.toString(), TaskStatus.ST10.toString());
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
      * opId --> 16 模具撤销报修
+     * 执行操作
+     * |--- 1. 更新设备状态待机SD00->运行SD10, 并记录状态转换
+     * |--- 2. 更新工单状态暂停ST20->执行ST10, 并记录状态转换
+     * |--- 3. 更新模具状态故障SM50->使用SM40, 并记录状态转换
+     * |--- 4. 记录devLog
+     * |--- 5. 记录mldLog
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -364,11 +402,21 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void revokeDeviceReportRepair2(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM50);
+        Message<MouldEvents> message1 = getMessage(MouldEvents.MOULD_REVOKE_REPORT_REPAIR, opId, optionId, devcId, mldDtlId);
+        mouldStateMachine.sendEvent(message1);
 
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+        Message<DeviceEvents> message2 = getMessage(DeviceEvents.PRODUCE_RECOVERY, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST20.toString(), TaskStatus.ST10.toString());
+        deviceStateMachine.sendEvent(message2);
     }
 
     /**
      * opId --> 17 设备维修
+     * 执行操作
+     * |--- 1. 更新设备状态故障SD20 -> 检修SD30, 并记录状态转换
+     * |--- 2. 记录devLog
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -378,11 +426,16 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void repairDevice(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD20);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REPAIR, opId, optionId, devcId, mldDtlId);
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
      * opId --> 18 设备修复
+     * 执行操作
+     * |--- 1. 更新设备状态 检修SD30 --> 待机SD00 并记录状态转换
+     * |--- 2. 记录devLog
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -392,7 +445,9 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void completeRepairDevice(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD30);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REPAIR_COMPLETE, opId, optionId, devcId, mldDtlId);
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
@@ -406,11 +461,13 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void checkProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        // TODO 待完成
     }
 
     /**
      * opId --> 20 继续生产
+     * 执行操作
+     * |--- 1. 工单状态待验收ST30 -> 暂停ST20, 并记录状态转换
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -420,7 +477,10 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void continueProduce2(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_CONTINUE, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST30.toString(), TaskStatus.ST20.toString());
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
@@ -434,7 +494,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void stopProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-
+        // TODO 待完成
     }
 
     /**
@@ -490,6 +550,19 @@ public class OptionExceServiceImpl implements OptionExceService {
         return getMessage(event, opId, optionId, devcId, mldDtlId, null, null);
     }
 
+    /**
+     * 封装message信息
+     *
+     * @param event
+     * @param opId
+     * @param optionId
+     * @param devcId
+     * @param mldDtlId
+     * @param curTaskStatus
+     * @param nextTaskStatus
+     * @param <T>
+     * @return
+     */
     private <T> Message<T> getMessage(T event, Integer opId, Integer optionId, Integer devcId, Integer mldDtlId,
                                       String curTaskStatus, String nextTaskStatus) {
         return MessageBuilder

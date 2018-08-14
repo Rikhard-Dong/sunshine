@@ -26,16 +26,14 @@ public class StartDemouldingAction extends BaseAction implements Action<MouldSta
         log.debug("卸模开始action...");
 
         contextLoad(context);
-        mldLog();
+        mldLog("卸模操作开始", "", "操作");
 
         statusDataLog(SM);
 
         // 更新模具状态
-        mldDtl.setStatus(nextStatus);
-        mldDtlDao.updateStatus(mldDtlId, nextStatus);
+        updateMldStatus();
 
         // 更新设备中的模具信息
-        devc.setMldStatus(nextStatus);
-        devcDao.updateMldDtlIdAndMldStatus(devc.getDeviceId(), devc.getMldDtlId(), nextStatus);
+        updateDevcMldDltStatus();
     }
 }

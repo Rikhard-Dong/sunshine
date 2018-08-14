@@ -30,20 +30,17 @@ public class MouldRepairAction extends BaseAction implements Action<MouldStatus,
         contextLoad(context);
 
         // 记录模具操作日志
-        mldLog();
+        mldLog("模具维修", "", "操作");
         // 记录状态转换操作
         statusDataLog(SM);
 
         // 更新模具状态
-        mldDtl.setStatus(nextStatus);
-        mldDtlDao.updateStatus(mldDtl.getMldDtlId(), nextStatus);
+        updateMldStatus();
 
         // 如果设备有该模具
         if (devc.getMldDtl() != null && devc.getMldDtl().getMldDtlId().equals(mldDtl.getMldDtlId())) {
             // 更新模具状态信息
-            devc.setMldDtl(mldDtl);
-            devc.setMldStatus(nextStatus);
-            devcDao.updateMldDtlIdAndMldStatus(devc.getDeviceId(), mldDtl.getMldDtlId(), nextStatus);
+            updateDevcMldDltStatus();
         } else {
             log.info("device id #{}#中没有模具", devcId);
         }

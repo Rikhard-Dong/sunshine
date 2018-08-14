@@ -28,17 +28,10 @@ public class ProduceContinueAction extends BaseAction implements Action<DeviceSt
         log.debug("继续生产...");
         contextLoad(context);
 
-        // 记录设备日志
-        devLog();
-
         // 记录状态转换
-        statusDataLog(SD);
         statusDataLog(ST);
-
         // 更新工单
         updateTaskStatus();
 
-        // 更新设备状态
-        updateDevcStatus();
     }
 }
