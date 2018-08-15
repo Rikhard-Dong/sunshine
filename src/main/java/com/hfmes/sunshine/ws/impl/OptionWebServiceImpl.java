@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.jws.WebService;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final TaskService taskService;
     private final PlanDtlService planDtlService;
     private final DevcService devcService;
+    private final LogService logService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
@@ -45,6 +47,7 @@ public class OptionWebServiceImpl implements OptionWebService {
                                 StatusChangeService statusChangeService,
                                 PlanDtlService planDtlService,
                                 DevcService devcService,
+                                LogService logService,
                                 TaskService taskService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
@@ -55,6 +58,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.taskService = taskService;
         this.planDtlService = planDtlService;
         this.devcService = devcService;
+        this.logService=logService;
     }
 
     /**
@@ -339,18 +343,29 @@ public class OptionWebServiceImpl implements OptionWebService {
         Integer deviceId = StringUtils.isNumeric(deviceIdStr) ? Integer.valueOf(deviceIdStr) : null;
         Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
 
-
         optionService.exceOption(opId, optionId, deviceId, mldId);
-
         return JacksonUtils.toJSon(Result.success());
     }
 
     @Override
     public String getPlanDtlById(String planDtlId) {
         PlanDtl planDtl = planDtlService.getPlanDtlById(Integer.parseInt(planDtlId));
-
         Result result = Result.success(planDtl);
         return JacksonUtils.toJSon(planDtl);
+    }
+
+    @Override
+    public String devcLogInsert(String devcId, String taskId, String opId, String opDesc, String opName, String opType) {
+        DevLog devclog=new DevLog();
+        devclog.setOpName(opName);
+        devclog.setDevcId(Integer.parseInt(devcId));
+        devclog.setOpDesc(opDesc);
+        devclog.setOpId(Integer.parseInt(opId));
+        devclog.setOpTime(new Date());
+        devclog.setOpType(opType);
+        boolean b=logService.devLog(devclog);
+
+        return "1";
     }
 
 
