@@ -75,7 +75,7 @@ public class BaseAction {
     protected String curTaskStatus;
     protected String nextTaskStatus;
 
-    protected StatusData statusData = new StatusData();
+    protected StatusData statusData=new StatusData();
 
     protected Devc devc;
     protected MldDtl mldDtl;
@@ -132,6 +132,7 @@ public class BaseAction {
         mldLog.setTaskId(taskId == null ? 0 : taskId);
         mldLog.setMldDtlId(mldDtlId);
         mldLog.setOpTime(new Date());
+        mldLog.setTaskId(taskId == null ? 0 : taskId);
         mldLog.setOpName(person == null ? "" : person.getName());
         mldLog.setOpDesc(opDesc);
         mldLog.setOpName(opName);
@@ -210,6 +211,10 @@ public class BaseAction {
         mldDtl.setStatus(nextStatus);
         mldDtlDao.updateStatus(mldDtlId, nextStatus);
         mldDtlMap.put(mldDtl.getMldDtlId(), mldDtl);
+        task.setMldDtl(mldDtl);
+        devc.setTask(task);
+        devcMap.put(devcId,devc);
+        tasks.put(taskId,task);
     }
 
     /**
@@ -219,7 +224,6 @@ public class BaseAction {
         devc.setMldDtlId(mldDtlId);
         devc.setMldDtl(mldDtl);
         devc.setMldStatus(mldDtl.getStatus());
-
         devcDao.updateMldDtlIdAndMldStatus(devcId, mldDtlId, nextStatus);
         devcMap.put(devc.getDeviceId(), devc);
     }
@@ -243,8 +247,8 @@ public class BaseAction {
     protected void updateDevcStatus() {
         devc.setStatus(nextStatus);
         devcDao.updateStatus(devc.getDeviceId(), nextStatus);
-
         devcMap.put(devc.getDeviceId(), devc);
+
     }
 
     /**

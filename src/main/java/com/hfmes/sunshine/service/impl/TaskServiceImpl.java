@@ -65,6 +65,7 @@ public class TaskServiceImpl implements TaskService {
         devc.setTask(task);
         deviceTasks.put(deviceId,tasks);
         if (devcDao.updateTaskId(devc.getDeviceId(), task.getTaskId()) != 0) {
+            devcDao.updateStatus(deviceId,"SD00");
             return task.getTaskId();
         }
         return 0;
@@ -79,8 +80,10 @@ public class TaskServiceImpl implements TaskService {
             return task;
         }
         task=taskDao.findByTaskId(taskId);
+
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
+
         devcMap.put(devcId,devc);
         taskMap.put(taskId,task);
         return task;

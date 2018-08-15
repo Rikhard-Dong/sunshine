@@ -16,7 +16,7 @@
 
     <update id="updateEndAdnHold">
         update T_StatusData
-        set end = #{end}, hold = #{hold}
+        set Stop = #{end}, Hold = #{hold}
         where StatusDataId = #{statudDataId}
     </update>
 
