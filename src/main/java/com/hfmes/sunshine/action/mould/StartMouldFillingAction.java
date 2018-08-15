@@ -11,6 +11,8 @@ import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 import static com.hfmes.sunshine.utils.Constants.SM;
 
 /**
@@ -40,6 +42,9 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
 
         // 更新设备信息
         updateDevcMldDltStatus();
+
+        taskDao.updateMLdStartTime(taskId, new Date());
+
         // 记录状态转换
         statusDataLog(SM);
         resetCounts();

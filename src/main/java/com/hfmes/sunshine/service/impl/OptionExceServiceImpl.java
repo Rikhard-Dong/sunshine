@@ -3,8 +3,10 @@ package com.hfmes.sunshine.service.impl;
 import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.StatusData;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.*;
+import com.hfmes.sunshine.service.LogService;
 import com.hfmes.sunshine.service.OptionExceService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +18,13 @@ import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.hfmes.sunshine.utils.Constants.BTN_EVENT_TYPE;
+import static com.hfmes.sunshine.utils.Constants.ST;
 
 /**
  * @author supreDong@gmail.com
@@ -33,6 +41,11 @@ public class OptionExceServiceImpl implements OptionExceService {
     private final Map<Integer, Devc> devcMap;
     @Qualifier("mldDtls")
     private final Map<Integer, MldDtl> mldDtlMap;
+    private final Map<Integer, List<Task>> devcTasks;
+    private final Map<Integer, Task> tasks;
+
+
+    private final LogService logService;
 
     private final TaskDao taskDao;
 
@@ -43,12 +56,18 @@ public class OptionExceServiceImpl implements OptionExceService {
                                          Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStateMachineMap,
                                  Map<Integer, Devc> descMap,
                                  Map<Integer, MldDtl> mldDtlMap,
-                                 TaskDao taskDao) {
+                                 TaskDao taskDao,
+                                 LogService logService,
+                                 @Qualifier("deviceTasks") Map<Integer, List<Task>> devcTasks,
+                                 @Qualifier("tasks") Map<Integer, Task> tasks) {
         this.deviceStateMachineMap = deviceStateMachineMap;
         this.mouldStateMachineMap = mouldStateMachineMap;
         this.devcMap = descMap;
         this.mldDtlMap = mldDtlMap;
+        this.logService = logService;
         this.taskDao = taskDao;
+        this.devcTasks = devcTasks;
+        this.tasks = tasks;
     }
 
 
@@ -463,7 +482,7 @@ public class OptionExceServiceImpl implements OptionExceService {
      * opId --> 19 生产验收
      * 执行操作
      * |--- 1 工单状态从待验收ST30 -> 完成ST40
-     * |--- 2 TODO 选择下一单
+     * |--- 2 选择下一单
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -498,6 +517,7 @@ public class OptionExceServiceImpl implements OptionExceService {
         deviceStateMachine.sendEvent(message);
     }
 
+
     /**
      * opID --> 21 中止生产
      * 执行操作
@@ -521,6 +541,92 @@ public class OptionExceServiceImpl implements OptionExceService {
         taskDao.updateStatus(task.getTaskId(), task.getStatus());
         devc.setTask(task);
         devcMap.put(devcId, devc);
+
+        // 如果生产数量没有达到则继续生产
+        if (task.getProcNum() < task.getSetNum()) {
+            try {
+                Task newTask = (Task) task.clone();
+                newTask.setStartTime(null);
+                newTask.setEndTime(null);
+                newTask.setTestNum(0);
+                newTask.setProcNum(0);
+                newTask.setSetNum(task.getSetNum() - task.getProcNum());
+                newTask.setMldStartTime(new Date());
+                newTask.setMldEndTime(new Date());
+                newTask.setTaskId(null);
+                newTask.setStatus(TaskStatus.ST00.toString());
+                taskDao.insertOne(newTask);
+
+                log.info("产生新单 --> {}", newTask);
+
+                // 将产生的新的工单添加到内存数据中
+                tasks.put(newTask.getTaskId(), task);
+                List<Task> temp = devcTasks.get(devcId);
+                temp.add(newTask);
+                devcTasks.put(devcId, temp);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 记录状态转换
+        StatusData statusData = new StatusData();
+        statusData.setCurStatus(TaskStatus.ST20.toString());
+        statusData.setNextStatus(TaskStatus.ST30.toString());
+
+        statusData.setOpId(opId);
+        statusData.setDevId(devcId);
+        statusData.setMldId(mldDtlId);
+        statusData.setTaskId(task.getTaskId());
+        statusData.setEventType(BTN_EVENT_TYPE);
+        statusData.setEventName(String.valueOf(optionId));
+        statusData.setStatusTypeId(ST);
+
+        logService.statusDataLog(statusData);
+    }
+
+    /**
+     * opId -> 22 冲床工选择下一单
+     * workType 0  冲床工
+     * wokrType 1  生产管理
+     *
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param devcId   设备id
+     * @param mldDtlId 模具id
+     */
+    @Override
+    @Transactional
+    public void nextTaskForPunch(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+        Map<String, Object> params = new HashMap<>();
+        params.put("opId", opId);
+        params.put("optionId", optionId);
+        params.put("devcId", devcId);
+        params.put("mldDtlId", mldDtlId);
+        params.put("workerType", 0);
+        deviceStateMachine.sendEvent(getMessage(DeviceEvents.PRODUCE_NEXT_ORDER, params));
+    }
+
+    /**
+     * opId -> 23 生产管理选择下一单
+     *
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param devcId   设备id
+     * @param mldDtlId 模具id
+     */
+    @Override
+    @Transactional
+    public void nextTaskForPBCB(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+        Map<String, Object> params = new HashMap<>();
+        params.put("opId", opId);
+        params.put("optionId", optionId);
+        params.put("devcId", devcId);
+        params.put("mldDtlId", mldDtlId);
+        params.put("workerType", 1);
+        deviceStateMachine.sendEvent(getMessage(DeviceEvents.PRODUCE_NEXT_ORDER, params));
     }
 
     /**
@@ -596,14 +702,34 @@ public class OptionExceServiceImpl implements OptionExceService {
      */
     private <T> Message<T> getMessage(T event, Integer opId, Integer optionId, Integer devcId, Integer mldDtlId,
                                       String curTaskStatus, String nextTaskStatus) {
-        return MessageBuilder
-                .withPayload(event)
-                .setHeader("opId", opId)
-                .setHeader("optionId", optionId)
-                .setHeader("devcId", devcId)
-                .setHeader("mldDtlId", mldDtlId)
-                .setHeader("curTaskStatus", curTaskStatus)
-                .setHeader("nextTaskStatus", nextTaskStatus)
-                .build();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("opId", opId);
+        params.put("optionId", optionId);
+        params.put("devcId", devcId);
+        params.put("mldDtlId", mldDtlId);
+        params.put("curTaskStatus", curTaskStatus);
+        params.put("nextTaskStatus", nextTaskStatus);
+
+        return getMessage(event, params);
+
+
+    }
+
+    /**
+     * 封装message信息
+     *
+     * @param event
+     * @param params
+     * @param <T>
+     * @return
+     */
+    private <T> Message<T> getMessage(T event, Map<String, Object> params) {
+        MessageBuilder<T> builder = MessageBuilder.withPayload(event);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            builder.setHeader(entry.getKey(), entry.getValue());
+        }
+
+        return builder.build();
     }
 }

@@ -37,8 +37,6 @@ public class OptionServiceImpl implements OptionService {
     private final OptionExceService optionExceService;
 
 
-
-
     @Autowired
     public OptionServiceImpl(SCOptionDao optionDao,
                              RoleDao roleDao,
@@ -206,9 +204,15 @@ public class OptionServiceImpl implements OptionService {
             case 21:
                 optionExceService.stopProduce(opId, optionId, deviceId, mldDtlId);
                 break;
-
+            case 22:
+                optionExceService.nextTaskForPunch(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 23:
+                optionExceService.nextTaskForPBCB(opId, optionId, deviceId, mldDtlId);
+                break;
             default:
-
+                log.warn("执行动作id错误 optionId -> {}", optionId);
+                break;
         }
 
         return null;

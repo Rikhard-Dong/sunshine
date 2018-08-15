@@ -4,7 +4,9 @@ import com.hfmes.sunshine.action.BaseAction;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
+import com.hfmes.sunshine.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
@@ -22,6 +24,9 @@ import static com.hfmes.sunshine.utils.Constants.ST;
 @Slf4j
 public class ProduceCheckAndAcceptAction extends BaseAction implements Action<DeviceStatus, DeviceEvents> {
 
+    @Autowired
+    private TaskService taskService;
+
     @Override
     @Transactional
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
@@ -35,8 +40,10 @@ public class ProduceCheckAndAcceptAction extends BaseAction implements Action<De
         taskDao.updateStatus(taskId, task.getStatus());
 
 
-        // TODO 选择新单
         statusDataLog(ST);
         resetCounts();
+
+        //  选择新单
+        taskService.taskDown(devcId);
     }
 }

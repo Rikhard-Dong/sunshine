@@ -40,6 +40,8 @@ public class BaseAction {
     protected DevRprDao devRprDao;
     @Autowired
     protected MldRprDao mldRprDao;
+    @Autowired
+    protected PlanDtlDao planDtlDao;
 
 
     @Autowired
@@ -366,6 +368,9 @@ public class BaseAction {
         mldRprMap.remove(mldDtlId);
     }
 
+    /**
+     * 更新工单中的数量信息
+     */
     protected void updateNum() {
         if (devc != null) {
 
@@ -378,6 +383,23 @@ public class BaseAction {
             }
         } else {
             log.warn("devc is null");
+        }
+    }
+
+    /**
+     * 更新planDtl相关数据
+     */
+    protected void updatePlanDtl() {
+        PlanDtl planDtl = planDtlDao.findById(task.getPlanDtlId());
+        int sum = taskDao.sumProcNumByPlanDtlId(task.getPlanDtlId());
+        if (planDtl != null) {
+            if (sum >= planDtl.getReqNum()) {
+                planDtlDao.updateCmpNumAndComplete(task.getPlanDtlId(), sum);
+            } else {
+                planDtlDao.updateCmpNum(task.getPlanDtlId(), sum);
+            }
+        } else {
+            log.error("当前工单#{}#对应的palnDtl#{}#为空", task.getTaskId(), task.getPlanDtlId());
         }
     }
 }

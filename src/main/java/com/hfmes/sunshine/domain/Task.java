@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Data
 @JsonIgnoreProperties(value = {"handler"})
-public class Task {
+public class Task implements Cloneable {
     // 数据库字段
     private Integer taskId;
     private Integer planDtlId;
@@ -92,5 +92,10 @@ public class Task {
                 ", mldPlanEnd=" + mldPlanEnd +
                 ", bindNum=" + bindNum +
                 '}';
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

@@ -286,4 +286,25 @@ public interface OptionExceService {
                      Integer optionId,
                      Integer devcId,
                      Integer mldDtlId);
+
+    /**
+     * 冲床工选择下一单
+     *
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param devcId   设备id
+     * @param mldDtlId 模具id
+     */
+    void nextTaskForPunch(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId);
+
+    /**
+     * 生产管理选择下一单
+     *
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param devcId   设备id
+     * @param mldDtlId 模具id
+     */
+    void nextTaskForPBCB(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId);
+
 }

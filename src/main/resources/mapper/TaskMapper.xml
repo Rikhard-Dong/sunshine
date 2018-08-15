@@ -49,6 +49,17 @@
                      select="com.hfmes.sunshine.dao.DevcDao.findByDeviceId"/>
     </resultMap>
 
+    <insert id="insertOne" useGeneratedKeys="true" parameterType="com.hfmes.sunshine.domain.Task" keyProperty="taskId"
+            keyColumn="TaskId">
+        insert into T_Task (PlanDtlId, MatDtlId, DevcId, MldDtlId, DevOpId, MldOpId, ArrDate, Num, MatNum, StartTime,
+                            EndTime, ProcNum, Status, MldStartTime, MldEndTime, TestNum, SetNum, PrdPlanStart, PrdPlanEnd,
+                            MldPlanStart, MldPlanEnd, BindNum) values
+            (#{planDtlId}, #{matDtlId}, #{devcId}, #{mldDtlId}, #{devOpId}, #{mldOpId}, #{arrDate}, #{num}, #{matNum},
+                           #{startTime}, #{endTime}, #{procNum}, #{status}, #{mldStartTime}, #{mldEndTime}, #{testNum},
+                                                     #{setNum}, #{prdPlanStart}, #{prdPlanEnd}, #{mldPlanStart},
+                                                     #{mldPlanEnd}, #{bindNum})
+    </insert>
+
     <update id="updateStatus">
         update T_Task
         set Status = #{status}
@@ -64,6 +75,30 @@
     <update id="updateTestNum">
         update T_Task
         set TestNum = #{testNum}
+        where TaskId = #{taskId}
+    </update>
+
+    <update id="updateStartTime">
+        update T_Task
+        set StartTime = #{startTime}
+        where TaskId = #{taskId}
+    </update>
+
+    <update id="updateEndTime">
+        update T_Task
+        set EndTime = #{endTime}
+        where TaskId = #{taskId}
+    </update>
+
+    <update id="updateMLdStartTime">
+        update T_Task
+        set MldStartTime = #{mldStartTime}
+        where TaskId = #{taskId}
+    </update>
+
+    <update id="updateMLdEndTime">
+        update T_Task
+        set MldEndTime = #{mldEndTime}
         where TaskId = #{taskId}
     </update>
 
@@ -108,6 +143,12 @@
         select *
         from T_Task
         where Status = 'ST00' and T_Task.DevcId = #{deviceId} and DateDiff(dd, ArrDate, getdate()) = 0
+    </select>
+
+    <select id="sumProcNumByPlanDtlId" resultType="java.lang.Integer">
+        SELECT sum(ProcNum) as num
+        from T_Task
+        where PlanDtlId = #{planDtlId} and Status = 'ST40'
     </select>
 
 </mapper>

@@ -79,7 +79,6 @@ public class TaskServiceImpl implements TaskService {
             return task;
         }
         task = taskDao.findByTaskId(taskId);
-        task = taskDao.findByTaskId(taskId);
 
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);

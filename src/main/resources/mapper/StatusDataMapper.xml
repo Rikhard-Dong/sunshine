@@ -23,7 +23,7 @@
     <select id="findByDevcIdAndTypeTop1" resultType="com.hfmes.sunshine.domain.StatusData">
         select top 1 *
         from T_StatusData sd
-        where sd.DevId = #{devcId} and sd.statusTypeId = #{statusTypeId} and sd.Stop is null
+        where sd.DevId = #{devcId} and sd.StatusTypeId = #{statusTypeId} and sd.Stop is null
         order by sd.Start desc
     </select>
 </mapper>

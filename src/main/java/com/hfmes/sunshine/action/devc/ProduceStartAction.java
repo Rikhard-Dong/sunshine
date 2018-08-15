@@ -11,6 +11,7 @@ import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.hfmes.sunshine.utils.Constants.SD;
@@ -40,6 +41,8 @@ public class ProduceStartAction extends BaseAction implements Action<DeviceStatu
         // 更新工单状态
         updateTaskStatus();
         updateDevcStatus();
+
+        taskDao.updateStartTime(taskId, new Date());
 
         statusDataLog(SD);
         statusDataLog(ST);

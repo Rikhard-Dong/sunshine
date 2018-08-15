@@ -58,7 +58,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.taskService = taskService;
         this.planDtlService = planDtlService;
         this.devcService = devcService;
-        this.logService=logService;
+        this.logService = logService;
     }
 
     /**
@@ -356,14 +356,15 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     @Override
     public String devcLogInsert(String devcId, String taskId, String opId, String opDesc, String opName, String opType) {
-        DevLog devclog=new DevLog();
+        DevLog devclog = new DevLog();
+        devclog.setTaskId(Integer.parseInt(taskId));
         devclog.setOpName(opName);
         devclog.setDevcId(Integer.parseInt(devcId));
         devclog.setOpDesc(opDesc);
         devclog.setOpId(Integer.parseInt(opId));
         devclog.setOpTime(new Date());
         devclog.setOpType(opType);
-        boolean b=logService.devLog(devclog);
+        boolean b = logService.devLog(devclog);
 
         return "1";
     }
