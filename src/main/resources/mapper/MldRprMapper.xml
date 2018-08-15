@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfmes.sunshine.dao.MldRprDao">
+
+    <resultMap id="mldRprResult" type="com.hfmes.sunshine.domain.MldRpr">
+        <result property="mldDtlId" column="MldDtlId"/>
+        <result property="mldRprId" column="MldRprId"/>
+        <result property="faltTime" column="faltTIme"/>
+        <result property="reporter" column="Reporter"/>
+        <result property="fault" column="Fault"/>
+        <result property="rprName" column="rprName"/>
+        <result property="startTime" column="StartTime"/>
+        <result property="rprId" column="RprId"/>
+        <result property="endTime" column="EndTime"/>
+        <result property="faltDesc" column="FaltDesc"/>
+        <result property="reprDesc" column="ReprDesc"/>
+        <result property="descTime" column="DescTime"/>
+        <result property="repairerId" column="RepairerId"/>
+    </resultMap>
+
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="mldRprId" keyColumn="MldRprId"
+            parameterType="com.hfmes.sunshine.domain.MldRpr">
+        insert into T_MldRpr (MldDtlId, faltTime, Reporter, Fault, RprName, StartTime, RprId, EndTime,
+                              FaltDesc, ReprDesc, DescTime, RepairerId)
+        values
+            (#{mldDtlId}, #{faltTime}, #{reporter}, #{fault}, #{rprName}, #{startTime}, #{rprId}, #{endTime},
+                          #{faltDesc}, #{reprDesc}, #{descTime}, #{repairerId})
+    </insert>
+
+    <update id="updateRepairer">
+        update T_MldRpr
+        set RepairerId = #{repairerId},
+            RprName    = #{rprName},
+            StartTime  = #{startTime}
+        where MldRprId = #{mldRprId}
+    </update>
+
+    <update id="updateCompleteRepair">
+        update T_MldRpr
+        set EndTime = #{endTime}, ReprDesc = #{reprDesc}
+        where MldRprId = #{mldRprId}
+    </update>
+
+    <select id="findUnComplete" resultType="com.hfmes.sunshine.domain.MldRpr">
+        select  *
+        from T_MldRpr
+        where EndTime is null
+    </select>
+</mapper>

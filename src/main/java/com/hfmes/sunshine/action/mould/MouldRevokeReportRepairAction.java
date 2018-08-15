@@ -36,5 +36,7 @@ public class MouldRevokeReportRepairAction extends BaseAction implements Action<
 
         // 更新设备中的模具状态
         updateDevcMldDltStatus();
+
+        revokeMldRpr();
     }
 }

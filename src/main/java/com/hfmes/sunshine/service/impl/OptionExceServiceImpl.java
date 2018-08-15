@@ -1,7 +1,9 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.*;
 import com.hfmes.sunshine.service.OptionExceService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,17 +34,21 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Qualifier("mldDtls")
     private final Map<Integer, MldDtl> mldDtlMap;
 
+    private final TaskDao taskDao;
+
     @Autowired
     public OptionExceServiceImpl(@Qualifier("deviceStateMachines")
                                          Map<Integer, StateMachine<DeviceStatus, DeviceEvents>> deviceStateMachineMap,
                                  @Qualifier("mouldStateMachines")
                                          Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStateMachineMap,
                                  Map<Integer, Devc> descMap,
-                                 Map<Integer, MldDtl> mldDtlMap) {
+                                 Map<Integer, MldDtl> mldDtlMap,
+                                 TaskDao taskDao) {
         this.deviceStateMachineMap = deviceStateMachineMap;
         this.mouldStateMachineMap = mouldStateMachineMap;
         this.devcMap = descMap;
         this.mldDtlMap = mldDtlMap;
+        this.taskDao = taskDao;
     }
 
 
@@ -231,7 +237,7 @@ public class OptionExceServiceImpl implements OptionExceService {
      * |--- 1. 设备状态机从待机SD00转换到运行SD10, 记录状态转换
      * |--- 2. 记录devcLog日志信息
      * |--- 3. 更新设备信息, 并同步到设备中
-     * |--- 4. 更新工单状态, 从tasks和deviceTasks中移除该工单
+     * |--- 4. 更新工单状态, 分配ST00 -> 生产ST10从tasks和deviceTasks中移除该工单
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -241,7 +247,10 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void startProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-        // TODO 待完成
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_START, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST00.toString(), TaskStatus.ST10.toString());
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
@@ -452,6 +461,9 @@ public class OptionExceServiceImpl implements OptionExceService {
 
     /**
      * opId --> 19 生产验收
+     * 执行操作
+     * |--- 1 工单状态从待验收ST30 -> 完成ST40
+     * |--- 2 TODO 选择下一单
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -461,7 +473,10 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void checkProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-        // TODO 待完成
+        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+        Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_CHECK_AND_ACCEPT, opId, optionId, devcId, mldDtlId,
+                TaskStatus.ST30.toString(), TaskStatus.ST40.toString());
+        deviceStateMachine.sendEvent(message);
     }
 
     /**
@@ -485,6 +500,8 @@ public class OptionExceServiceImpl implements OptionExceService {
 
     /**
      * opID --> 21 中止生产
+     * 执行操作
+     * |--- 1. 更新工单状态为暂停ST20 -> 待验收ST30
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -494,7 +511,16 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void stopProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-        // TODO 待完成
+        Devc devc = devcMap.get(devcId);
+        if (devc == null) {
+            log.error("stop produce 停止生产出错, 没有设备id为#{}#的对象", devcId);
+            return;
+        }
+        Task task = devc.getTask();
+        task.setStatus(TaskStatus.ST30.toString());
+        taskDao.updateStatus(task.getTaskId(), task.getStatus());
+        devc.setTask(task);
+        devcMap.put(devcId, devc);
     }
 
     /**

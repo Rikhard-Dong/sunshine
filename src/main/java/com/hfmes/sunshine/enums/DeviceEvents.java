@@ -11,7 +11,7 @@ public enum DeviceEvents {
     PRODUCE_CHECK_AND_ACCEPT,   // 生产验收
     PRODUCE_CONTINUE,           // 继续生产     待机 -> 待机
     STOP_AND_NEW_ORDER,         // 中止并新单
-    PRODUCE_START,              // 开始生产
+    PRODUCE_START,              // 开始生产     待机 -> 运行
     PRODUCE_RECOVERY,           // 恢复生产     待机 -> 运行
     PRODUCE_COMPLETE,           // 生产完成     运行 -> 待机
     PRODUCE_SUSPEND,            // 暂停生产     运行 -> 暂停

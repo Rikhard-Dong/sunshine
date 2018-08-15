@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.action.devc;
 
+import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +9,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.hfmes.sunshine.utils.Constants.SD;
+import static com.hfmes.sunshine.utils.Constants.ST;
 
 /**
  * @author supreDong@gmail.com
@@ -16,9 +24,29 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class ProduceStartAction implements Action<DeviceStatus, DeviceEvents> {
+public class ProduceStartAction extends BaseAction implements Action<DeviceStatus, DeviceEvents> {
+
     @Override
+    @Transactional
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("开始生产");
+
+        contextLoad(context);
+
+        // 记录信息
+        devLog("开始操作", "", "操作");
+        statusDataLog(SD);
+        statusDataLog(ST);
+
+        // 更新工单状态
+        updateTaskStatus();
+
+        // tasks和deviceTaskMap中只存放状态为分配的工单
+        tasks.remove(task.getTaskId());
+        List<Task> tasksForDeviceId = deviceTaskMap.get(devcId);
+        tasksForDeviceId.remove(task);
+        deviceTaskMap.put(devcId, tasksForDeviceId);
+
+
     }
 }

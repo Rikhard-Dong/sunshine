@@ -41,7 +41,7 @@ public class BeanConfig {
     private final TaskDao taskDao;
     private final StatusDataDao statusDataDao;
     private final DevRprDao devRprDao;
-
+    private final MldRprDao mldRprDao;
     private final SCMethodDao methodDao;
 
     @Autowired
@@ -51,6 +51,7 @@ public class BeanConfig {
                       TaskDao taskDao,
                       StatusDataDao statusDataDao,
                       DevRprDao devRprDao,
+                      MldRprDao mldRprDao,
                       SCMethodDao methodDao) {
         this.deviceDao = deviceDao;
         this.personDao = personDao;
@@ -58,6 +59,7 @@ public class BeanConfig {
         this.taskDao = taskDao;
         this.statusDataDao = statusDataDao;
         this.devRprDao = devRprDao;
+        this.mldRprDao = mldRprDao;
         this.methodDao = methodDao;
     }
 
@@ -209,6 +211,20 @@ public class BeanConfig {
     public Map<Integer, DevRpr> devRprMap() {
         return initDevRprMap();
     }
+
+
+    /**
+     * 模具的维修信息
+     * key mldDtlId
+     * value 报修信息, 取出改设备还没有结束的报修信息
+     *
+     * @return
+     */
+    @Bean("mldRprs")
+    public Map<Integer, MldRpr> mldRprMap() {
+        return initMldRprMap();
+    }
+
 
 
 
@@ -463,6 +479,20 @@ public class BeanConfig {
             devRprMap.put(devRpr.getDevcId(), devRpr);
         }
         return devRprMap;
+    }
+
+    /**
+     * 模具报修信息map
+     *
+     * @return
+     */
+    private Map<Integer, MldRpr> initMldRprMap() {
+        Map<Integer, MldRpr> map = new ConcurrentHashMap<>();
+        List<MldRpr> mldRprs = mldRprDao.findUnComplete();
+        for (MldRpr mldRpr : mldRprs) {
+            map.put(mldRpr.getMldDtlId(), mldRpr);
+        }
+        return map;
     }
 
 }

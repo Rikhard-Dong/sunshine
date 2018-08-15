@@ -45,6 +45,8 @@ public class MouldRepairAction extends BaseAction implements Action<MouldStatus,
             log.info("device id #{}#中没有模具", devcId);
         }
 
+        startMldRpr();
+
     }
 }
 

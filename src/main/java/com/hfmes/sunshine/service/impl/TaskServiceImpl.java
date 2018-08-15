@@ -37,7 +37,7 @@ public class TaskServiceImpl implements TaskService {
         this.deviceTasks = deviceTasks;
         this.devcMap = devcMap;
         this.taskMap = taskMap;
-        this.taskDao=taskDao;
+        this.taskDao = taskDao;
     }
 
     /**
@@ -48,8 +48,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public int taskDown(Integer deviceId) {
-        Task task=new Task();
-        List<Task> tasks=taskDao.findByStatusIsST00ByDevcId(deviceId);
+        Task task = new Task();
+        List<Task> tasks = taskDao.findByStatusIsST00ByDevcId(deviceId);
         if (tasks == null || tasks.size() <= 0) {
             return 0;
         }
@@ -63,7 +63,7 @@ public class TaskServiceImpl implements TaskService {
         // 更新设备的taskId
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
-        deviceTasks.put(deviceId,tasks);
+        deviceTasks.put(deviceId, tasks);
         if (devcDao.updateTaskId(devc.getDeviceId(), task.getTaskId()) != 0) {
             return task.getTaskId();
         }
@@ -72,17 +72,17 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Task updateTaskFromSql(int devcId,int taskId) {
-        Task task=new Task();
+    public Task updateTaskFromSql(int devcId, int taskId) {
+        Task task = new Task();
         Devc devc = devcMap.get(devcId);
         if (devc == null) {
             return task;
         }
-        task=taskDao.findByTaskId(taskId);
+        task = taskDao.findByTaskId(taskId);
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
-        devcMap.put(devcId,devc);
-        taskMap.put(taskId,task);
+        devcMap.put(devcId, devc);
+        taskMap.put(taskId, task);
         return task;
     }
 

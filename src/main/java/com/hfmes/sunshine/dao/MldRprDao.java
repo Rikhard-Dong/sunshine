@@ -1,6 +1,6 @@
 package com.hfmes.sunshine.dao;
 
-import com.hfmes.sunshine.domain.DevRpr;
+import com.hfmes.sunshine.domain.MldRpr;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -8,9 +8,9 @@ import java.util.List;
 
 /**
  * @author supreDong@gmail.com
- * @date 2018/8/14 15:22
+ * @date 2018/8/15 7:10
  */
-public interface DevRprDao {
+public interface MldRprDao {
 
     /* ****************************************
      * insert
@@ -20,30 +20,30 @@ public interface DevRprDao {
      * @param devRpr
      * @return
      */
-    Integer insertOne(DevRpr devRpr);
+    Integer insertOne(MldRpr devRpr);
 
     /* ****************************************
      * update
      ******************************************/
 
     /**
-     * @param devRprId
+     * @param mldRprId
      * @param repairerId
      * @param rprName
      * @param startTime
      * @return
      */
-    Integer updateRepairer(@Param("devRprId") Integer devRprId,
+    Integer updateRepairer(@Param("mldRprId") Integer mldRprId,
                            @Param("repairerId") Integer repairerId,
                            @Param("rprName") String rprName,
                            @Param("startTime") Date startTime);
 
     /**
-     * @param devRprId
+     * @param mldRprId
      * @param endTime
      * @return
      */
-    Integer updateCompleteRepair(@Param("devRprId") Integer devRprId,
+    Integer updateCompleteRepair(@Param("mldRprId") Integer mldRprId,
                                  @Param("reprDesc") String reprDesc,
                                  @Param("endTime") Date endTime);
 
@@ -56,5 +56,5 @@ public interface DevRprDao {
      *
      * @return
      */
-    List<DevRpr> findUnComplete();
+    List<MldRpr> findUnComplete();
 }

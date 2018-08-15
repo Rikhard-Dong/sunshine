@@ -38,5 +38,7 @@ public class MouldReportRepairAction extends BaseAction implements Action<MouldS
         // 更新设备中模具状态
         updateDevcMldDltStatus();
 
+        addMldRpr();
+
     }
 }

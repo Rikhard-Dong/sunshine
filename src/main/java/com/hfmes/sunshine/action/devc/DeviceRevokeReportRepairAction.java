@@ -22,6 +22,7 @@ import static com.hfmes.sunshine.utils.Constants.ST;
 @Component
 @Slf4j
 public class DeviceRevokeReportRepairAction extends BaseAction implements Action<DeviceStatus, DeviceEvents> {
+
     @Override
     @Transactional
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
@@ -39,5 +40,8 @@ public class DeviceRevokeReportRepairAction extends BaseAction implements Action
 
         // 更新设备状态
         updateDevcStatus();
+
+        // 撤销报修
+        revokeDevRpr();
     }
 }

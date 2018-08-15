@@ -28,4 +28,7 @@ public class MldRpr {
     private Date endTime;
     private String faltDesc;
     private String reprDesc;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date descTime;
+    private Integer repairerId;
 }

@@ -20,12 +20,12 @@
 
     <update id="updateCompleteRepair">
         update T_DevRpr
-        set EndTime = #{endTime}
+        set EndTime = #{endTime}, ReprDesc = #{reprDesc}
         where DevRprId = #{devRprId}
     </update>
 
     <select id="findUnComplete" resultType="com.hfmes.sunshine.domain.DevRpr">
-        select top 1 *
+        select *
         from T_DevRpr
         where EndTime is null
     </select>
