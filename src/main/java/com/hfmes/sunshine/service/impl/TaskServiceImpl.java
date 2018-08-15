@@ -63,7 +63,7 @@ public class TaskServiceImpl implements TaskService {
         // 更新设备的taskId
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
-        deviceTasks.put(deviceId, tasks);
+        deviceTasks.put(deviceId,tasks);
         if (devcDao.updateTaskId(devc.getDeviceId(), task.getTaskId()) != 0) {
             return task.getTaskId();
         }
@@ -79,10 +79,15 @@ public class TaskServiceImpl implements TaskService {
             return task;
         }
         task = taskDao.findByTaskId(taskId);
+        task=taskDao.findByTaskId(taskId);
+
         devc.setTaskId(task.getTaskId());
         devc.setTask(task);
         devcMap.put(devcId, devc);
         taskMap.put(taskId, task);
+
+        devcMap.put(devcId,devc);
+        taskMap.put(taskId,task);
         return task;
     }
 
