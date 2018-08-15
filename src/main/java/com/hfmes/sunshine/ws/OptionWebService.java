@@ -302,4 +302,21 @@ public interface OptionWebService {
     String getPlanDtlById(@WebParam(name = "planDtlId") String planDtlId);
 
 
+    /**
+     * 插入设备日志
+     * @param devcId
+     * @param taskId
+     * @param opId
+     * @param opDesc
+     * @param opName
+     * @param opType
+     * @return
+     */
+    @WebMethod
+    String devcLogInsert(@WebParam(name = "devcId") String devcId,
+                   @WebParam(name = "devcId") String taskId,
+                   @WebParam(name = "devcId") String opId,
+                   @WebParam(name = "devcId") String opDesc,
+                   @WebParam(name = "devcId") String opName,
+                   @WebParam(name = "devcId") String opType);
 }
