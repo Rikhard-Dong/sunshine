@@ -27,11 +27,14 @@ public class ProduceContinueAction extends BaseAction implements Action<DeviceSt
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("继续生产...");
         contextLoad(context);
+        updateNum();
 
-        // 记录状态转换
-        statusDataLog(ST);
         // 更新工单
         updateTaskStatus();
 
+        // 记录状态转换
+        statusDataLog(SD);
+        statusDataLog(ST);
+        resetCounts();
     }
 }

@@ -27,13 +27,16 @@ public class ProduceCheckAndAcceptAction extends BaseAction implements Action<De
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("生产验收...");
         contextLoad(context);
+        updateNum();
 
-        statusDataLog(ST);
 
         // 更新task状态
         task.setStatus(nextTaskStatus);
         taskDao.updateStatus(taskId, task.getStatus());
 
+
         // TODO 选择新单
+        statusDataLog(ST);
+        resetCounts();
     }
 }

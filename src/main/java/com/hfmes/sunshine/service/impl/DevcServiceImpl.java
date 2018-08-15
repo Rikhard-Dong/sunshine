@@ -31,6 +31,7 @@ public class DevcServiceImpl implements DevcService {
      */
     @Override
     public Devc updateDevcFromSql(int devcId) {
+        // TODO 影响生产计数, 改进
         Devc devc = devcDao.findByDeviceId(devcId);
         devcMap.put(devcId, devc);
         return devc;

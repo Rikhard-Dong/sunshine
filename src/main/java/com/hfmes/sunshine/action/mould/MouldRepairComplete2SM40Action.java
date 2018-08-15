@@ -31,8 +31,6 @@ public class MouldRepairComplete2SM40Action extends BaseAction implements Action
         // 记录日志信息
         mldLog("模具维修完成, 当前为使用状态", "", "操作");
 
-        // 记录状态转换
-        statusDataLog(SM);
 
         // 更新模具状态
         updateMldStatus();
@@ -43,5 +41,11 @@ public class MouldRepairComplete2SM40Action extends BaseAction implements Action
         } else {
             log.error("模具id#{}# 与设备#{}#中的模具id不符合", mldDtl.getMldDtlId(), devc.getDeviceId());
         }
+
+        endMldRpr();
+
+        // 记录状态转换
+        statusDataLog(SM);
+        resetCounts();
     }
 }

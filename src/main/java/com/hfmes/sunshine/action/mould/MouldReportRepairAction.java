@@ -29,8 +29,6 @@ public class MouldReportRepairAction extends BaseAction implements Action<MouldS
         // 模具mldLog记录
         mldLog("模具报修", "", "操作");
 
-        // 记录状态转换
-        statusDataLog(SM);
 
         // 更新模具状态
         updateMldStatus();
@@ -40,5 +38,8 @@ public class MouldReportRepairAction extends BaseAction implements Action<MouldS
 
         addMldRpr();
 
+        // 记录状态转换
+        statusDataLog(SM);
+        resetCounts();
     }
 }

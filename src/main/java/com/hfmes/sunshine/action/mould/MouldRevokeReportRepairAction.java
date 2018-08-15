@@ -28,8 +28,6 @@ public class MouldRevokeReportRepairAction extends BaseAction implements Action<
 
         // 记录mldLog
         mldLog("撤销模具报修", "", "操作");
-        // 记录模具状态转换
-        statusDataLog(SM);
 
         // 更新模具状态
         updateMldStatus();
@@ -38,5 +36,8 @@ public class MouldRevokeReportRepairAction extends BaseAction implements Action<
         updateDevcMldDltStatus();
 
         revokeMldRpr();
+        // 记录模具状态转换
+        statusDataLog(SM);
+        resetCounts();
     }
 }

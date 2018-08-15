@@ -27,12 +27,10 @@ public class DeviceReportRePairAction extends BaseAction implements Action<Devic
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("设备报修");
         contextLoad(context);
+        updateNum();
 
         // 记录devLog
         devLog("设备报修", "", "操作");
-        // 记录状态转换
-        statusDataLog(SD);
-        statusDataLog(ST);
 
         // 更新工单
         updateTaskStatus();
@@ -42,5 +40,10 @@ public class DeviceReportRePairAction extends BaseAction implements Action<Devic
 
         // 记录报修
         addDevRpr();
+
+        // 记录状态转换
+        statusDataLog(SD);
+        statusDataLog(ST);
+        resetCounts();
     }
 }

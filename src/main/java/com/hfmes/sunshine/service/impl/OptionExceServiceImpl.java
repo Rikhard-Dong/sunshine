@@ -536,11 +536,10 @@ public class OptionExceServiceImpl implements OptionExceService {
         if (mouldStateMachine == null ||
                 !StringUtils.equals(mouldStateMachine.getState().getId().toString(), status.toString())) {
 
-            log.debug("{} == {} is {}", mouldStateMachine.getState().getId().toString(), status.toString(),
-                    StringUtils.equals(mouldStateMachine.getState().getId().toString(), status.toString()));
-            // TODO 当前状态机为空或者状态机的状态错误, 抛出异常
             log.error("模具id为#{}#的状态机为空或者状态机异常, machine --> {}", mldDtlId, mouldStateMachine);
-
+            if (mouldStateMachine != null) {
+                log.error("当前状态机状态为{}, 需要状态为{}", mouldStateMachine.getState().getId().toString(), status.toString());
+            }
         }
         return mouldStateMachine;
 
@@ -558,9 +557,10 @@ public class OptionExceServiceImpl implements OptionExceService {
         if (devcStateMachine == null ||
                 !StringUtils.equals(devcStateMachine.getState().getId().toString(), status.toString())) {
             // TODO 当前状态机为空或者状态机的状态错误, 抛出异常
-            log.debug("{} == {} is {}", devcStateMachine.getState().getId().toString(), status.toString(),
-                    StringUtils.equals(devcStateMachine.getState().getId().toString(), status.toString()));
             log.error("设备id为#{}#的状态机为空或者状态机异常", deviceId);
+            if (devcStateMachine != null) {
+                log.error("当前状态机状态为{}, 需要状态为{}", devcStateMachine.getState().getId().toString(), status.toString());
+            }
         }
 
         return devcStateMachine;

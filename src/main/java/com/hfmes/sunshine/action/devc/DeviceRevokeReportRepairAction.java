@@ -28,12 +28,10 @@ public class DeviceRevokeReportRepairAction extends BaseAction implements Action
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("设备撤销报修...");
         contextLoad(context);
+        updateNum();
 
         // 记录devLog
         devLog("设备撤销报修", "", "操作");
-        // 记录状态转换
-        statusDataLog(ST);
-        statusDataLog(SD);
 
         // 更新工单状态
         updateTaskStatus();
@@ -43,5 +41,9 @@ public class DeviceRevokeReportRepairAction extends BaseAction implements Action
 
         // 撤销报修
         revokeDevRpr();
+        // 记录状态转换
+        statusDataLog(ST);
+        statusDataLog(SD);
+        resetCounts();
     }
 }

@@ -85,4 +85,9 @@
         where
             (statusChg.DicType = 'ST' and (statusChg.CurStatusCode = #{taskStatus} or statusChg.CurStatusCode is null))
     </select>
+
+    <select id="findAll" resultType="com.hfmes.sunshine.domain.SCOption">
+        select *
+        from T_SCOption
+    </select>
 </mapper>

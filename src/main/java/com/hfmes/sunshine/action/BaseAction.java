@@ -2,6 +2,7 @@ package com.hfmes.sunshine.action;
 
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
+import com.hfmes.sunshine.enums.MouldStatus;
 import com.hfmes.sunshine.enums.TaskStatus;
 import com.hfmes.sunshine.service.LogService;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,9 @@ public class BaseAction {
     @Autowired
     @Qualifier("mldRprs")
     protected Map<Integer, MldRpr> mldRprMap;
-
+    @Autowired
+    @Qualifier("countNums")
+    protected Map<Integer, Integer> counts;
     protected Integer devcId;
     protected Integer opId;
     protected Integer optionId;
@@ -75,7 +78,7 @@ public class BaseAction {
     protected String curTaskStatus;
     protected String nextTaskStatus;
 
-    protected StatusData statusData=new StatusData();
+    protected StatusData statusData = new StatusData();
 
     protected Devc devc;
     protected MldDtl mldDtl;
@@ -172,6 +175,7 @@ public class BaseAction {
         statusData.setOpId(opId);
         statusData.setDevId(devcId);
         statusData.setMldId(mldDtlId);
+        statusData.setTaskId(taskId);
         statusData.setEventType(BTN_EVENT_TYPE);
         statusData.setEventName(String.valueOf(optionId));
 
@@ -213,8 +217,8 @@ public class BaseAction {
         mldDtlMap.put(mldDtl.getMldDtlId(), mldDtl);
         task.setMldDtl(mldDtl);
         devc.setTask(task);
-        devcMap.put(devcId,devc);
-        tasks.put(taskId,task);
+        devcMap.put(devcId, devc);
+        tasks.put(taskId, task);
     }
 
     /**
@@ -228,6 +232,10 @@ public class BaseAction {
         devcMap.put(devc.getDeviceId(), devc);
     }
 
+    protected void resetCounts() {
+        counts.put(devcId, 0);
+    }
+
     /**
      * 移除模具
      */
@@ -236,8 +244,8 @@ public class BaseAction {
         devc.setMldDtl(null);
         devc.setMldStatus(null);
 
-        devcDao.updateMldDtlIdAndMldStatus(devcId, null, null);
-        devcMap.put(devc.getDeviceId(), null);
+        devcDao.updateMldDtlIdAndMldStatus(devcId, null, "");
+        devcMap.put(devc.getDeviceId(), devc);
 
     }
 
@@ -245,10 +253,12 @@ public class BaseAction {
      * 更新设备状态
      */
     protected void updateDevcStatus() {
-        devc.setStatus(nextStatus);
-        devcDao.updateStatus(devc.getDeviceId(), nextStatus);
-        devcMap.put(devc.getDeviceId(), devc);
 
+        log.warn("devcId --> {}, 更新设备状态为:--> {}", devc.getDeviceId(), nextStatus);
+        devc.setStatus(nextStatus);
+        Integer result = devcDao.updateStatus(devc.getDeviceId(), nextStatus);
+        devcMap.put(devc.getDeviceId(), devc);
+        log.warn("执行结果 -> {}", result);
     }
 
     /**
@@ -354,5 +364,20 @@ public class BaseAction {
         }
         mldRprDao.updateCompleteRepair(mldRpr.getMldRprId(), "", new Date());
         mldRprMap.remove(mldDtlId);
+    }
+
+    protected void updateNum() {
+        if (devc != null) {
+
+            if (StringUtils.equals(devc.getMldStatus(), MouldStatus.SM40.toString())) {
+                log.info("更新生产数量 id ->  {}., num -> {}", taskId, devc.getTask().getProcNum());
+                taskDao.updateProcNum(taskId, devc.getTask().getProcNum());
+            } else {
+                log.info("更新测试数量 id ->  {}, num -> {}", taskId, devc.getTask().getTestNum());
+                taskDao.updateTestNum(taskId, devc.getTask().getTestNum());
+            }
+        } else {
+            log.warn("devc is null");
+        }
     }
 }

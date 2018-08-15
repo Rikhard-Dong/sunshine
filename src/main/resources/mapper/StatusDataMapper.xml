@@ -9,15 +9,15 @@
         insert into T_StatusData (StatusTypeId, CurStatus, NextStatus, Start, Stop, Hold, Count,
                                   EventType, EventName, OpId, DevId, TaskId, MdlId)
         VALUES
-            (#{statusTypeId}, #{curStatus}, #{nextStatus}, #{start}, #{stop}, #{hold}, #{cou nt},
+            (#{statusTypeId}, #{curStatus}, #{nextStatus}, #{start}, #{stop}, #{hold}, #{count},
                               #{eventType}, #{eventName}, #{opId}, #{devId}, #{taskId}, #{mldId})
 
     </insert>
 
     <update id="updateEndAdnHold">
         update T_StatusData
-        set Stop = #{end}, Hold = #{hold}
-        where StatusDataId = #{statudDataId}
+        set Stop = #{stop}, Hold = #{hold}, Count = #{count}
+        where StatusDataId = #{statusDataId}
     </update>
 
     <select id="findByDevcIdAndTypeTop1" resultType="com.hfmes.sunshine.domain.StatusData">

@@ -88,7 +88,7 @@ public class ConditionServiceImpl implements ConditionService {
             log.warn("设备不存在...");
             return false;
         }
-        return devc.getMldStatus() != null && MouldStatus.valueOf(devc.getStatus()) == MouldStatus.SM40;
+        return devc.getMldStatus() != null && MouldStatus.valueOf(devc.getMldStatus()) == MouldStatus.SM40;
     }
 
     /**
@@ -106,6 +106,7 @@ public class ConditionServiceImpl implements ConditionService {
         }
         Task task = devc.getTask();
 
+        log.debug("task is {}", task);
 
         return task != null && (task.getDevOpId() == 0 || task.getDevOpId().equals(personId));
     }
@@ -139,6 +140,8 @@ public class ConditionServiceImpl implements ConditionService {
         }
         Task task = devc.getTask();
 
+        log.warn("当前生产数量为{}, 设置数量为{}", task.getProcNum(), task.getSetNum());
+
         return task != null && task.getProcNum() != null && task.getSetNum() != null
                 && task.getProcNum() >= task.getSetNum();
     }
@@ -151,7 +154,7 @@ public class ConditionServiceImpl implements ConditionService {
             log.warn("设备不存在...");
             return false;
         }
-        
+
         Task task = devc.getTask();
 
         return task != null && task.getProcNum() != null && task.getSetNum() != null

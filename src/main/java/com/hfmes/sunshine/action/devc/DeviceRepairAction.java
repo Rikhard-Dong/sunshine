@@ -25,13 +25,15 @@ public class DeviceRepairAction extends BaseAction implements Action<DeviceStatu
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("设备维修...");
         contextLoad(context);
+        updateNum();
 
         devLog("设备维修", "", "操作");
-
-        statusDataLog(SD);
 
         updateDevcStatus();
 
         startDevRpr();
+        statusDataLog(SD);
+        resetCounts();
+
     }
 }

@@ -184,7 +184,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     @Override
     public String procNumLessThanSetNum(String objStr) {
         ParamsObj params = getParamObj(objStr);
-        Boolean result = conditionService.procNumAchieveSetNum(params.getDeviceId());
+        Boolean result = conditionService.procNumLessThanSetNum(params.getDeviceId());
         return StringUtils.capitalize(result.toString());
     }
 

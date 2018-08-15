@@ -37,4 +37,6 @@ public interface SCOptionDao {
     Set<SCOption> findBySMStatus(@Param("mldStatus") String mldStatus);
 
     Set<SCOption> findBySTStatus(@Param("taskStatus") String taskStatus);
+
+    List<SCOption> findAll();
 }

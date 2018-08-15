@@ -32,13 +32,15 @@ public class CompleteDemouldingAction extends BaseAction implements Action<Mould
 
         // 记录模具操作
         mldLog("模具拆卸完成", "", "操作");
-        // 记录状态转换
-        statusDataLog(SM);
 
         // 更新模具状态
         updateMldStatus();
 
         // 设备去除模具
         removeDevcMld();
+
+        // 记录状态转换
+        statusDataLog(SM);
+        resetCounts();
     }
 }

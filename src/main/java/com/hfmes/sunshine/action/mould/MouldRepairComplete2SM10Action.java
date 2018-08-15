@@ -34,6 +34,8 @@ public class MouldRepairComplete2SM10Action extends BaseAction implements Action
 
         // 更新模具状态
         updateMldStatus();
+
+        endMldRpr();
     }
 }
 

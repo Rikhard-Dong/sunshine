@@ -33,14 +33,18 @@ public class ProduceSuspendAction extends BaseAction implements Action<DeviceSta
         // 记录日志
         devLog("暂停生产", "", "操作");
 
-        // 记录状态转换
-        statusDataLog(SD);
-        statusDataLog(ST);
+        updateNum();
+
 
         // 更新工单状态
         updateTaskStatus();
 
         // 更新设备状态
         updateDevcStatus();
+
+        // 记录状态转换
+        statusDataLog(SD);
+        statusDataLog(ST);
+        resetCounts();
     }
 }

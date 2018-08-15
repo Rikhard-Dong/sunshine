@@ -31,8 +31,8 @@ public class LogServiceImpl implements LogService {
     private final DevLogDao devLogDao;
 
     @Autowired
-    @Qualifier("methods")
-    private Map<Integer, String> methodMap;
+    @Qualifier("options")
+    private Map<Integer, String> optionsMap;
 
     @Autowired
     @Qualifier("deviceStatusDatas")
@@ -61,20 +61,24 @@ public class LogServiceImpl implements LogService {
     public Boolean statusDataLog(StatusData statusData) {
         Date curDate = new Date();
 
-        String eventName = methodMap.get(Integer.valueOf(statusData.getEventName()));
+        String eventName = optionsMap.get(Integer.valueOf(statusData.getEventName()));
         statusData.setEventName(eventName);
         statusData.setStart(curDate);
-        statusData.setCount(countNums.get(statusData.getDevId()));
 
         Map<Integer, StatusData> statusDataMap = deviceStatusDataMap.get(statusData.getDevId());
+        log.info("当前状态转换的类型为type=={}", statusData.getStatusTypeId());
         StatusData preStatusData = statusDataMap.get(statusData.getStatusTypeId());
         if (preStatusData != null) {
             // 更新上一步操作的结束时间和存续时间
             preStatusData.setStop(curDate);
             Long diff = DateUtils.calculateMinuteDifference(preStatusData.getStart(), curDate);
             preStatusData.setHold(Math.toIntExact(diff));
+            preStatusData.setCount(countNums.get(preStatusData.getDevId()));
+            log.info("前一次状态转换id为{}, 状态转换之间的count数量统计为{}, preStatusData.getCount() -> {}", preStatusData.getStatusDataId(),
+                    countNums.get(preStatusData.getDevId()), preStatusData.getCount());
 
-            statusDataDao.updateEndAdnHold(preStatusData);
+            Integer result = statusDataDao.updateEndAdnHold(preStatusData);
+            log.info("更新前一次状态转换结果, {}", result);
         }
 
         // 将本次操作记录

@@ -55,6 +55,18 @@
         where TaskId = #{taskId}
     </update>
 
+    <update id="updateProcNum">
+        update T_Task
+        set ProcNum = #{procNum}
+        where TaskId = #{taskId}
+    </update>
+
+    <update id="updateTestNum">
+        update T_Task
+        set TestNum = #{testNum}
+        where TaskId = #{taskId}
+    </update>
+
     <select id="findByTaskId" resultMap="taskResult">
         select *
         from T_Task
@@ -78,7 +90,7 @@
         where task.TaskId = #{taskId}
     </select>
 
-    <select id="findByStatusIsST00" resultMap="taskResult">
+    <select id="findByStatusIsST00AndDevTask" resultMap="taskResult">
         (select *
          from T_Task
          where Status = 'ST00' and DateDiff(dd, ArrDate, getdate()) = 10

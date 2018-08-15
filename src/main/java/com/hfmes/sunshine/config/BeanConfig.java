@@ -42,7 +42,7 @@ public class BeanConfig {
     private final StatusDataDao statusDataDao;
     private final DevRprDao devRprDao;
     private final MldRprDao mldRprDao;
-    private final SCMethodDao methodDao;
+    private final SCOptionDao optionDao;
 
     @Autowired
     public BeanConfig(DevcDao deviceDao,
@@ -52,7 +52,7 @@ public class BeanConfig {
                       StatusDataDao statusDataDao,
                       DevRprDao devRprDao,
                       MldRprDao mldRprDao,
-                      SCMethodDao methodDao) {
+                      SCOptionDao optionDao) {
         this.deviceDao = deviceDao;
         this.personDao = personDao;
         this.mldDtlDao = mldDtlDao;
@@ -60,7 +60,7 @@ public class BeanConfig {
         this.statusDataDao = statusDataDao;
         this.devRprDao = devRprDao;
         this.mldRprDao = mldRprDao;
-        this.methodDao = methodDao;
+        this.optionDao = optionDao;
     }
 
 
@@ -196,9 +196,9 @@ public class BeanConfig {
      *
      * @return
      */
-    @Bean("methods")
-    public Map<Integer, String> methodMap() {
-        return initMethodMap();
+    @Bean("options")
+    public Map<Integer, String> optionsMap() {
+        return initOptionMap();
     }
 
 
@@ -380,7 +380,7 @@ public class BeanConfig {
      * @return
      */
     private Map<Integer, List<Task>> initDeviceTasks() {
-        List<Task> tasks = taskDao.findByStatusIsST00();
+        List<Task> tasks = taskDao.findByStatusIsST00AndDevTask();
         Map<Integer, List<Task>> result = new ConcurrentHashMap<>();
 
         for (Task task : tasks) {
@@ -420,7 +420,7 @@ public class BeanConfig {
     private Map<Integer, Task> initTaskMap() {
         Map<Integer, Task> map = new ConcurrentHashMap<>();
 
-        List<Task> tasks = taskDao.findByStatusIsST00();
+        List<Task> tasks = taskDao.findByStatusIsST00AndDevTask();
         if (tasks != null && tasks.size() > 0) {
             for (Task task : tasks) {
                 map.put(task.getTaskId(), task);
@@ -458,11 +458,11 @@ public class BeanConfig {
      * key method 操作id
      * value 操作名称
      */
-    private Map<Integer, String> initMethodMap() {
+    private Map<Integer, String> initOptionMap() {
         Map<Integer, String> map = new HashMap<>();
-        List<SCMethod> methods = methodDao.findAll();
-        for (SCMethod method : methods) {
-            map.put(method.getScMethodId(), method.getMethodName());
+        List<SCOption> optionsMap = optionDao.findAll();
+        for (SCOption option : optionsMap) {
+            map.put(option.getScOptionId(), option.getOptName());
         }
         return map;
     }

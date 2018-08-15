@@ -27,6 +27,12 @@ public interface TaskDao {
     Integer updateStatus(@Param("taskId") Integer taskId,
                          @Param("status") String status);
 
+    Integer updateProcNum(@Param("taskId") Integer taskId,
+                          @Param("procNum") Integer procNum);
+
+    Integer updateTestNum(@Param("taskId") Integer taskId,
+                          @Param("testNum") Integer testNum);
+
 
     /* ****************************************
      * Select
@@ -47,11 +53,11 @@ public interface TaskDao {
     List<Task> findAllStatusNotEqualST40();
 
     /**
-     * 查询所有状态为ST00分配的工单
+     * 查询所有状态为ST00分配的工单和设备中的模具
      *
      * @return list of task while task status is ST00
      */
-    List<Task> findByStatusIsST00();
+    List<Task> findByStatusIsST00AndDevTask();
 
     /**
      * 根据任务ID查找

@@ -31,8 +31,6 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
         // 记录操作
         mldLog("装模操作开始", "", "操作");
 
-        // 记录状态转换
-        statusDataLog(SM);
 
         // 更新相关数据表
         // 更新模具状态
@@ -42,5 +40,8 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
 
         // 更新设备信息
         updateDevcMldDltStatus();
+        // 记录状态转换
+        statusDataLog(SM);
+        resetCounts();
     }
 }

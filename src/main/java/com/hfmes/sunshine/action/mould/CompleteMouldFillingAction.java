@@ -26,14 +26,16 @@ public class CompleteMouldFillingAction extends BaseAction implements Action<Mou
         // 插入模具日志信息
         mldLog("模具安装完成", "", "操作");
 
-        // 记录状态转换
-        statusDataLog(SM);
 
         // 更新模具状态机设备中模具的状态信息
         updateMldStatus();
 
         // 更新设备信息
         updateDevcMldDltStatus();
+
+        // 记录状态转换
+        statusDataLog(SM);
+        resetCounts();
     }
 }
 

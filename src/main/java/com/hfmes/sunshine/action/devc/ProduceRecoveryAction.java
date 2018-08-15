@@ -27,12 +27,15 @@ public class ProduceRecoveryAction extends BaseAction implements Action<DeviceSt
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("恢复生产...");
         contextLoad(context);
+        updateNum();
 
         devLog("恢复生产/继续生产", "", "操作");
-        statusDataLog(SD);
-        statusDataLog(ST);
 
         updateTaskStatus();
         updateDevcStatus();
+
+        statusDataLog(SD);
+        statusDataLog(ST);
+        resetCounts();
     }
 }

@@ -28,18 +28,21 @@ public class ProduceCompleteAction extends BaseAction implements Action<DeviceSt
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("生产完成...");
         contextLoad(context);
+        updateNum();
 
         // 记录devLog日志
         devLog("生产完成", "", "操作");
 
-        // 记录状态转换
-        statusDataLog(SD);
-        statusDataLog(ST);
 
         // 更新工单状态
         updateTaskStatus();
 
         // 更新设备状态
         updateDevcStatus();
+        // 记录状态转换
+        statusDataLog(SD);
+        statusDataLog(ST);
+        resetCounts();
+
     }
 }
