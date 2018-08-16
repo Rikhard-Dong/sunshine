@@ -40,4 +40,11 @@ public class SCOptionDaoTest {
     @Test
     public void findByCardNoAndDeviceId() {
     }
+
+    @Test
+    public void findByCardNoAndStatus() {
+        List<SCOption> options = scOptionDao.findByCardNoAndStatus("1296880245", "SD00", "SM10", "ST40");
+        log.info("{}", options);
+
+    }
 }

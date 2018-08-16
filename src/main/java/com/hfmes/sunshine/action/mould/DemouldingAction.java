@@ -25,6 +25,7 @@ public class DemouldingAction extends BaseAction implements Action<MouldStatus, 
         log.debug("卸模/料 action...");
 
         contextLoad(context);
+        updateNum();
 
         // 记录mldLog日志信息
         mldLog("卸模/料", "", "操作");

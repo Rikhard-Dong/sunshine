@@ -18,17 +18,16 @@ public class MldRpr {
     private Integer mldDtlId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date faltTime;
-    private String reporter;
-    private String fault;
-    private String rprName;
+    private String reporter = "";
+    private String fault = "";
+    private String rprName = "";
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date startTime;
-    private Integer rprId;
+    private Date startTime = new Date();
+    private Integer rprId = 0;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date endTime;
-    private String faltDesc;
-    private String reprDesc;
+    private Date endTime = new Date();
+    private String faltDesc = "";
+    private String reprDesc = "";
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date descTime;
-    private Integer repairerId;
+    private Date descTime = new Date();
 }

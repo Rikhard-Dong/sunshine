@@ -25,7 +25,7 @@ public class MouldReportRepairAction extends BaseAction implements Action<MouldS
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("模具报修action");
         contextLoad(context);
-
+        updateNum();
         // 模具mldLog记录
         mldLog("模具报修", "", "操作");
 

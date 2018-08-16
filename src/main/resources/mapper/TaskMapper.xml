@@ -102,6 +102,12 @@
         where TaskId = #{taskId}
     </update>
 
+    <update id="updateDevOpId">
+        update T_Task
+        set DevOpId = #{opId}
+        where TaskId = #{taskId}
+    </update>
+
     <select id="findByTaskId" resultMap="taskResult">
         select *
         from T_Task
@@ -128,7 +134,7 @@
     <select id="findByStatusIsST00AndDevTask" resultMap="taskResult">
         (select *
          from T_Task
-         where Status = 'ST00' and DateDiff(dd, ArrDate, getdate()) = 10
+         where Status = 'ST00' and DateDiff(dd, ArrDate, getdate()) = 0
         )
         UNION
         (
@@ -140,9 +146,19 @@
     </select>
 
     <select id="findByStatusIsST00ByDevcId" resultMap="taskResult">
-        select *
-        from T_Task
-        where Status = 'ST00' and T_Task.DevcId = #{deviceId} and DateDiff(dd, ArrDate, getdate()) = 0
+        (
+            select T_Task.*
+            from T_Devc
+                LEFT JOIN T_Task on T_Devc.TaskId = T_Task.TaskId
+            where T_Devc.TaskId > 0 and T_Task.DevcId = #{deviceId}
+        )
+        UNION
+        (
+            select *
+            from T_Task
+            where Status = 'ST00' and T_Task.DevcId = #{deviceId} and DateDiff(dd, ArrDate, getdate()) = 0
+
+        )
     </select>
 
     <select id="sumProcNumByPlanDtlId" resultType="java.lang.Integer">

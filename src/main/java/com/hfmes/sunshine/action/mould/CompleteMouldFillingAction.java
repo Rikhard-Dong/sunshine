@@ -24,6 +24,7 @@ public class CompleteMouldFillingAction extends BaseAction implements Action<Mou
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("装模完成action....");
         contextLoad(context);
+        updateNum();
 
         // 插入模具日志信息
         mldLog("模具安装完成", "", "操作");

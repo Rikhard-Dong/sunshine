@@ -175,7 +175,7 @@ public class BeanConfig {
         return initTaskMap();
     }
 
-    /**
+    /*    *//**
      * 存放设备和对应的状态改变记录
      * key 设备id
      * value map, 保存每台设备的三种状态的状态改变的数据
@@ -183,47 +183,25 @@ public class BeanConfig {
      * |------------- value 状态改变记录实体
      *
      * @return map
-     */
+     *//*
     @Bean("deviceStatusDatas")
     public Map<Integer, Map<Integer, StatusData>> deviceStatusDataMap() {
         return initDeviceStatusDataMap();
-    }
+    }*/
 
-
-    /**
+    /*
+     *//**
      * key method 操作id
      * value 操作名称
      *
      * @return
-     */
+     *//*
     @Bean("options")
     public Map<Integer, String> optionsMap() {
         return initOptionMap();
-    }
+    }*/
 
 
-    /**
-     * key deviceId, value 报修信息
-     *
-     * @return
-     */
-    @Bean("devRprs")
-    public Map<Integer, DevRpr> devRprMap() {
-        return initDevRprMap();
-    }
-
-
-    /**
-     * 模具的维修信息
-     * key mldDtlId
-     * value 报修信息, 取出改设备还没有结束的报修信息
-     *
-     * @return
-     */
-    @Bean("mldRprs")
-    public Map<Integer, MldRpr> mldRprMap() {
-        return initMldRprMap();
-    }
 
 
 
@@ -432,11 +410,11 @@ public class BeanConfig {
         return map;
     }
 
-    /**
+    /*    *//**
      * 创建记录设备和状态转换关系的map映射
      *
      * @return
-     */
+     *//*
     private Map<Integer, Map<Integer, StatusData>> initDeviceStatusDataMap() {
         Map<Integer, Map<Integer, StatusData>> map = new ConcurrentHashMap<>();
 
@@ -452,12 +430,12 @@ public class BeanConfig {
         }
 
         return map;
-    }
+    }*/
 
-    /**
+    /*    *//**
      * key method 操作id
      * value 操作名称
-     */
+     *//*
     private Map<Integer, String> initOptionMap() {
         Map<Integer, String> map = new HashMap<>();
         List<SCOption> optionsMap = optionDao.findAll();
@@ -465,34 +443,5 @@ public class BeanConfig {
             map.put(option.getScOptionId(), option.getOptName());
         }
         return map;
-    }
-
-    /**
-     * 设备报修信息map
-     *
-     * @return
-     */
-    private Map<Integer, DevRpr> initDevRprMap() {
-        Map<Integer, DevRpr> devRprMap = new ConcurrentHashMap<>();
-        List<DevRpr> devRprs = devRprDao.findUnComplete();
-        for (DevRpr devRpr : devRprs) {
-            devRprMap.put(devRpr.getDevcId(), devRpr);
-        }
-        return devRprMap;
-    }
-
-    /**
-     * 模具报修信息map
-     *
-     * @return
-     */
-    private Map<Integer, MldRpr> initMldRprMap() {
-        Map<Integer, MldRpr> map = new ConcurrentHashMap<>();
-        List<MldRpr> mldRprs = mldRprDao.findUnComplete();
-        for (MldRpr mldRpr : mldRprs) {
-            map.put(mldRpr.getMldDtlId(), mldRpr);
-        }
-        return map;
-    }
-
+    }*/
 }

@@ -67,8 +67,8 @@ public class CheckStatusServiceImpl implements CheckStatusService {
     public Boolean checkTaskMldStatus(Integer taskId, String taskStatus) {
 
         Task task = taskMap.get(taskId);
-        System.out.print(task.getTaskId());
-        System.out.print(task.getStatus());
+//        System.out.print(task.getTaskId());
+//        System.out.print(task.getStatus());
         return task != null && StringUtils.equals(taskStatus, task.getStatus());
     }
 }

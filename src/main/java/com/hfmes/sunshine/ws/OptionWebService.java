@@ -120,6 +120,24 @@ public interface OptionWebService {
     @WebMethod
     String procNumLessThanSetNum(@WebParam(name = "obj") String objStr);
 
+    /**
+     * 9 是否拥有模具和当前设备模具相同的下一单
+     *
+     * @param objStr 参数对象json数据
+     * @return 拥有返回true
+     */
+    @WebMethod
+    String hasNextTask(@WebParam(name = "obj") String objStr);
+
+    /**
+     * 10. 判断当前工单的模具是否与当前设备的模具相等
+     *
+     * @param objStr 参数对象json数据
+     * @return 拥有返回true
+     */
+    @WebMethod
+    String isMouldSame(@WebParam(name = "obj") String objStr);
+
     /* *****************************************************
      * 生产计数接口
      *****************************************************/
@@ -321,5 +339,15 @@ public interface OptionWebService {
                          @WebParam(name = "opDesc") String opDesc,
                          @WebParam(name = "opName") String opName,
                          @WebParam(name = "opType") String opType);
+
+
+    /**
+     * 根据卡号获取人员的信息
+     *
+     * @param cardNo 卡号
+     * @return 人员信息json
+     */
+    @WebMethod()
+    String getPersonByCardNo(@WebParam(name = "cardNo") String cardNo);
 }
 

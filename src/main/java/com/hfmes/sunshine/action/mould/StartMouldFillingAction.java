@@ -29,7 +29,7 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("开始装模action...");
         contextLoad(context);
-
+        updateNum();
         // 记录操作
         mldLog("装模操作开始", "", "操作");
 

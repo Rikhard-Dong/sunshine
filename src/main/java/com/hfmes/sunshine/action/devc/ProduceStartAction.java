@@ -42,6 +42,12 @@ public class ProduceStartAction extends BaseAction implements Action<DeviceStatu
         updateTaskStatus();
         updateDevcStatus();
 
+        if (task.getDevOpId() == 0) {
+            task.setDevOpId(opId);
+            taskDao.updateDevOpId(task.getTaskId(), opId);
+            tasks.put(taskId, task);
+        }
+
         taskDao.updateStartTime(taskId, new Date());
 
         statusDataLog(SD);

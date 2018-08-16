@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.OptionsCache;
 import com.hfmes.sunshine.dao.DevLogDao;
 import com.hfmes.sunshine.dao.MldLogDao;
 import com.hfmes.sunshine.dao.StatusDataDao;
@@ -31,13 +32,9 @@ public class LogServiceImpl implements LogService {
     private final StatusDataDao statusDataDao;
     private final DevLogDao devLogDao;
 
-    @Autowired
-    @Qualifier("options")
-    private Map<Integer, String> optionsMap;
-
-    @Autowired
+/*    @Autowired
     @Qualifier("deviceStatusDatas")
-    private Map<Integer, Map<Integer, StatusData>> deviceStatusDataMap;
+    private Map<Integer, Map<Integer, StatusData>> deviceStatusDataMap;*/
 
     @Autowired
     @Qualifier("countNums")
@@ -62,9 +59,10 @@ public class LogServiceImpl implements LogService {
     public Boolean statusDataLog(StatusData statusData) {
         Date curDate = new Date();
 
-        String eventName = optionsMap.get(Integer.valueOf(statusData.getEventName()));
+        String eventName = OptionsCache.get(Integer.valueOf(statusData.getEventName()));
         statusData.setEventName(eventName);
         statusData.setStart(curDate);
+        statusData.setStop(curDate);
 
         StatusData preStatusData = statusDataDao.findByDevcIdAndTypeTop1(statusData.getDevId(), statusData.getStatusTypeId());
         if (preStatusData != null) {
@@ -73,11 +71,12 @@ public class LogServiceImpl implements LogService {
             preStatusData.setHold(Math.toIntExact(diff));
             preStatusData.setCount(countNums.get(preStatusData.getDevId()));
             statusDataDao.updateEndAdnHold(preStatusData);
-            log.debug("前一次状态记录 --> {}", preStatusData);
+//            log.debug("前一次状态记录 --> {}", preStatusData);
         } else {
             log.info("前一次状态记录为null");
         }
-        /*Map<Integer, StatusData> statusDataMap = deviceStatusDataMap.get(statusData.getDevId());
+        /*
+        Map<Integer, StatusData> statusDataMap = deviceStatusDataMap.get(statusData.getDevId());
         if (statusDataMap != null) {
             log.info("当前状态转换的类型为type=={}", statusData.getStatusTypeId());
             StatusData preStatusData = statusDataMap.get(statusData.getStatusTypeId());
@@ -102,7 +101,7 @@ public class LogServiceImpl implements LogService {
         }
 
         log.info("状态记录信息map -> {}", deviceStatusDataMap);
-*/
+        */
         Integer result = statusDataDao.insertOne(statusData);
         // 将本次操作记录
 //        statusDataMap.put(statusData.getStatusTypeId(), statusData);

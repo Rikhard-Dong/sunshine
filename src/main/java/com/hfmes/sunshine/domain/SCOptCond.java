@@ -16,4 +16,5 @@ public class SCOptCond {
     private Integer scOptionId;
     private Integer scConditionId;
     private Boolean value;
+    private String notMatch;
 }

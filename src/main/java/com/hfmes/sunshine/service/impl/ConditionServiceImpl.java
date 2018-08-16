@@ -1,9 +1,11 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldStatus;
+import com.hfmes.sunshine.enums.TaskStatus;
 import com.hfmes.sunshine.service.ConditionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +28,13 @@ public class ConditionServiceImpl implements ConditionService {
 
 
     private final Map<Integer, Devc> devcMap;
+
+    @Autowired
+    @Qualifier("deviceTasks")
+    private Map<Integer, List<Task>> deviceTaskMap;
+
+    @Autowired
+    private TaskDao taskDao;
 
     @Autowired
     public ConditionServiceImpl(@Qualifier("devcs") Map<Integer, Devc> devcMap) {
@@ -159,5 +169,67 @@ public class ConditionServiceImpl implements ConditionService {
 
         return task != null && task.getProcNum() != null && task.getSetNum() != null
                 && task.getProcNum() < task.getSetNum();
+    }
+
+    /**
+     * 是否拥有下一个订单
+     *
+     * @param devcId 设备Id
+     * @return
+     */
+    @Override
+    public Boolean hasNextTask(Integer devcId) {
+
+        Devc devc = devcMap.get(devcId);
+        if (devc == null) {
+            // TODO 内存数据中不存在当前设备
+            log.warn("设备不存在...");
+            return false;
+        }
+
+
+        boolean flag = false;
+        boolean isGet = false;
+        int idx = 0;
+        List<Task> tasksTemp = taskDao.findByStatusIsST00AndDevTask();
+        deviceTaskMap.put(devcId, tasksTemp);
+        for (int i = 0; i < tasksTemp.size(); i++) {
+            Task tmp = tasksTemp.get(i);
+            if (tmp.getTaskId().equals(devc.getTaskId())) {
+                flag = true;
+                idx = i;
+                continue;
+            }
+            if (flag) {
+                if ((devc.getMldDtlId() == null || tmp.getMldDtlId().equals(devc.getMldDtlId())) && StringUtils.equals(tmp.getStatus(), TaskStatus.ST00.toString())) {
+                    isGet = true;
+                    break;
+                }
+            }
+        }
+        if (!isGet) {
+            for (int i = 0; i < idx; i++) {
+                Task tmp = tasksTemp.get(i);
+                if (StringUtils.equals(tmp.getStatus(), TaskStatus.ST00.toString()) && (devc.getMldDtlId() == null || tmp.getMldDtlId().equals(devc.getMldDtlId()))) {
+                    isGet = true;
+                    break;
+                }
+            }
+        }
+
+        log.info("是否拥有下一个订单 --> {}", isGet);
+        return isGet;
+    }
+
+    @Override
+    public Boolean isMouldSame(Integer devcId) {
+        Devc devc = devcMap.get(devcId);
+        if (devc == null) {
+            // TODO 内存数据中不存在当前设备
+            log.warn("设备不存在...");
+            return false;
+        }
+
+        return devc.getMldDtlId() != null && devc.getMldDtlId().equals(devc.getTask().getMldDtlId());
     }
 }

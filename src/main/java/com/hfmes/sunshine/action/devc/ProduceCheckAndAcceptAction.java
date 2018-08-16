@@ -43,6 +43,9 @@ public class ProduceCheckAndAcceptAction extends BaseAction implements Action<De
         statusDataLog(ST);
         resetCounts();
 
+        // 更新planDtl数据
+        updatePlanDtl();
+
         //  选择新单
         taskService.taskDown(devcId);
     }

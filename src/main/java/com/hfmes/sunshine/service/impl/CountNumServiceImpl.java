@@ -4,7 +4,9 @@ import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.service.CountNumService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,6 +19,7 @@ public class CountNumServiceImpl implements CountNumService {
     private Map<Integer, Devc> devcs;
 
     @Autowired
+    @Qualifier("countNums")
     Map<Integer, Integer> countNums;
 
     @Override
@@ -32,10 +35,15 @@ public class CountNumServiceImpl implements CountNumService {
             log.info("num --> {}, count --> {}", num, count);
             num = num + Integer.parseInt(count);
 
-            if (devc.getMldStatus().equals("SM40")) {
-                devc.getTask().setProcNum(devc.getTask().getProcNum() + Integer.parseInt(count));
+
+            if (devc.getTask() != null && devc.getTaskId() != 0) {
+                if (StringUtils.equals(devc.getMldStatus(), "SM40")) {
+                    devc.getTask().setProcNum(devc.getTask().getProcNum() + Integer.parseInt(count));
+                } else {
+                    devc.getTask().setTestNum(devc.getTask().getTestNum() + Integer.parseInt(count));
+                }
             } else {
-                devc.getTask().setTestNum(devc.getTask().getTestNum() + Integer.parseInt(count));
+                log.warn("当前设备id#{}#没有工单", devcId);
             }
             try {
                 log.info("device id -> {}, 生产数量 {}", devc.getDeviceId(), devc.getTask().getProcNum());

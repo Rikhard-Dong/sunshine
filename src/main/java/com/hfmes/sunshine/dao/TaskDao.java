@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface TaskDao {
     /* ****************************************
-     * update
+     * insert
      ******************************************/
 
     Integer insertOne(Task newTask);
@@ -79,6 +79,17 @@ public interface TaskDao {
      */
     Integer updateMLdEndTime(@Param("taskId") Integer taskId,
                              @Param("mldEndTime") Date mldEndTime);
+
+    /**
+     * 更新操作员id
+     *
+     * @param taskId
+     * @param opId
+     * @return
+     */
+    Integer updateDevOpId(@Param("taskId") Integer taskId,
+                          @Param("opId") Integer opId);
+
 
 
     /* ****************************************

@@ -51,7 +51,7 @@ public class ProduceCompleteAction extends BaseAction implements Action<DeviceSt
         taskDao.updateEndTime(taskId, new Date());
 
         // 更新PlanDtl
-        updatePlanDtl();
+//        updatePlanDtl();
 
 
         // 记录状态转换

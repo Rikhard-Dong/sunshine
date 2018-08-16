@@ -25,6 +25,7 @@ public class MouldRepairComplete2SM10Action extends BaseAction implements Action
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("模具修复到领用状态....");
         contextLoad(context);
+        updateNum();
 
         // 记录操作
         mldLog("模具维修完成, 当前为领用状态", "", "操作");

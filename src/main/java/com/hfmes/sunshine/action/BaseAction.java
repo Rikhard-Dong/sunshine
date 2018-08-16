@@ -1,9 +1,9 @@
 package com.hfmes.sunshine.action;
 
+import com.hfmes.sunshine.cache.Person2Cache;
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.enums.MouldStatus;
-import com.hfmes.sunshine.enums.TaskStatus;
 import com.hfmes.sunshine.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -59,12 +59,7 @@ public class BaseAction {
     @Autowired
     @Qualifier("tasks")
     protected Map<Integer, Task> tasks;
-    @Autowired
-    @Qualifier("devRprs")
-    protected Map<Integer, DevRpr> devRprMap;
-    @Autowired
-    @Qualifier("mldRprs")
-    protected Map<Integer, MldRpr> mldRprMap;
+
     @Autowired
     @Qualifier("countNums")
     protected Map<Integer, Integer> counts;
@@ -113,7 +108,7 @@ public class BaseAction {
         devc = devcMap.get(devcId);
         mldDtl = mldDtlMap.get(mldDtlId);
 
-        person = personMap.get(opId);
+        person = Person2Cache.get(opId);
         if (devc == null || mldDtl == null) {
             // TODO 抛出异常回滚
             log.error("对应设备信息为空 --> {}", devc == null);
@@ -270,9 +265,9 @@ public class BaseAction {
         DevRpr devRpr = new DevRpr();
         devRpr.setDevcId(devcId);
         devRpr.setFaltTime(new Date());
-        devRpr.setReporter(String.valueOf(opId));
+        devRpr.setReporter(person.getName());
+        devRpr.setFault("设备故障");
         devRprDao.insertOne(devRpr);
-        devRprMap.put(devcId, devRpr);
     }
 
     /**
@@ -282,40 +277,38 @@ public class BaseAction {
         MldRpr mldRpr = new MldRpr();
         mldRpr.setMldDtlId(mldDtlId);
         mldRpr.setFaltTime(new Date());
-        mldRpr.setReporter(String.valueOf(opId));
+        mldRpr.setReporter(person.getName());
+        mldRpr.setFault("模具故障");
         mldRprDao.insertOne(mldRpr);
-        mldRprMap.put(mldDtlId, mldRpr);
     }
 
     /**
      * 开始维修设备, 更新开始时间及维修人员
      */
     protected void startDevRpr() {
-        DevRpr devRpr = devRprMap.get(devcId);
+        DevRpr devRpr = devRprDao.findByDevcIdTop1(devcId);
         if (devRpr == null) {
             log.error("没有设备维修信息, devcId --> {}", devcId);
             return;
         }
         devRpr.setStartTime(new Date());
         devRpr.setRepairerId(opId);
-        devRprDao.updateRepairer(devRpr.getDevRprId(), opId, null, devRpr.getStartTime());
-        devRprMap.put(devcId, devRpr);
+        devRprDao.updateRepairer(devRpr.getDevRprId(), opId, "", devRpr.getStartTime());
     }
 
     /**
      * 开始模具维修
      */
     protected void startMldRpr() {
-        MldRpr mldRpr = mldRprMap.get(mldDtlId);
+        MldRpr mldRpr = mldRprDao.findByMldIdTop1(mldDtlId);
         if (mldRpr == null) {
             log.error("没有设备维修信息, mldDtlId --> {}", mldDtlId);
             return;
         }
 
         mldRpr.setStartTime(new Date());
-        mldRpr.setRepairerId(opId);
-        mldRprDao.updateRepairer(mldRpr.getMldRprId(), opId, null, mldRpr.getStartTime());
-        mldRprMap.put(mldDtlId, mldRpr);
+        mldRpr.setRprId(opId);
+        mldRprDao.updateRepairer(mldRpr.getMldRprId(), opId, "", mldRpr.getStartTime());
     }
 
 
@@ -323,49 +316,45 @@ public class BaseAction {
      * 设备维修结束, 记录结束时间
      */
     protected void endDevRpr() {
-        DevRpr devRpr = devRprMap.get(devcId);
+        DevRpr devRpr = devRprDao.findByDevcIdTop1(devcId);
         if (devRpr == null) {
             log.error("没有设备维修信息, devcId --> {}", devcId);
             return;
         }
         devRprDao.updateCompleteRepair(devRpr.getDevRprId(), "", new Date());
-        devRprMap.remove(devcId);
     }
 
     protected void endMldRpr() {
-        MldRpr mldRpr = mldRprMap.get(mldDtlId);
+        MldRpr mldRpr = mldRprDao.findByMldIdTop1(mldDtlId);
         if (mldRpr == null) {
             log.error("没有设备维修信息, mldDtlId --> {}", mldDtlId);
             return;
         }
         mldRprDao.updateCompleteRepair(mldRpr.getMldRprId(), "", new Date());
-        mldRprMap.remove(mldDtlId);
     }
 
     /**
      * 撤销报修, 记录结束时间
      */
     protected void revokeDevRpr() {
-        DevRpr devRpr = devRprMap.get(devcId);
+        DevRpr devRpr = devRprDao.findByDevcIdTop1(devcId);
         if (devRpr == null) {
             log.error("没有设备维修信息, devcId --> {}", devcId);
             return;
         }
         devRprDao.updateCompleteRepair(devRpr.getDevRprId(), "撤销报修", new Date());
-        devRprMap.remove(devcId);
     }
 
     /**
      * 撤销模具报修, 记录结束时间
      */
     protected void revokeMldRpr() {
-        MldRpr mldRpr = mldRprMap.get(mldDtlId);
+        MldRpr mldRpr = mldRprDao.findByMldIdTop1(mldDtlId);
         if (mldRpr == null) {
             log.error("没有设备维修信息, mldDtlId --> {}", mldDtlId);
             return;
         }
         mldRprDao.updateCompleteRepair(mldRpr.getMldRprId(), "", new Date());
-        mldRprMap.remove(mldDtlId);
     }
 
     /**
@@ -391,7 +380,11 @@ public class BaseAction {
      */
     protected void updatePlanDtl() {
         PlanDtl planDtl = planDtlDao.findById(task.getPlanDtlId());
-        int sum = taskDao.sumProcNumByPlanDtlId(task.getPlanDtlId());
+        Integer sum = taskDao.sumProcNumByPlanDtlId(task.getPlanDtlId());
+        if (sum <= 0) {
+            log.error("taskId->{}, planDtlId->{}, 统计生产数量小于等于零", taskId, task.getPlanDtlId());
+            return;
+        }
         if (planDtl != null) {
             if (sum >= planDtl.getReqNum()) {
                 planDtlDao.updateCmpNumAndComplete(task.getPlanDtlId(), sum);
@@ -399,7 +392,7 @@ public class BaseAction {
                 planDtlDao.updateCmpNum(task.getPlanDtlId(), sum);
             }
         } else {
-            log.error("当前工单#{}#对应的palnDtl#{}#为空", task.getTaskId(), task.getPlanDtlId());
+            log.error("当前工单#{}#对应的planDtl#{}#为空", task.getTaskId(), task.getPlanDtlId());
         }
     }
 }

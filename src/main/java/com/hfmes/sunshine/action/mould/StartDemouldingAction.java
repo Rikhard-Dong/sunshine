@@ -26,6 +26,7 @@ public class StartDemouldingAction extends BaseAction implements Action<MouldSta
         log.debug("卸模开始action...");
 
         contextLoad(context);
+        updateNum();
         mldLog("卸模操作开始", "", "操作");
 
 
@@ -34,6 +35,9 @@ public class StartDemouldingAction extends BaseAction implements Action<MouldSta
 
         // 更新设备中的模具信息
         updateDevcMldDltStatus();
+
+        // 卸模/料不记录taskId
+        taskId = null;
         statusDataLog(SM);
         resetCounts();
     }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.hfmes.sunshine.utils.Constants.*;
 
@@ -35,6 +34,7 @@ public class OptionServiceImpl implements OptionService {
     private final SCOptCondDao scOptCondDao;
     private final Map<Integer, Devc> devcs;
     private final OptionExceService optionExceService;
+    private final SCOptCondDao optCondDao;
 
 
     @Autowired
@@ -45,7 +45,8 @@ public class OptionServiceImpl implements OptionService {
                              SCMethodDao methodDao,
                              SCOptCondDao scOptCondDao,
                              @Qualifier("devcs") Map<Integer, Devc> devcs,
-                             OptionExceService optionExceService) {
+                             OptionExceService optionExceService,
+                             SCOptCondDao optCondDao) {
         this.optionDao = optionDao;
         this.roleDao = roleDao;
         this.taskDao = taskDao;
@@ -54,6 +55,7 @@ public class OptionServiceImpl implements OptionService {
         this.scOptCondDao = scOptCondDao;
         this.devcs = devcs;
         this.optionExceService = optionExceService;
+        this.optCondDao = optCondDao;
     }
 
     /**
@@ -82,14 +84,7 @@ public class OptionServiceImpl implements OptionService {
         log.debug("deviceStatus --> {}, mouldStatus --> {}, taskStatus --> {}", deviceStatus, mouldStatus, taskStatus);
 
         // 获取操作的交集
-        Set<SCOption> options = optionDao.findByCardNo(cardNo);
-        log.debug("####options --> {}", options);
-        options.retainAll(optionDao.findBySDStatus(deviceStatus));
-        log.debug("####options --> {}", options);
-        options.retainAll(optionDao.findBySMStatus(mouldStatus));
-        log.debug("####options --> {}", options);
-        options.retainAll(optionDao.findBySTStatus(taskStatus));
-        log.debug("options --> {}", options);
+        List<SCOption> options = optionDao.findByCardNoAndStatus(cardNo, deviceStatus, mouldStatus, taskStatus);
 
         List<OptionDTO> optionDTOS = new ArrayList<>();
 
@@ -113,7 +108,15 @@ public class OptionServiceImpl implements OptionService {
 
         for (SCCondition condition : conditions) {
             Boolean value = scOptCondDao.getValueByOptIdAndConditionId(opId, condition.getScConditionId());
-            conditionDtos.add(new ConditionDto(condition, value));
+
+            ConditionDto temp = new ConditionDto(condition, value);
+            SCOptCond scOptCond = optCondDao.findByOptionIdAndCondIdAndValue(opId, condition.getScConditionId(), value);
+            if (scOptCond != null) {
+                temp.setNotMatch(scOptCond.getNotMatch());
+            } else {
+                log.warn("警告 --> 没有对应的optCond数据, opId -> {}, condId -> {}, value -> {}", opId, condition.getScConditionId(), value);
+            }
+            conditionDtos.add(temp);
         }
 
         return conditionDtos;

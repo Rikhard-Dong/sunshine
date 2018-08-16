@@ -308,8 +308,11 @@ public class OptionExceServiceImpl implements OptionExceService {
      * @param mldDtlId 模具id
      */
     @Override
-    @Transactional
+//    @Transactional
     public void completeProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.warn("执行生产完成操作, 时间-->{}", new Date());
+
+
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD10);
         Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_COMPLETE, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST10.toString(), TaskStatus.ST30.toString());
@@ -379,7 +382,7 @@ public class OptionExceServiceImpl implements OptionExceService {
      * @param mldDtlId 模具id
      */
     @Override
-    @Transactional
+//    @Transactional
     public void mouldFault(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM40);
         Message<MouldEvents> message1 = getMessage(MouldEvents.MOULD_REPORT_REPAIR, opId, optionId, devcId, mldDtlId);
@@ -555,6 +558,10 @@ public class OptionExceServiceImpl implements OptionExceService {
                 newTask.setMldEndTime(new Date());
                 newTask.setTaskId(null);
                 newTask.setStatus(TaskStatus.ST00.toString());
+                newTask.setMldStartTime(null);
+                newTask.setMldEndTime(null);
+                newTask.setMldPlanStart(null);
+                newTask.setMldPlanEnd(null);
                 taskDao.insertOne(newTask);
 
                 log.info("产生新单 --> {}", newTask);

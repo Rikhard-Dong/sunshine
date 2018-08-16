@@ -27,7 +27,7 @@ public class MouldRepairComplete2SM40Action extends BaseAction implements Action
         log.debug("模具修复到使用状态");
 
         contextLoad(context);
-
+        updateNum();
         // 记录日志信息
         mldLog("模具维修完成, 当前为使用状态", "", "操作");
 

@@ -74,4 +74,21 @@ public interface ConditionService {
      */
     Boolean procNumLessThanSetNum(Integer devcId);
 
+    /**
+     * 9. 是否拥有模具和当前设备模具相同的下一单
+     * <p>
+     *
+     * @param devcId 设备Id
+     * @return 有下一单返回true
+     */
+    Boolean hasNextTask(Integer devcId);
+
+    /**
+     * 10 判断当前工单的模具是否与当前设备的模具相等
+     *
+     * @param devcId
+     * @return
+     */
+    Boolean isMouldSame(Integer devcId);
+
 }

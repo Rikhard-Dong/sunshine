@@ -29,9 +29,11 @@ public class CompleteDemouldingAction extends BaseAction implements Action<Mould
         log.debug("卸模完成action....");
 
         contextLoad(context);
+        updateNum();
 
         // 记录模具操作
         mldLog("模具拆卸完成", "", "操作");
+        devLog("模具拆卸完成", "", "操作");
 
         // 更新模具状态
         updateMldStatus();

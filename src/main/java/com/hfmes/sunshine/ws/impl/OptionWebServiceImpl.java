@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.ws.impl;
 
+import com.hfmes.sunshine.cache.PersonCache;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
@@ -192,7 +193,19 @@ public class OptionWebServiceImpl implements OptionWebService {
         return StringUtils.capitalize(result.toString());
     }
 
+    @Override
+    public String hasNextTask(String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = conditionService.hasNextTask(params.getDeviceId());
+        return StringUtils.capitalize(result.toString());
+    }
 
+    @Override
+    public String isMouldSame(String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = conditionService.isMouldSame(params.getDeviceId());
+        return StringUtils.capitalize(result.toString());
+    }
 
     /* *****************************************************
      * 生产计数接口
@@ -367,6 +380,11 @@ public class OptionWebServiceImpl implements OptionWebService {
         boolean b = logService.devLog(devclog);
 
         return "1";
+    }
+
+    @Override
+    public String getPersonByCardNo(String cardNo) {
+        return JacksonUtils.toJSon(PersonCache.get(cardNo));
     }
 
 
