@@ -3,6 +3,7 @@ package com.hfmes.sunshine.service;
 import com.hfmes.sunshine.domain.SCMethod;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
+import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.dto.Result;
 
 import java.util.List;
@@ -21,6 +22,13 @@ public interface OptionService {
      * @return list of optionDTO
      */
     List<OptionDTO> obtainOptions(String cardNo, Integer deviceId);
+
+    /**
+     * 获取所有操作
+     *
+     * @return
+     */
+    List<OptionsDTO> obtainAllOptions();
 
     /**
      * 获取该操作的所需要满足的所有条件
@@ -47,4 +55,5 @@ public interface OptionService {
      * @return result结果
      */
     Result exceOption(Integer opId, Integer optionId, Integer deviceId, Integer mldDtlId);
+
 }

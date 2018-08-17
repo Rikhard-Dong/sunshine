@@ -4,7 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.SCConditionDao">
 
-    <select id="findByOpId" resultType="com.hfmes.sunshine.domain.SCCondition">
+    <resultMap id="scConditionResult" type="com.hfmes.sunshine.domain.SCCondition">
+        <result property="scConditionId" column="SCConditionId"/>
+        <result property="condName" column="CondName"/>
+        <result property="desc" column="Desc"/>
+        <result property="servicesName" column="ServicesName"/>
+        <result property="rtnType" column="RntType"/>
+        <result property="parms" column="Parms"/>
+    </resultMap>
+
+    <select id="findByOpId" resultMap="scConditionResult">
         select cond.*
         from T_SCCondition cond
             join T_SCOptCond optCond on cond.SCConditionId = optCond.SCConditionId

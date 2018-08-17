@@ -5,6 +5,7 @@ import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
+import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.OptionExceService;
 import com.hfmes.sunshine.service.OptionService;
@@ -91,6 +92,18 @@ public class OptionServiceImpl implements OptionService {
 
         }
         return optionDTOS;
+    }
+
+    @Override
+    public List<OptionsDTO> obtainAllOptions() {
+        List<SCOption> options = optionDao.findAll();
+        List<OptionsDTO> result = new ArrayList<>();
+        for (SCOption option : options) {
+//            log.info("option --> ### {}\n\n\n", option);
+            OptionsDTO optionsDTO = new OptionsDTO(option, scOptCondDao);
+            result.add(optionsDTO);
+        }
+        return result;
     }
 
     /**

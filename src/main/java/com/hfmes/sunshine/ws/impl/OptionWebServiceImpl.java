@@ -2,10 +2,7 @@ package com.hfmes.sunshine.ws.impl;
 
 import com.hfmes.sunshine.cache.PersonCache;
 import com.hfmes.sunshine.domain.*;
-import com.hfmes.sunshine.dto.ConditionDto;
-import com.hfmes.sunshine.dto.OptionDTO;
-import com.hfmes.sunshine.dto.ParamsObj;
-import com.hfmes.sunshine.dto.Result;
+import com.hfmes.sunshine.dto.*;
 import com.hfmes.sunshine.service.*;
 import com.hfmes.sunshine.utils.JacksonUtils;
 import com.hfmes.sunshine.ws.OptionWebService;
@@ -74,6 +71,12 @@ public class OptionWebServiceImpl implements OptionWebService {
         Integer devcId = Integer.valueOf(deviceId);
         List<OptionDTO> result = optionService.obtainOptions(cardNo, devcId);
         return JacksonUtils.toJSon(Result.success(result));
+    }
+
+    @Override
+    public String obtainAllOptions() {
+        List<OptionsDTO> result = optionService.obtainAllOptions();
+        return JacksonUtils.toJSon(result);
     }
 
 
@@ -228,8 +231,8 @@ public class OptionWebServiceImpl implements OptionWebService {
      * @return 一致返回true, 不一致返回false
      */
     @Override
-    public String checkDSSame(String devcId, String devcStatus) {
-        Boolean result = checkStatusService.checkDevcStatus(Integer.valueOf(devcId), devcStatus);
+    public String checkDSSame(String devcId, String devcStatus, String taskId) {
+        Boolean result = checkStatusService.checkDevcStatus(Integer.valueOf(devcId), devcStatus, Integer.valueOf(taskId));
         return StringUtils.capitalize(result.toString());
     }
 

@@ -13,7 +13,7 @@ public interface CheckStatusService {
      * @param devcStatus 下位机上传状态
      * @return 一致返回true, 否则返回false
      */
-    Boolean checkDevcStatus(Integer deviceId, String devcStatus);
+    Boolean checkDevcStatus(Integer deviceId, String devcStatus, Integer taskId);
 
 
     /**

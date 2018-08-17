@@ -25,10 +25,10 @@ public class CheckStatusServiceImpl implements CheckStatusService {
      * @return
      */
     @Override
-    public Boolean checkDevcStatus(Integer deviceId, String devcStatus) {
+    public Boolean checkDevcStatus(Integer deviceId, String devcStatus, Integer taskId) {
         Devc devc = DevcCache.get(deviceId);
 
-        return devc != null && StringUtils.equals(devcStatus, devc.getStatus());
+        return devc != null && StringUtils.equals(devcStatus, devc.getStatus()) && devc.getTaskId().equals(taskId);
     }
 
     /**

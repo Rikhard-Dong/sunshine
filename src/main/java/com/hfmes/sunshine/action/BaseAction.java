@@ -3,7 +3,9 @@ package com.hfmes.sunshine.action;
 import com.hfmes.sunshine.cache.*;
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
+import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldStatus;
+import com.hfmes.sunshine.enums.TaskStatus;
 import com.hfmes.sunshine.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -352,9 +354,13 @@ public class BaseAction {
      */
     protected void updateNum() {
         Devc devc = DevcCache.get(devcId);
+        Task task = TasksCache.get(taskId);
 
+        log.info("更新工单数量, dev status -> {}, mld status -> {}, task status -> {}", devc.getStatus(), devc.getMldStatus(), task.getStatus());
         if (devc != null) {
-            if (StringUtils.equals(devc.getMldStatus(), MouldStatus.SM40.toString())) {
+            if (StringUtils.equals(devc.getMldStatus(), MouldStatus.SM40.toString())
+                    && StringUtils.equals(devc.getStatus(), DeviceStatus.SD10.toString())
+                    && StringUtils.equals(task.getStatus(), TaskStatus.ST10.toString())) {
                 log.info("更新生产数量 id ->  {}., num -> {}", taskId, devc.getTask().getProcNum());
                 taskDao.updateProcNum(taskId, devc.getTask().getProcNum());
             } else {
@@ -362,7 +368,7 @@ public class BaseAction {
                 taskDao.updateTestNum(taskId, devc.getTask().getTestNum());
             }
         } else {
-            log.warn("devc is null");
+            log.error("devc is null");
         }
     }
 

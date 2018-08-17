@@ -25,6 +25,13 @@ public interface OptionWebService {
     String obtainOp(@WebParam(name = "personCardNo") String cardNo,
                     @WebParam(name = "deviceId") String deviceId);
 
+    /**
+     * 获取所有操作对应condition和对应的method
+     *
+     * @return
+     */
+    @WebMethod
+    String obtainAllOptions();
 
     /**
      * 获取该操作所需的条件
@@ -168,7 +175,8 @@ public interface OptionWebService {
      */
     @WebMethod
     String checkDSSame(@WebParam(name = "devcId") String devcId,
-                       @WebParam(name = "devcStatus") String devcStatus);
+                       @WebParam(name = "devcStatus") String devcStatus,
+                       @WebParam(name = "taskId") String taskId);
 
 
     /**

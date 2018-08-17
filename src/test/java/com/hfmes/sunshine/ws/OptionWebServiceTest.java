@@ -47,4 +47,15 @@ public class OptionWebServiceTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void obtainAllOptions() {
+        Object[] objs;
+        try {
+            objs = client.invoke("obtainAllOptions");
+            log.debug("result -->{}", objs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

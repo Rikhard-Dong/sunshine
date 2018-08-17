@@ -3,12 +3,14 @@ package com.hfmes.sunshine.service.impl;
 import com.hfmes.sunshine.cache.DevcCache;
 import com.hfmes.sunshine.cache.DevcTasksCache;
 import com.hfmes.sunshine.cache.TasksCache;
+import com.hfmes.sunshine.dao.PlanDtlDao;
 import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
-import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.PlanDtl;
 import com.hfmes.sunshine.domain.StatusData;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.*;
+import com.hfmes.sunshine.exception.StateMachineException;
 import com.hfmes.sunshine.service.LogService;
 import com.hfmes.sunshine.service.OptionExceService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     private final Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStateMachineMap;
     private final LogService logService;
     private final TaskDao taskDao;
+    private final PlanDtlDao planDtlDao;
 
     @Autowired
     public OptionExceServiceImpl(@Qualifier("deviceStateMachines")
@@ -48,11 +51,12 @@ public class OptionExceServiceImpl implements OptionExceService {
                                  @Qualifier("mouldStateMachines")
                                          Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStateMachineMap,
                                  TaskDao taskDao,
-                                 LogService logService) {
+                                 LogService logService, PlanDtlDao planDtlDao) {
         this.deviceStateMachineMap = deviceStateMachineMap;
         this.mouldStateMachineMap = mouldStateMachineMap;
         this.logService = logService;
         this.taskDao = taskDao;
+        this.planDtlDao = planDtlDao;
     }
 
 
@@ -531,6 +535,8 @@ public class OptionExceServiceImpl implements OptionExceService {
      * opID --> 21 中止生产
      * 执行操作
      * |--- 1. 更新工单状态为暂停ST20 -> 待验收ST30
+     * |--- 2. 根据当前宫内单并产生对应的新的工单
+     * |--- 3. 更新planDtl中对应的cmpNum
      *
      * @param opId     操作员id
      * @param optionId 操作id
@@ -554,33 +560,21 @@ public class OptionExceServiceImpl implements OptionExceService {
 
         // 如果生产数量没有达到则继续生产
         if (task.getProcNum() < task.getSetNum()) {
-            try {
-                Task newTask = (Task) task.clone();
-                newTask.setStartTime(null);
-                newTask.setEndTime(null);
-                newTask.setTestNum(0);
-                newTask.setProcNum(0);
-                newTask.setSetNum(task.getSetNum() - task.getProcNum());
-                newTask.setMldStartTime(new Date());
-                newTask.setMldEndTime(new Date());
-                newTask.setTaskId(null);
-                newTask.setStatus(TaskStatus.ST00.toString());
-                newTask.setMldStartTime(null);
-                newTask.setMldEndTime(null);
-                newTask.setMldPlanStart(null);
-                newTask.setMldPlanEnd(null);
-                taskDao.insertOne(newTask);
+            Task newTask = new Task(task);
+            taskDao.insertOne(newTask);
 
-                log.info("产生新单 --> {}", newTask);
+            log.debug("\n\n### 旧单 task --> {}\n###产生新单 new task --> {}\n\n", task, newTask);
 
-                // 将产生的新的工单添加到内存数据中
-                TasksCache.put(newTask.getTaskId(), task);
-                List<Task> temp = DevcTasksCache.get(devcId);
-                temp.add(newTask);
+
+            PlanDtl planDtl = planDtlDao.findById(task.getPlanDtlId());
+            Integer sum = taskDao.sumProcNumByPlanDtlId(task.getPlanDtlId());
+
+            // 将产生的新的工单添加到内存数据中
+            TasksCache.put(newTask.getTaskId(), newTask);
+            TasksCache.put(task.getTaskId(), task);
+            List<Task> temp = DevcTasksCache.get(devcId);
+            temp.add(newTask);
 //                devcTasks.put(devcId, temp);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
         }
 
         // 记录状态转换
@@ -656,16 +650,18 @@ public class OptionExceServiceImpl implements OptionExceService {
      * @param status   状态
      * @return 模具状态机
      */
-    private StateMachine<MouldStatus, MouldEvents> getMouldStateMachine(Integer mldDtlId, MouldStatus status) {
+    private StateMachine<MouldStatus, MouldEvents> getMouldStateMachine(Integer mldDtlId, MouldStatus status) throws StateMachineException {
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = mouldStateMachineMap.get(mldDtlId);
 
         if (mouldStateMachine == null ||
                 !StringUtils.equals(mouldStateMachine.getState().getId().toString(), status.toString())) {
+            //  当前状态机为空或者状态机的状态错误, 抛出异常
 
             log.error("模具id为#{}#的状态机为空或者状态机异常, machine --> {}", mldDtlId, mouldStateMachine);
             if (mouldStateMachine != null) {
                 log.error("当前状态机状态为{}, 需要状态为{}", mouldStateMachine.getState().getId().toString(), status.toString());
             }
+            throw new StateMachineException("当前状态机异常, 模具id为 + " + mldDtlId + ", 所需状态为" + status.toString());
         }
         return mouldStateMachine;
 
@@ -678,15 +674,16 @@ public class OptionExceServiceImpl implements OptionExceService {
      * @param status   当前应该为状态
      * @return 设备状态机
      */
-    private StateMachine<DeviceStatus, DeviceEvents> getDeviceMachine(Integer deviceId, DeviceStatus status) {
+    private StateMachine<DeviceStatus, DeviceEvents> getDeviceMachine(Integer deviceId, DeviceStatus status) throws StateMachineException {
         StateMachine<DeviceStatus, DeviceEvents> devcStateMachine = deviceStateMachineMap.get(deviceId);
         if (devcStateMachine == null ||
                 !StringUtils.equals(devcStateMachine.getState().getId().toString(), status.toString())) {
-            // TODO 当前状态机为空或者状态机的状态错误, 抛出异常
+            //  当前状态机为空或者状态机的状态错误, 抛出异常
             log.error("设备id为#{}#的状态机为空或者状态机异常", deviceId);
             if (devcStateMachine != null) {
                 log.error("当前状态机状态为{}, 需要状态为{}", devcStateMachine.getState().getId().toString(), status.toString());
             }
+            throw new StateMachineException("当前状态机异常, 设备id为 + " + deviceId + ", 所需状态为" + status.toString());
         }
 
         return devcStateMachine;
@@ -695,13 +692,13 @@ public class OptionExceServiceImpl implements OptionExceService {
     /**
      * 封装message信息
      *
-     * @param event
-     * @param opId
-     * @param optionId
-     * @param devcId
-     * @param mldDtlId
-     * @param <T>
-     * @return
+     * @param event    事件
+     * @param opId     操作员id
+     * @param optionId 操作id
+     * @param devcId   设备id
+     * @param mldDtlId 模具id
+     * @param <T>      事件
+     * @return 消息
      */
     private <T> Message<T> getMessage(T event, Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
         return getMessage(event, opId, optionId, devcId, mldDtlId, null, null);
@@ -710,15 +707,15 @@ public class OptionExceServiceImpl implements OptionExceService {
     /**
      * 封装message信息
      *
-     * @param event
-     * @param opId
-     * @param optionId
-     * @param devcId
-     * @param mldDtlId
-     * @param curTaskStatus
-     * @param nextTaskStatus
-     * @param <T>
-     * @return
+     * @param event          事件
+     * @param opId           操作员id
+     * @param optionId       操作id
+     * @param devcId         设备id
+     * @param mldDtlId       模具id
+     * @param curTaskStatus  工单当前状态
+     * @param nextTaskStatus 工单下一个状态
+     * @param <T>            事件
+     * @return 消息
      */
     private <T> Message<T> getMessage(T event, Integer opId, Integer optionId, Integer devcId, Integer mldDtlId,
                                       String curTaskStatus, String nextTaskStatus) {
@@ -739,10 +736,10 @@ public class OptionExceServiceImpl implements OptionExceService {
     /**
      * 封装message信息
      *
-     * @param event
-     * @param params
-     * @param <T>
-     * @return
+     * @param event  事件
+     * @param params 参数
+     * @param <T>    事件
+     * @return 状态机消息
      */
     private <T> Message<T> getMessage(T event, Map<String, Object> params) {
         MessageBuilder<T> builder = MessageBuilder.withPayload(event);

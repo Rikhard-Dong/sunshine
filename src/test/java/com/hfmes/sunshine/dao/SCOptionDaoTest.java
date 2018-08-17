@@ -47,4 +47,11 @@ public class SCOptionDaoTest {
         log.info("{}", options);
 
     }
+
+    @Test
+    public void findAll() {
+        List<SCOption> options = scOptionDao.findAll();
+        log.info("size --> {}", options.size());
+        log.info("{}", options);
+    }
 }

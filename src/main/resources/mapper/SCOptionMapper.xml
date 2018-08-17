@@ -4,6 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.SCOptionDao">
 
+    <resultMap id="optionResult" type="com.hfmes.sunshine.domain.SCOption">
+        <result property="scOptionId" column="SCOptionId"/>
+        <result property="roleId" column="RoleId"/>
+        <result property="optName" column="OptName"/>
+
+        <collection property="scMethods" column="SCOptionId" fetchType="lazy"
+                    select="com.hfmes.sunshine.dao.SCMethodDao.findByOpId"/>
+
+        <collection property="scConditions" column="SCOptionId" fetchType="lazy"
+                    select="com.hfmes.sunshine.dao.SCConditionDao.findByOpId"/>
+    </resultMap>
+
     <select id="findBySCOptionId" resultType="com.hfmes.sunshine.domain.SCOption">
         select *
         from T_SCOption
@@ -85,7 +97,7 @@
             (statusChg.DicType = 'ST' and (statusChg.CurStatusCode = #{taskStatus} or statusChg.CurStatusCode is null))
     </select>
 
-    <select id="findAll" resultType="com.hfmes.sunshine.domain.SCOption">
+    <select id="findAll" resultMap="optionResult">
         select *
         from T_SCOption
     </select>
