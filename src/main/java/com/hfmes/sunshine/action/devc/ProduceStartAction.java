@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.action.devc;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.TasksCache;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
@@ -42,10 +43,11 @@ public class ProduceStartAction extends BaseAction implements Action<DeviceStatu
         updateTaskStatus();
         updateDevcStatus();
 
+        Task task = TasksCache.get(taskId);
+
         if (task.getDevOpId() == 0) {
             task.setDevOpId(opId);
             taskDao.updateDevOpId(task.getTaskId(), opId);
-            tasks.put(taskId, task);
         }
 
         taskDao.updateStartTime(taskId, new Date());

@@ -1,5 +1,7 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.DevcTasksCache;
 import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.Task;
@@ -10,11 +12,9 @@ import com.hfmes.sunshine.service.ConditionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author supreDong@gmail.com
@@ -27,19 +27,9 @@ import java.util.Map;
 public class ConditionServiceImpl implements ConditionService {
 
 
-    private final Map<Integer, Devc> devcMap;
-
-    @Autowired
-    @Qualifier("deviceTasks")
-    private Map<Integer, List<Task>> deviceTaskMap;
-
     @Autowired
     private TaskDao taskDao;
 
-    @Autowired
-    public ConditionServiceImpl(@Qualifier("devcs") Map<Integer, Devc> devcMap) {
-        this.devcMap = devcMap;
-    }
 
     /**
      * @param deviceId 设备id
@@ -47,7 +37,7 @@ public class ConditionServiceImpl implements ConditionService {
      */
     @Override
     public Boolean hasMould(Integer deviceId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         log.debug("devc --> {}", devc);
         return devc != null && StringUtils.isNotEmpty(devc.getMldStatus());
     }
@@ -58,7 +48,7 @@ public class ConditionServiceImpl implements ConditionService {
      */
     @Override
     public Boolean mldOpLegal(Integer deviceId, Integer personId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -76,7 +66,7 @@ public class ConditionServiceImpl implements ConditionService {
      */
     @Override
     public Boolean isDevcRun(Integer deviceId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -92,7 +82,7 @@ public class ConditionServiceImpl implements ConditionService {
      */
     @Override
     public Boolean isMouldUse(Integer deviceId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -108,7 +98,7 @@ public class ConditionServiceImpl implements ConditionService {
      */
     @Override
     public Boolean devOpLegal(Integer deviceId, Integer personId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -128,7 +118,7 @@ public class ConditionServiceImpl implements ConditionService {
      */
     @Override
     public Boolean isTaskDevOpEqualsCurPerson(Integer deviceId, Integer personId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -142,7 +132,7 @@ public class ConditionServiceImpl implements ConditionService {
 
     @Override
     public Boolean procNumAchieveSetNum(Integer deviceId) {
-        Devc devc = devcMap.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -158,7 +148,7 @@ public class ConditionServiceImpl implements ConditionService {
 
     @Override
     public Boolean procNumLessThanSetNum(Integer devcId) {
-        Devc devc = devcMap.get(devcId);
+        Devc devc = DevcCache.get(devcId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -180,7 +170,7 @@ public class ConditionServiceImpl implements ConditionService {
     @Override
     public Boolean hasNextTask(Integer devcId) {
 
-        Devc devc = devcMap.get(devcId);
+        Devc devc = DevcCache.get(devcId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");
@@ -191,8 +181,8 @@ public class ConditionServiceImpl implements ConditionService {
         boolean flag = false;
         boolean isGet = false;
         int idx = 0;
-        List<Task> tasksTemp = taskDao.findByStatusIsST00AndDevTask();
-        deviceTaskMap.put(devcId, tasksTemp);
+        List<Task> tasksTemp = taskDao.findByStatusIsST00ByDevcId(devcId);
+        DevcTasksCache.put(devcId, tasksTemp);
         for (int i = 0; i < tasksTemp.size(); i++) {
             Task tmp = tasksTemp.get(i);
             if (tmp.getTaskId().equals(devc.getTaskId())) {
@@ -223,7 +213,7 @@ public class ConditionServiceImpl implements ConditionService {
 
     @Override
     public Boolean isMouldSame(Integer devcId) {
-        Devc devc = devcMap.get(devcId);
+        Devc devc = DevcCache.get(devcId);
         if (devc == null) {
             // TODO 内存数据中不存在当前设备
             log.warn("设备不存在...");

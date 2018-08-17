@@ -1,15 +1,14 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.MldDtlsCache;
+import com.hfmes.sunshine.cache.TasksCache;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.service.SyncStatusService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * @author supreDong@gmail.com
@@ -20,28 +19,13 @@ import java.util.Map;
 public class SyncStatusServiceImpl implements SyncStatusService {
 
 
-    private final Map<Integer, Devc> devcMap;
-
-    private final Map<Integer, MldDtl> mldDtlMap;
-
-    private final Map<Integer, Task> taskMap;
-
-    @Autowired
-    public SyncStatusServiceImpl(@Qualifier("devcs") Map<Integer, Devc> devcMap,
-                                 @Qualifier("mldDtls") Map<Integer, MldDtl> mldDtlMap,
-                                 @Qualifier("tasks") Map<Integer, Task> taskMap) {
-        this.devcMap = devcMap;
-        this.mldDtlMap = mldDtlMap;
-        this.taskMap = taskMap;
-    }
-
     /**
      * @param devcId 设备id
      * @return 同步对象
      */
     @Override
     public Devc syncDevc(Integer devcId) {
-        return devcMap.get(devcId);
+        return DevcCache.get(devcId);
     }
 
     /**
@@ -50,7 +34,7 @@ public class SyncStatusServiceImpl implements SyncStatusService {
      */
     @Override
     public MldDtl syncMldDtl(Integer mldId) {
-        return mldDtlMap.get(mldId);
+        return MldDtlsCache.get(mldId);
     }
 
     /**
@@ -59,8 +43,7 @@ public class SyncStatusServiceImpl implements SyncStatusService {
      */
     @Override
     public Task syncTask(Integer taskId) {
-        Task task = taskMap.get(taskId);
-//        task.setMldDtl(task.getMldDtl());
-        return task;
+        // task.setMldDtl(task.getMldDtl());
+        return TasksCache.get(taskId);
     }
 }

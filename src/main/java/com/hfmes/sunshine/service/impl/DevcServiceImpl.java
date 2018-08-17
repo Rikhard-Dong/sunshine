@@ -1,26 +1,22 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.DevcCache;
 import com.hfmes.sunshine.dao.DevcDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.service.DevcService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service
+@Slf4j
 public class DevcServiceImpl implements DevcService {
 
     private final DevcDao devcDao;
-    private final Map<Integer, Devc> devcMap;
 
     @Autowired
-    public DevcServiceImpl(DevcDao devcDao,
-                           @Qualifier("devcs") Map<Integer, Devc> devcMap) {
+    public DevcServiceImpl(DevcDao devcDao) {
         this.devcDao = devcDao;
-        this.devcMap = devcMap;
     }
 
     /**
@@ -33,7 +29,7 @@ public class DevcServiceImpl implements DevcService {
     public Devc updateDevcFromSql(int devcId) {
         // TODO 影响生产计数, 改进
         Devc devc = devcDao.findByDeviceId(devcId);
-        devcMap.put(devcId, devc);
+        DevcCache.put(devcId, devc);
         return devc;
     }
 

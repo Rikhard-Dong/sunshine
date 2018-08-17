@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.action.devc;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.TasksCache;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
@@ -32,8 +33,10 @@ public class ProduceCheckAndAcceptAction extends BaseAction implements Action<De
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("生产验收...");
         contextLoad(context);
+
         updateNum();
 
+        Task task = TasksCache.get(taskId);
 
         // 更新task状态
         task.setStatus(nextTaskStatus);

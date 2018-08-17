@@ -1,5 +1,8 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.DevcTasksCache;
+import com.hfmes.sunshine.cache.TasksCache;
 import com.hfmes.sunshine.dao.TaskDao;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
@@ -36,17 +39,7 @@ public class OptionExceServiceImpl implements OptionExceService {
 
     private final Map<Integer, StateMachine<DeviceStatus, DeviceEvents>> deviceStateMachineMap;
     private final Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStateMachineMap;
-
-    @Qualifier("devcs")
-    private final Map<Integer, Devc> devcMap;
-    @Qualifier("mldDtls")
-    private final Map<Integer, MldDtl> mldDtlMap;
-    private final Map<Integer, List<Task>> devcTasks;
-    private final Map<Integer, Task> tasks;
-
-
     private final LogService logService;
-
     private final TaskDao taskDao;
 
     @Autowired
@@ -54,20 +47,12 @@ public class OptionExceServiceImpl implements OptionExceService {
                                          Map<Integer, StateMachine<DeviceStatus, DeviceEvents>> deviceStateMachineMap,
                                  @Qualifier("mouldStateMachines")
                                          Map<Integer, StateMachine<MouldStatus, MouldEvents>> mouldStateMachineMap,
-                                 Map<Integer, Devc> descMap,
-                                 Map<Integer, MldDtl> mldDtlMap,
                                  TaskDao taskDao,
-                                 LogService logService,
-                                 @Qualifier("deviceTasks") Map<Integer, List<Task>> devcTasks,
-                                 @Qualifier("tasks") Map<Integer, Task> tasks) {
+                                 LogService logService) {
         this.deviceStateMachineMap = deviceStateMachineMap;
         this.mouldStateMachineMap = mouldStateMachineMap;
-        this.devcMap = descMap;
-        this.mldDtlMap = mldDtlMap;
         this.logService = logService;
         this.taskDao = taskDao;
-        this.devcTasks = devcTasks;
-        this.tasks = tasks;
     }
 
 
@@ -88,6 +73,8 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void mouldFilling(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 2 装模完成");
+
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM10);
         Message<MouldEvents> message = getMessage(MouldEvents.START_MOULD_FILLING, opId, optionId, devcId, mldDtlId);
                 /*MessageBuilder
@@ -117,6 +104,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void completeMouldFilling(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 2 装模完成");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM20);
         Message<MouldEvents> message = getMessage(MouldEvents.COMPLETE_MOULD_FILLING, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -139,6 +127,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void demoulding(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 3 卸模/料");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM40);
         Message<MouldEvents> message = getMessage(MouldEvents.START_DEMOULDING, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -160,6 +149,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void completeDemoulding(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 4  卸模完成");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM30);
         Message<MouldEvents> message = getMessage(MouldEvents.COMPLETE_DEMOULDING, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -181,6 +171,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void mouldRepair(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 5 模具维修");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM50);
         Message<MouldEvents> message = getMessage(MouldEvents.MOULD_REPAIR, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -202,6 +193,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void demoulding2(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 6  卸模/料");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM60);
         Message<MouldEvents> message = getMessage(MouldEvents.DEMOULDING, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -224,6 +216,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void mouldRepairComplete(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 7 模具修复");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM60);
         Message<MouldEvents> message = getMessage(MouldEvents.MOULD_REPAIR_COMPLETE2SM40, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -245,6 +238,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void mouldRepairComplete2(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 8 模具修复");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM60);
         Message<MouldEvents> message = getMessage(MouldEvents.MOULD_REPAIR_COMPLETE2SM10, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message);
@@ -266,6 +260,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void startProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 9 开始生产 ");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
         Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_START, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST00.toString(), TaskStatus.ST10.toString());
@@ -288,6 +283,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void continueProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 ->  opId --> 10 继续生产");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
         Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_RECOVERY, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST20.toString(), TaskStatus.ST10.toString());
@@ -310,6 +306,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
 //    @Transactional
     public void completeProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 ->  opId --> 11 生产完成");
         log.warn("执行生产完成操作, 时间-->{}", new Date());
 
 
@@ -335,6 +332,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void suspendProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 ->  opId --> 12 暂停生产");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD10);
         Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_SUSPEND, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST10.toString(), TaskStatus.ST20.toString());
@@ -358,6 +356,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void deviceFault(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 13 设备故障");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD10);
         Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REPORT_REPAIR, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST10.toString(), TaskStatus.ST20.toString());
@@ -384,6 +383,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
 //    @Transactional
     public void mouldFault(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 ->  opId --> 14 模具故障");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM40);
         Message<MouldEvents> message1 = getMessage(MouldEvents.MOULD_REPORT_REPAIR, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message1);
@@ -410,6 +410,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void revokeDeviceReportRepair(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 ->  opId --> 15 设备撤销报修");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD20);
         Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REVOKE_REPORT_REPAIR, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST20.toString(), TaskStatus.ST10.toString());
@@ -433,6 +434,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void revokeDeviceReportRepair2(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 16 模具撤销报修");
         StateMachine<MouldStatus, MouldEvents> mouldStateMachine = getMouldStateMachine(mldDtlId, MouldStatus.SM50);
         Message<MouldEvents> message1 = getMessage(MouldEvents.MOULD_REVOKE_REPORT_REPAIR, opId, optionId, devcId, mldDtlId);
         mouldStateMachine.sendEvent(message1);
@@ -457,6 +459,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void repairDevice(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 17 设备维修");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD20);
         Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REPAIR, opId, optionId, devcId, mldDtlId);
         deviceStateMachine.sendEvent(message);
@@ -476,6 +479,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void completeRepairDevice(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 18 设备修复");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD30);
         Message<DeviceEvents> message = getMessage(DeviceEvents.DEVICE_REPAIR_COMPLETE, opId, optionId, devcId, mldDtlId);
         deviceStateMachine.sendEvent(message);
@@ -495,6 +499,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void checkProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 19 生产验收");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
         Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_CHECK_AND_ACCEPT, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST30.toString(), TaskStatus.ST40.toString());
@@ -514,6 +519,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void continueProduce2(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId --> 20 继续生产");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
         Message<DeviceEvents> message = getMessage(DeviceEvents.PRODUCE_CONTINUE, opId, optionId, devcId, mldDtlId,
                 TaskStatus.ST30.toString(), TaskStatus.ST20.toString());
@@ -534,7 +540,8 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void stopProduce(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-        Devc devc = devcMap.get(devcId);
+        log.info("当前执行操作 -> opID --> 21 中止生产");
+        Devc devc = DevcCache.get(devcId);
         if (devc == null) {
             log.error("stop produce 停止生产出错, 没有设备id为#{}#的对象", devcId);
             return;
@@ -543,7 +550,7 @@ public class OptionExceServiceImpl implements OptionExceService {
         task.setStatus(TaskStatus.ST30.toString());
         taskDao.updateStatus(task.getTaskId(), task.getStatus());
         devc.setTask(task);
-        devcMap.put(devcId, devc);
+//        devcMap.put(devcId, devc);
 
         // 如果生产数量没有达到则继续生产
         if (task.getProcNum() < task.getSetNum()) {
@@ -567,10 +574,10 @@ public class OptionExceServiceImpl implements OptionExceService {
                 log.info("产生新单 --> {}", newTask);
 
                 // 将产生的新的工单添加到内存数据中
-                tasks.put(newTask.getTaskId(), task);
-                List<Task> temp = devcTasks.get(devcId);
+                TasksCache.put(newTask.getTaskId(), task);
+                List<Task> temp = DevcTasksCache.get(devcId);
                 temp.add(newTask);
-                devcTasks.put(devcId, temp);
+//                devcTasks.put(devcId, temp);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
@@ -605,6 +612,7 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void nextTaskForPunch(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
+        log.info("当前执行操作 -> opId -> 22 冲床工选择下一单");
         StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
         Map<String, Object> params = new HashMap<>();
         params.put("opId", opId);
@@ -626,14 +634,19 @@ public class OptionExceServiceImpl implements OptionExceService {
     @Override
     @Transactional
     public void nextTaskForPBCB(Integer opId, Integer optionId, Integer devcId, Integer mldDtlId) {
-        StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
-        Map<String, Object> params = new HashMap<>();
-        params.put("opId", opId);
-        params.put("optionId", optionId);
-        params.put("devcId", devcId);
-        params.put("mldDtlId", mldDtlId);
-        params.put("workerType", 1);
-        deviceStateMachine.sendEvent(getMessage(DeviceEvents.PRODUCE_NEXT_ORDER, params));
+        try {
+            log.info("当前执行操作 -> opId -> 23 生产管理选择下一单");
+            StateMachine<DeviceStatus, DeviceEvents> deviceStateMachine = getDeviceMachine(devcId, DeviceStatus.SD00);
+            Map<String, Object> params = new HashMap<>();
+            params.put("opId", opId);
+            params.put("optionId", optionId);
+            params.put("devcId", devcId);
+            params.put("mldDtlId", mldDtlId);
+            params.put("workerType", 1);
+            deviceStateMachine.sendEvent(getMessage(DeviceEvents.PRODUCE_NEXT_ORDER, params));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.DevcCache;
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
@@ -9,12 +10,10 @@ import com.hfmes.sunshine.service.OptionExceService;
 import com.hfmes.sunshine.service.OptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.hfmes.sunshine.utils.Constants.*;
 
@@ -32,7 +31,6 @@ public class OptionServiceImpl implements OptionService {
     private final SCConditionDao conditionDao;
     private final SCMethodDao methodDao;
     private final SCOptCondDao scOptCondDao;
-    private final Map<Integer, Devc> devcs;
     private final OptionExceService optionExceService;
     private final SCOptCondDao optCondDao;
 
@@ -44,7 +42,6 @@ public class OptionServiceImpl implements OptionService {
                              SCConditionDao conditionDao,
                              SCMethodDao methodDao,
                              SCOptCondDao scOptCondDao,
-                             @Qualifier("devcs") Map<Integer, Devc> devcs,
                              OptionExceService optionExceService,
                              SCOptCondDao optCondDao) {
         this.optionDao = optionDao;
@@ -53,7 +50,6 @@ public class OptionServiceImpl implements OptionService {
         this.conditionDao = conditionDao;
         this.methodDao = methodDao;
         this.scOptCondDao = scOptCondDao;
-        this.devcs = devcs;
         this.optionExceService = optionExceService;
         this.optCondDao = optCondDao;
     }
@@ -67,7 +63,7 @@ public class OptionServiceImpl implements OptionService {
      */
     @Override
     public List<OptionDTO> obtainOptions(String cardNo, Integer deviceId) {
-        Devc devc = devcs.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
 
         if (devc == null) {
             // TODO 传入的设备不在map中

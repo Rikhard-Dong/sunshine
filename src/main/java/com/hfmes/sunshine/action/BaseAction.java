@@ -1,6 +1,6 @@
 package com.hfmes.sunshine.action;
 
-import com.hfmes.sunshine.cache.Person2Cache;
+import com.hfmes.sunshine.cache.*;
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.enums.MouldStatus;
@@ -8,12 +8,9 @@ import com.hfmes.sunshine.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.statemachine.StateContext;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import static com.hfmes.sunshine.utils.Constants.BTN_EVENT_TYPE;
 import static com.hfmes.sunshine.utils.Constants.ST;
@@ -43,26 +40,6 @@ public class BaseAction {
     @Autowired
     protected PlanDtlDao planDtlDao;
 
-
-    @Autowired
-    @Qualifier("devcs")
-    protected Map<Integer, Devc> devcMap;
-    @Autowired
-    @Qualifier("mldDtls")
-    protected Map<Integer, MldDtl> mldDtlMap;
-    @Autowired
-    @Qualifier("persons2")
-    protected Map<Integer, Person> personMap;
-    @Autowired
-    @Qualifier("deviceTasks")
-    protected Map<Integer, List<Task>> deviceTaskMap;
-    @Autowired
-    @Qualifier("tasks")
-    protected Map<Integer, Task> tasks;
-
-    @Autowired
-    @Qualifier("countNums")
-    protected Map<Integer, Integer> counts;
     protected Integer devcId;
     protected Integer opId;
     protected Integer optionId;
@@ -77,11 +54,11 @@ public class BaseAction {
 
     protected StatusData statusData = new StatusData();
 
-    protected Devc devc;
-    protected MldDtl mldDtl;
-    protected Task task;
-
-    private Person person;
+//    protected Devc devc;
+//    protected MldDtl mldDtl;
+//    protected Task task;
+//
+//    private Person person;
 
     /**
      * 加载一些基础属性
@@ -105,19 +82,19 @@ public class BaseAction {
 
         log.debug("curStatus --> {}, nextStatus --> {}", curStatus, nextStatus);
 
-        devc = devcMap.get(devcId);
-        mldDtl = mldDtlMap.get(mldDtlId);
+//        devc = DevcCache.get(devcId);
+//        mldDtl = MldDtlsCache.get(mldDtlId);
+//
+//        person = Person2Cache.get(opId);
+//        if (devc == null || mldDtl == null) {
+//            // TODO 抛出异常回滚
+//            log.error("对应设备信息为空 --> {}", devc == null);
+//            log.error("对应模具信息为空 --> {}", mldDtl == null);
+//            return;
+//        }
 
-        person = Person2Cache.get(opId);
-        if (devc == null || mldDtl == null) {
-            // TODO 抛出异常回滚
-            log.error("对应设备信息为空 --> {}", devc == null);
-            log.error("对应模具信息为空 --> {}", mldDtl == null);
-            return;
-        }
-
-        taskId = devc.getTaskId();
-        task = devc.getTask();
+        taskId = DevcCache.get(devcId).getTaskId();
+//        task = devc.getTask();
 
     }
 
@@ -133,7 +110,8 @@ public class BaseAction {
         mldLog.setMldDtlId(mldDtlId);
         mldLog.setOpTime(new Date());
         mldLog.setTaskId(taskId == null ? 0 : taskId);
-        mldLog.setOpName(person == null ? "" : person.getName());
+//        mldLog.setOpName(person == null ? "" : person.getName());
+        mldLog.setOpName(Person2Cache.get(opId) == null ? "" : Person2Cache.get(opId).getName());
         mldLog.setOpDesc(opDesc);
         mldLog.setOpName(opName);
         mldLog.setOpType(opType);
@@ -149,7 +127,8 @@ public class BaseAction {
         devLog.setTaskId(taskId);
         devLog.setOpId(opId);
         devLog.setOpTime(new Date());
-        devLog.setOpName(person == null ? "" : person.getName());
+//        devLog.setOpName(person == null ? "" : person.getName());
+        devLog.setOpName(Person2Cache.get(opId) == null ? "" : Person2Cache.get(opId).getName());
         devLog.setOpDesc(opDesc);
         devLog.setOpName(opName);
         devLog.setOpType(opType);
@@ -185,6 +164,8 @@ public class BaseAction {
      * 更新工单信息, 同步更新devc的工单id
      */
     protected void updateTaskStatus() {
+        Task task = TasksCache.get(taskId);
+        Devc devc = DevcCache.get(devcId);
 
         if (task == null) {
             log.error("更新task失败!task 为空");
@@ -202,47 +183,52 @@ public class BaseAction {
 
         // 更新设备的工单信息
         devc.setTask(task);
-        devcMap.put(devc.getDeviceId(), devc);
     }
 
     /**
      * 更新模具状态
      */
     protected void updateMldStatus() {
+        MldDtl mldDtl = MldDtlsCache.get(mldDtlId);
+        Task task = TasksCache.get(taskId);
+        Devc devc = DevcCache.get(devcId);
+
         mldDtl.setStatus(nextStatus);
         mldDtlDao.updateStatus(mldDtlId, nextStatus);
-        mldDtlMap.put(mldDtl.getMldDtlId(), mldDtl);
         task.setMldDtl(mldDtl);
+        log.info("###### task mldDtl -> {}", task.getMldDtl());
+        log.info("###### task cache mldDtl -> {}", TasksCache.get(taskId).getMldDtl());
         devc.setTask(task);
-        devcMap.put(devcId, devc);
-        tasks.put(taskId, task);
     }
 
     /**
      * 更新设备中模具状态信息
      */
     protected void updateDevcMldDltStatus() {
+        MldDtl mldDtl = MldDtlsCache.get(mldDtlId);
+        Devc devc = DevcCache.get(devcId);
+
         devc.setMldDtlId(mldDtlId);
         devc.setMldDtl(mldDtl);
         devc.setMldStatus(mldDtl.getStatus());
         devcDao.updateMldDtlIdAndMldStatus(devcId, mldDtlId, nextStatus);
-        devcMap.put(devc.getDeviceId(), devc);
     }
 
     protected void resetCounts() {
-        counts.put(devcId, 0);
+        CountNumsCache.put(devcId, 0);
     }
 
     /**
      * 移除模具
      */
     protected void removeDevcMld() {
+        Devc devc = DevcCache.get(devcId);
+
         devc.setMldDtlId(null);
         devc.setMldDtl(null);
         devc.setMldStatus(null);
 
         devcDao.updateMldDtlIdAndMldStatus(devcId, null, "");
-        devcMap.put(devc.getDeviceId(), devc);
 
     }
 
@@ -250,11 +236,11 @@ public class BaseAction {
      * 更新设备状态
      */
     protected void updateDevcStatus() {
+        Devc devc = DevcCache.get(devcId);
 
         log.warn("devcId --> {}, 更新设备状态为:--> {}", devc.getDeviceId(), nextStatus);
         devc.setStatus(nextStatus);
         Integer result = devcDao.updateStatus(devc.getDeviceId(), nextStatus);
-        devcMap.put(devc.getDeviceId(), devc);
         log.warn("执行结果 -> {}", result);
     }
 
@@ -262,6 +248,8 @@ public class BaseAction {
      * 添加一条设备维修记录
      */
     protected void addDevRpr() {
+        Person person = Person2Cache.get(opId);
+
         DevRpr devRpr = new DevRpr();
         devRpr.setDevcId(devcId);
         devRpr.setFaltTime(new Date());
@@ -274,6 +262,8 @@ public class BaseAction {
      * 添加一条模具维修记录
      */
     protected void addMldRpr() {
+        Person person = Person2Cache.get(opId);
+
         MldRpr mldRpr = new MldRpr();
         mldRpr.setMldDtlId(mldDtlId);
         mldRpr.setFaltTime(new Date());
@@ -361,8 +351,9 @@ public class BaseAction {
      * 更新工单中的数量信息
      */
     protected void updateNum() {
-        if (devc != null) {
+        Devc devc = DevcCache.get(devcId);
 
+        if (devc != null) {
             if (StringUtils.equals(devc.getMldStatus(), MouldStatus.SM40.toString())) {
                 log.info("更新生产数量 id ->  {}., num -> {}", taskId, devc.getTask().getProcNum());
                 taskDao.updateProcNum(taskId, devc.getTask().getProcNum());
@@ -379,9 +370,11 @@ public class BaseAction {
      * 更新planDtl相关数据
      */
     protected void updatePlanDtl() {
+        Task task = TasksCache.get(taskId);
+
         PlanDtl planDtl = planDtlDao.findById(task.getPlanDtlId());
         Integer sum = taskDao.sumProcNumByPlanDtlId(task.getPlanDtlId());
-        if (sum <= 0) {
+        if (sum == null || sum <= 0) {
             log.error("taskId->{}, planDtlId->{}, 统计生产数量小于等于零", taskId, task.getPlanDtlId());
             return;
         }

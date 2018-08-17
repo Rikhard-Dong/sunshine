@@ -1,5 +1,6 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.CountNumsCache;
 import com.hfmes.sunshine.cache.OptionsCache;
 import com.hfmes.sunshine.dao.DevLogDao;
 import com.hfmes.sunshine.dao.MldLogDao;
@@ -11,13 +12,10 @@ import com.hfmes.sunshine.service.LogService;
 import com.hfmes.sunshine.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author supreDong@gmail.com
@@ -36,9 +34,6 @@ public class LogServiceImpl implements LogService {
     @Qualifier("deviceStatusDatas")
     private Map<Integer, Map<Integer, StatusData>> deviceStatusDataMap;*/
 
-    @Autowired
-    @Qualifier("countNums")
-    private Map<Integer, Integer> countNums;
 
     @Autowired
     public LogServiceImpl(MldLogDao mldLogDao,
@@ -69,7 +64,7 @@ public class LogServiceImpl implements LogService {
             preStatusData.setStop(curDate);
             Long diff = DateUtils.calculateMinuteDifference(preStatusData.getStart(), curDate);
             preStatusData.setHold(Math.toIntExact(diff));
-            preStatusData.setCount(countNums.get(preStatusData.getDevId()));
+            preStatusData.setCount(CountNumsCache.get(preStatusData.getDevId()));
             statusDataDao.updateEndAdnHold(preStatusData);
 //            log.debug("前一次状态记录 --> {}", preStatusData);
         } else {

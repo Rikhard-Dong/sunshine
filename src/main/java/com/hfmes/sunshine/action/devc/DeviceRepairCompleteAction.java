@@ -30,5 +30,6 @@ public class DeviceRepairCompleteAction extends BaseAction implements Action<Dev
         devLog("设备维修完成", "", "操作");
         statusDataLog(SD);
         updateDevcStatus();
+        endDevRpr();
     }
 }

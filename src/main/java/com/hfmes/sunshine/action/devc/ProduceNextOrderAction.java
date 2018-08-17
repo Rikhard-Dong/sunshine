@@ -1,6 +1,10 @@
 package com.hfmes.sunshine.action.devc;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.DevcTasksCache;
+import com.hfmes.sunshine.cache.TasksCache;
+import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
@@ -33,6 +37,8 @@ public class ProduceNextOrderAction extends BaseAction implements Action<DeviceS
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("生产下一单...");
         contextLoad(context);
+
+        Devc devc = DevcCache.get(devcId);
         updateNum();
 
         Integer workerType = (Integer) context.getMessageHeader("workType");
@@ -47,11 +53,13 @@ public class ProduceNextOrderAction extends BaseAction implements Action<DeviceS
         // 更新planDtl的数据
         updatePlanDtl();
 
+        Task task = TasksCache.get(taskId);
+
         // 获取下一单
         boolean flag = false;
         boolean isGet = false;
         int idx = 0;
-        List<Task> tasksTemp = deviceTaskMap.get(devcId);
+        List<Task> tasksTemp = DevcTasksCache.get(devcId);
         for (int i = 0; i < tasksTemp.size(); i++) {
             Task tmp = tasksTemp.get(i);
             if (tmp.getTaskId().equals(task.getTaskId())) {
@@ -65,6 +73,7 @@ public class ProduceNextOrderAction extends BaseAction implements Action<DeviceS
                     devc.setTask(tmp);
                     isGet = true;
                     devcDao.updateTaskId(devc.getDeviceId(), devc.getTaskId());
+                    TasksCache.put(tmp.getTaskId(), tmp);
                     break;
                 }
             }
@@ -76,6 +85,7 @@ public class ProduceNextOrderAction extends BaseAction implements Action<DeviceS
                     devc.setTaskId(tmp.getTaskId());
                     devc.setTask(tmp);
                     isGet = true;
+                    TasksCache.put(tmp.getTaskId(), tmp);
                     devcDao.updateTaskId(devc.getDeviceId(), devc.getTaskId());
                     break;
                 }
@@ -90,7 +100,6 @@ public class ProduceNextOrderAction extends BaseAction implements Action<DeviceS
             devc.setTask(null);
         }
 
-        devcMap.put(devc.getDeviceId(), devc);
 
     }
 }

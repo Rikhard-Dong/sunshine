@@ -351,13 +351,18 @@ public class OptionWebServiceImpl implements OptionWebService {
      */
     @Override
     public String btnPressOpAction(String opIdStr, String optionIdStr, String deviceIdStr, String mldIdStr) {
-        Integer opId = StringUtils.isNumeric(opIdStr) ? Integer.valueOf(opIdStr) : null;
-        Integer optionId = StringUtils.isNumeric(optionIdStr) ? Integer.valueOf(optionIdStr) : null;
-        Integer deviceId = StringUtils.isNumeric(deviceIdStr) ? Integer.valueOf(deviceIdStr) : null;
-        Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
+        try {
+            Integer opId = StringUtils.isNumeric(opIdStr) ? Integer.valueOf(opIdStr) : null;
+            Integer optionId = StringUtils.isNumeric(optionIdStr) ? Integer.valueOf(optionIdStr) : null;
+            Integer deviceId = StringUtils.isNumeric(deviceIdStr) ? Integer.valueOf(deviceIdStr) : null;
+            Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
 
-        optionService.exceOption(opId, optionId, deviceId, mldId);
-        return JacksonUtils.toJSon(Result.success());
+            optionService.exceOption(opId, optionId, deviceId, mldId);
+            return JacksonUtils.toJSon(Result.success());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return JacksonUtils.toJSon(Result.fail(-1));
+        }
     }
 
     @Override

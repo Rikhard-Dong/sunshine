@@ -1,6 +1,8 @@
 package com.hfmes.sunshine.action.mould;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.MldDtlsCache;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
 import com.hfmes.sunshine.enums.MouldEvents;
@@ -29,6 +31,8 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("开始装模action...");
         contextLoad(context);
+
+        Devc devc = DevcCache.get(devcId);
         updateNum();
         // 记录操作
         mldLog("装模操作开始", "", "操作");
@@ -36,9 +40,10 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
 
         // 更新相关数据表
         // 更新模具状态
-        log.debug("before mldDtl status --> {}", mldDtlMap.get(mldDtlId).getStatus());
+        log.debug("before mldDtl status --> {}", MldDtlsCache.get(mldDtlId).getStatus());
         updateMldStatus();
-        log.debug("after mldDtl status --> {}", mldDtlMap.get(mldDtlId).getStatus());
+        log.debug("after mldDtl status --> {}", MldDtlsCache.get(mldDtlId).getStatus());
+        log.info("#####\n#####\n#####\n对象是否一致 -> {}\n#####\n#####\n#####\n", devc == DevcCache.get(devcId));
 
         // 更新设备信息
         updateDevcMldDltStatus();
