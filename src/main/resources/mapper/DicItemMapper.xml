@@ -23,4 +23,14 @@
         from T_DicItem
         where code = #{code}
     </select>
+
+
+    <resultMap id="dicItemMapResult" type="map">
+        <result property="title" column="title"/>
+        <result property="code" column="code"/>
+    </resultMap>
+    <select id="findStausByCode" resultMap="dicItemMapResult">
+        select * from T_DicItem
+        where dic_type_id=1 or dic_type_id=2 or dic_type_id=4
+    </select>
 </mapper>

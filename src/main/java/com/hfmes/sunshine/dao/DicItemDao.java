@@ -2,6 +2,9 @@ package com.hfmes.sunshine.dao;
 
 import com.hfmes.sunshine.domain.DicItem;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author supreDong@gmail.com
  * @date 2018/8/8 22:35
@@ -23,4 +26,10 @@ public interface DicItemDao {
      * @return DicItem
      */
     DicItem findByCode(String code);
+
+    /**
+     * 获取 设备 模具 工单对应的状态
+     * @return
+     */
+    List<Map<String,String>>findStausByCode();
 }

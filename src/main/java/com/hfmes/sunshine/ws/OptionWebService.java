@@ -314,9 +314,26 @@ public interface OptionWebService {
      */
     @WebMethod
     String devcLogInsert(@WebParam(name = "devcId") String devcId,
-                   @WebParam(name = "devcId") String taskId,
-                   @WebParam(name = "devcId") String opId,
-                   @WebParam(name = "devcId") String opDesc,
-                   @WebParam(name = "devcId") String opName,
-                   @WebParam(name = "devcId") String opType);
+                   @WebParam(name = "taskId") String taskId,
+                   @WebParam(name = "opId") String opId,
+                   @WebParam(name = "opDesc") String opDesc,
+                   @WebParam(name = "opName") String opName,
+                   @WebParam(name = "opType") String opType);
+
+
+    /**
+     * 返回状态code对应的title
+     * @return
+     */
+    @WebMethod
+    String getStausTitleByCode();
+
+    /**
+     * 返回所有的用户列表
+     * @return
+     */
+    @WebMethod
+    String getAllPersonList();
 }
+
+

@@ -2,7 +2,10 @@ package com.hfmes.sunshine.service;
 
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.Person;
 import com.hfmes.sunshine.domain.Task;
+
+import java.util.Map;
 
 /**
  * @author supreDong@gmail.com
@@ -35,4 +38,6 @@ public interface SyncStatusService {
      * @return 同步对象
      */
     Task syncTask(Integer taskId);
+
+    Map<String,Person> getAllPersonList();
 }

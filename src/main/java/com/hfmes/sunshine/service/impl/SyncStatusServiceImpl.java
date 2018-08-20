@@ -2,6 +2,7 @@ package com.hfmes.sunshine.service.impl;
 
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.Person;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.service.SyncStatusService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +27,18 @@ public class SyncStatusServiceImpl implements SyncStatusService {
 
     private final Map<Integer, Task> taskMap;
 
+    private final  Map<String,Person> personMap;
+
     @Autowired
     public SyncStatusServiceImpl(@Qualifier("devcs") Map<Integer, Devc> devcMap,
                                  @Qualifier("mldDtls") Map<Integer, MldDtl> mldDtlMap,
+                                 @Qualifier("persons") Map<String, Person> personMap,
                                  @Qualifier("tasks") Map<Integer, Task> taskMap) {
         this.devcMap = devcMap;
         this.mldDtlMap = mldDtlMap;
         this.taskMap = taskMap;
+        this.personMap=personMap;
+
     }
 
     /**
@@ -62,5 +68,10 @@ public class SyncStatusServiceImpl implements SyncStatusService {
         Task task = taskMap.get(taskId);
 //        task.setMldDtl(task.getMldDtl());
         return task;
+    }
+
+    @Override
+    public Map<String, Person> getAllPersonList() {
+        return personMap;
     }
 }

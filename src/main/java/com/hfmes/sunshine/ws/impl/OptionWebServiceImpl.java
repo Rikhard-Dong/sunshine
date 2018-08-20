@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.jws.WebService;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author supreDong@gmail.com
@@ -37,6 +38,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final PlanDtlService planDtlService;
     private final DevcService devcService;
     private final LogService logService;
+    private final DicItemService dicItemService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
@@ -48,6 +50,7 @@ public class OptionWebServiceImpl implements OptionWebService {
                                 PlanDtlService planDtlService,
                                 DevcService devcService,
                                 LogService logService,
+                                DicItemService dicItemService,
                                 TaskService taskService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
@@ -59,6 +62,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.planDtlService = planDtlService;
         this.devcService = devcService;
         this.logService=logService;
+        this.dicItemService=dicItemService;
     }
 
     /**
@@ -363,9 +367,21 @@ public class OptionWebServiceImpl implements OptionWebService {
         devclog.setOpId(Integer.parseInt(opId));
         devclog.setOpTime(new Date());
         devclog.setOpType(opType);
+        devclog.setTaskId(Integer.parseInt(taskId));
         boolean b=logService.devLog(devclog);
-
         return "1";
+    }
+
+    @Override
+    public String getStausTitleByCode() {
+        List<Map<String,String>>list=dicItemService.getStausTitleByCode();
+        return JacksonUtils.toJSon(list);
+    }
+
+    @Override
+    public String getAllPersonList() {
+        Map<String, Person>maps=syncStatusService.getAllPersonList();
+        return JacksonUtils.toJSon(maps);
     }
 
 
