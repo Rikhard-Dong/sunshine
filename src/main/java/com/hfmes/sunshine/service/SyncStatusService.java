@@ -39,5 +39,5 @@ public interface SyncStatusService {
      */
     Task syncTask(Integer taskId);
 
-    Map<String,Person> getAllPersonList();
+    Map<String, Person> getAllPersonList();
 }

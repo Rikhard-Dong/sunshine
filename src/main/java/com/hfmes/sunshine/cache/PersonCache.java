@@ -55,4 +55,8 @@ public class PersonCache {
     public static void remove(String cardNo) {
         cache.remove(cardNo);
     }
+
+    public static Map<String, Person> getMap() {
+        return cache;
+    }
 }

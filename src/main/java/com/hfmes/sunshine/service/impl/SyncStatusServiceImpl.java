@@ -1,15 +1,12 @@
 package com.hfmes.sunshine.service.impl;
 
-import com.hfmes.sunshine.cache.DevcCache;
-import com.hfmes.sunshine.cache.MldDtlsCache;
-import com.hfmes.sunshine.cache.TasksCache;
+import com.hfmes.sunshine.cache.*;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.Person;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.service.SyncStatusService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -53,6 +50,6 @@ public class SyncStatusServiceImpl implements SyncStatusService {
 
     @Override
     public Map<String, Person> getAllPersonList() {
-        return personMap;
+        return PersonCache.getMap();
     }
 }

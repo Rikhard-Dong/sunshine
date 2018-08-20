@@ -43,4 +43,8 @@ public class Person2Cache {
     public static void remove(Integer personId) {
         cache.remove(personId);
     }
+
+    public static Map<Integer, Person> getMap(){
+        return cache;
+    }
 }
