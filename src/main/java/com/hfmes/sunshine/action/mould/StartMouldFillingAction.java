@@ -3,8 +3,11 @@ package com.hfmes.sunshine.action.mould;
 import com.hfmes.sunshine.action.BaseAction;
 import com.hfmes.sunshine.cache.DevcCache;
 import com.hfmes.sunshine.cache.MldDtlsCache;
+import com.hfmes.sunshine.cache.Person2Cache;
+import com.hfmes.sunshine.cache.TasksCache;
 import com.hfmes.sunshine.domain.Devc;
 import com.hfmes.sunshine.domain.MldDtl;
+import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +50,15 @@ public class StartMouldFillingAction extends BaseAction implements Action<MouldS
 
         // 更新设备信息
         updateDevcMldDltStatus();
-
-        taskDao.updateMLdStartTime(taskId, new Date());
+        Task task = TasksCache.get(taskId);
+        task.setMldStartTime(new Date());
+        if (!task.getMldOpId().equals(opId)) {
+            task.setMldOpId(opId);
+            task.setMldOp(Person2Cache.get(opId));
+            taskDao.updateMldOp(taskId, opId);
+        }
+        taskDao.updateMLdStartTime(task.getTaskId(), task.getMldStartTime());
+        devc.setTask(task);
 
         // 记录状态转换
         statusDataLog(SM);

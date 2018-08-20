@@ -90,7 +90,14 @@ public interface TaskDao {
     Integer updateDevOpId(@Param("taskId") Integer taskId,
                           @Param("opId") Integer opId);
 
-
+    /**
+     * 更新装模工id
+     *
+     * @param taskId task id
+     * @param opId   mould op id
+     * @return 更新行数
+     */
+    Integer updateMldOp(@Param("taskId") Integer taskId, @Param("mldOpId") Integer opId);
 
     /* ****************************************
      * Select
@@ -142,5 +149,6 @@ public interface TaskDao {
      * @return
      */
     Integer sumProcNumByPlanDtlId(Integer planDtlId);
+
 
 }

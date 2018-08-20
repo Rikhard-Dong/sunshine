@@ -8,4 +8,4 @@ spring:
 
 logging:
   level:
-    com.hfmes.sunshine: debug
+    com.hfmes.sunshine: info

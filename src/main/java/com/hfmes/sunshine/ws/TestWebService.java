@@ -16,9 +16,9 @@ import java.io.UnsupportedEncodingException;
 @BindingType(value = SOAPBinding.SOAP12HTTP_BINDING)
 @WebService(name = "testWebService", targetNamespace = "http://ws.sunshine.hfmes.com")
 public interface TestWebService {
-    @WebMethod
+    @WebMethod(operationName = "test", action = "测试")
     public String test();
 
     @WebMethod
-    public String test1(@WebParam(name = "obj") String obj) ;
+    public String test1(@WebParam(name = "obj") String obj);
 }

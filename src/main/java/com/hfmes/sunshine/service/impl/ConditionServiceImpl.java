@@ -50,7 +50,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean mldOpLegal(Integer deviceId, Integer personId) {
         Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            // 内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -68,7 +68,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean isDevcRun(Integer deviceId) {
         Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            // 内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -84,7 +84,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean isMouldUse(Integer deviceId) {
         Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            // 内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -100,7 +100,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean devOpLegal(Integer deviceId, Integer personId) {
         Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            // 内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -120,7 +120,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean isTaskDevOpEqualsCurPerson(Integer deviceId, Integer personId) {
         Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            // 内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -134,7 +134,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean procNumAchieveSetNum(Integer deviceId) {
         Devc devc = DevcCache.get(deviceId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            //  内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -150,7 +150,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean procNumLessThanSetNum(Integer devcId) {
         Devc devc = DevcCache.get(devcId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            //  内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
@@ -172,11 +172,10 @@ public class ConditionServiceImpl implements ConditionService {
 
         Devc devc = DevcCache.get(devcId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            //  内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }
-
 
         boolean flag = false;
         boolean isGet = false;
@@ -215,7 +214,7 @@ public class ConditionServiceImpl implements ConditionService {
     public Boolean isMouldSame(Integer devcId) {
         Devc devc = DevcCache.get(devcId);
         if (devc == null) {
-            // TODO 内存数据中不存在当前设备
+            // 内存数据中不存在当前设备
             log.warn("设备不存在...");
             return false;
         }

@@ -108,6 +108,12 @@
         where TaskId = #{taskId}
     </update>
 
+    <update id="updateMldOp">
+        update T_Task
+        set MldOpId = #{mldOpId}
+        where TaskId = #{taskId}
+    </update>
+
     <select id="findByTaskId" resultMap="taskResult">
         select *
         from T_Task

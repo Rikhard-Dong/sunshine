@@ -19,7 +19,6 @@ public class CountNumServiceImpl implements CountNumService {
     @Override
     public boolean updateLocalToServerCount(String devcId, String count) {
 
-
         Devc devc = DevcCache.get(Integer.parseInt(devcId));
         if (devc == null) {
             log.error("更新服务器计数报错! devcId#{}#对应设备为null", devcId);

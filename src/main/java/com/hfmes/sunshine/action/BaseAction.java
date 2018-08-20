@@ -6,6 +6,8 @@ import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldStatus;
 import com.hfmes.sunshine.enums.TaskStatus;
+import com.hfmes.sunshine.exception.DevcNotFoundException;
+import com.hfmes.sunshine.exception.TaskNotFoundException;
 import com.hfmes.sunshine.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +78,14 @@ public class BaseAction {
         mldDtlId = (Integer) context.getMessageHeader("mldDtlId");
 
 
+        if (DevcCache.get(devcId) == null) {
+            DevcCache.init(devcDao);
+            if (DevcCache.get(devcId) == null) {
+                log.error("错误, 当前内存中没有设备信息");
+                throw new DevcNotFoundException("错误, 当前内存中没有设备信息");
+            }
+        }
+
         curStatus = context.getSource().getId().toString();
         nextStatus = context.getTarget().getId().toString();
 
@@ -89,7 +99,7 @@ public class BaseAction {
 //
 //        person = Person2Cache.get(opId);
 //        if (devc == null || mldDtl == null) {
-//            // TODO 抛出异常回滚
+//            // 抛出异常回滚
 //            log.error("对应设备信息为空 --> {}", devc == null);
 //            log.error("对应模具信息为空 --> {}", mldDtl == null);
 //            return;
@@ -170,9 +180,13 @@ public class BaseAction {
         Devc devc = DevcCache.get(devcId);
 
         if (task == null) {
-            log.error("更新task失败!task 为空");
-            // TODO 异常
-            return;
+            // 没有对应的工单
+            TasksCache.init(taskDao);
+            task = TasksCache.get(taskId);
+            if (task == null) {
+                log.error("工单id#{}#对应的工单为空", taskId);
+                throw new TaskNotFoundException("工单id#" + taskId + "#对应的工单为空");
+            }
         }
         if (!StringUtils.equals(task.getStatus(), curTaskStatus)) {
             log.error("工单状态不符合, 当前工单状态应为为{}, 实际状态为{}", task.getStatus(), curTaskStatus);
@@ -198,6 +212,7 @@ public class BaseAction {
         mldDtl.setStatus(nextStatus);
         mldDtlDao.updateStatus(mldDtlId, nextStatus);
         task.setMldDtl(mldDtl);
+
         log.info("###### task mldDtl -> {}", task.getMldDtl());
         log.info("###### task cache mldDtl -> {}", TasksCache.get(taskId).getMldDtl());
         devc.setTask(task);
