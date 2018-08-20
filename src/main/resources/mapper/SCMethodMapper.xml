@@ -4,14 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.SCMethodDao">
 
-    <select id="findByOpId" resultType="com.hfmes.sunshine.domain.SCMethod">
+    <resultMap id="scMethodResult" type="com.hfmes.sunshine.domain.SCMethod">
+        <result property="scMethodId" column="SCMethodId"/>
+        <result property="methodName" column="MethodName"/>
+        <result property="desc" column="Desc"/>
+        <result property="type" column="Type"/>
+        <result property="rtnType" column="RtnType"/>
+        <result property="parms" column="Parms"/>
+    </resultMap>
+
+    <select id="findByOpId" resultMap="scMethodResult">
         select method.*
         from T_SCMethod method
             join T_SCOptMethod optMethod on method.SCMethodId = optMethod.SCMethodId
         where optMethod.SCOptionId = #{opId}
     </select>
 
-    <select id="findAll" resultType="com.hfmes.sunshine.domain.SCMethod">
+    <select id="findAll" resultMap="scMethodResult">
         select *
         from T_SCMethod
     </select>

@@ -1,6 +1,7 @@
 package com.hfmes.sunshine.service.impl;
 
 import com.hfmes.sunshine.dto.OptionDTO;
+import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.OptionService;
 import com.hfmes.sunshine.utils.JacksonUtils;
@@ -34,5 +35,16 @@ public class OptionServiceImplTest {
 
         Result result1 = Result.success(result);
         log.debug("result json --> {}", JacksonUtils.toJSon(result1));
+    }
+
+    @Test
+    public void obtainAllOptions() {
+
+        List<OptionsDTO> options = optionService.obtainAllOptions();
+        log.debug("options --> {}", options);
+
+        String result = JacksonUtils.toJSon(options);
+
+        log.warn("{}", result);
     }
 }

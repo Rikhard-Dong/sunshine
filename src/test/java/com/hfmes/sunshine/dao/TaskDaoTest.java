@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +27,9 @@ public class TaskDaoTest {
     @Qualifier("devcs")
     private Map<Integer, Devc> devcMap;
 
+    @Autowired
+    private TaskDao  taskDao;
+
 
     @Test
     public void findByTaskId() {
@@ -40,5 +44,11 @@ public class TaskDaoTest {
 
         result = JacksonUtils.toJSon(task);
         log.debug("task json --> {}", result);
+    }
+
+    @Test
+    public void findByStatusIsST00ByDevcId() {
+        List<Task> tasks = taskDao.findByStatusIsST00ByDevcId(2);
+        log.info("tasks -> {}", tasks);
     }
 }

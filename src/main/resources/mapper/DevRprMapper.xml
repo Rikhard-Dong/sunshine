@@ -9,7 +9,7 @@
         insert into T_DevRpr (DevcId, FaltTime, Reporter, Fault, RepairerId, RprName, StartTime, EndTime,
                               FaltDesc, ReprDesc, DescTime)
         values
-            (#{devcId}, #{faltTime}, #{reporter}, #{falut}, #{repairerId}, #{rprName}, #{startTime}, #{endTime},
+            (#{devcId}, #{faltTime}, #{reporter}, #{fault}, #{repairerId}, #{rprName}, #{startTime}, #{endTime},
                 #{faltDesc}, #{reprDesc}, #{descTime})
     </insert>
     <update id="updateRepairer">
@@ -28,5 +28,12 @@
         select *
         from T_DevRpr
         where EndTime is null
+    </select>
+
+    <select id="findByDevcIdTop1" resultType="com.hfmes.sunshine.domain.DevRpr">
+        select top 1 *
+        from T_DevRpr
+        where DevcId = #{devcId}
+        order by FaltTime desc
     </select>
 </mapper>

@@ -1,6 +1,10 @@
 package com.hfmes.sunshine.action.mould;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.MldDtlsCache;
+import com.hfmes.sunshine.domain.Devc;
+import com.hfmes.sunshine.domain.MldDtl;
 import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +31,16 @@ public class MouldRepairComplete2SM40Action extends BaseAction implements Action
         log.debug("模具修复到使用状态");
 
         contextLoad(context);
-
+        updateNum();
         // 记录日志信息
         mldLog("模具维修完成, 当前为使用状态", "", "操作");
 
 
         // 更新模具状态
         updateMldStatus();
+
+        Devc devc = DevcCache.get(devcId);
+        MldDtl mldDtl = MldDtlsCache.get(mldDtlId);
 
         // 更新设备中的模具状态
         if (mldDtl.getMldDtlId().equals(devc.getMldDtlId())) {

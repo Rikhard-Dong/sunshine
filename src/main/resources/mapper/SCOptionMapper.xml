@@ -4,6 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfmes.sunshine.dao.SCOptionDao">
 
+    <resultMap id="optionResult" type="com.hfmes.sunshine.domain.SCOption">
+        <result property="scOptionId" column="SCOptionId"/>
+        <result property="roleId" column="RoleId"/>
+        <result property="optName" column="OptName"/>
+
+        <collection property="scMethods" column="SCOptionId" fetchType="lazy"
+                    select="com.hfmes.sunshine.dao.SCMethodDao.findByOpId"/>
+
+        <collection property="scConditions" column="SCOptionId" fetchType="lazy"
+                    select="com.hfmes.sunshine.dao.SCConditionDao.findByOpId"/>
+    </resultMap>
+
     <select id="findBySCOptionId" resultType="com.hfmes.sunshine.domain.SCOption">
         select *
         from T_SCOption
@@ -17,39 +29,38 @@
     </select>
 
     <select id="findByCardNoAndStatus" resultType="com.hfmes.sunshine.domain.SCOption">
-        select null
-        /*        select op.*
-                from T_SCOption op
-                    join T_Role role on op.RoleId = role.RoleId
-                    join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
-                where role.RoleId in (select role1.RoleId
-                                      from T_Role role1
-                                          join T_UserRole userRole on role1.RoleId = userRole.RoleId
-                                          join T_Person person on person.PersonId = userRole.UserId
-                                      where person.CardNo = #{cardNo})
+        select op.*
+        from T_SCOption op
+            join T_Role role on op.RoleId = role.RoleId
+            join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
+        where role.RoleId in (select role1.RoleId
+                              from T_Role role1
+                                  join T_UserRole userRole on role1.RoleId = userRole.RoleId
+                                  join T_Person person on person.PersonId = userRole.UserId
+                              where person.CardNo = #{cardNo})
 
-                intersect
+        intersect
 
-                select op.*
-                from T_SCOption op
-                    join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
-                where (statusChg.DicType = 'SD' and
-                       (statusChg.CurStatusCode = #{deviceStatus} or statusChg.CurStatusCode is null))
+        select op.*
+        from T_SCOption op
+            join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
+        where (statusChg.DicType = 'SD' and
+               (statusChg.CurStatusCode = #{deviceStatus} or statusChg.CurStatusCode is null))
 
-                intersect
+        intersect
 
-                select op.*
-                from T_SCOption op
-                    join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
-                where (statusChg.DicType = 'SM' and (statusChg.CurStatusCode = #{mldStatus} or statusChg.CurStatusCode is null))
+        select op.*
+        from T_SCOption op
+            join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
+        where (statusChg.DicType = 'SM' and (statusChg.CurStatusCode = #{mldStatus} or statusChg.CurStatusCode is null))
 
-                intersect
+        intersect
 
-                select op.*
-                from T_SCOption op
-                    join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
-                where
-                    (statusChg.DicType = 'ST' and (statusChg.CurStatusCode = #{taskStatus} or statusChg.CurStatusCode is null))*/
+        select op.*
+        from T_SCOption op
+            join T_SCStatusChg statusChg on op.SCOptionId = statusChg.SCOptionId
+        where
+            (statusChg.DicType = 'ST' and (statusChg.CurStatusCode = #{taskStatus} or statusChg.CurStatusCode is null))
     </select>
 
     <select id="findByCardNo" resultType="com.hfmes.sunshine.domain.SCOption">
@@ -86,7 +97,7 @@
             (statusChg.DicType = 'ST' and (statusChg.CurStatusCode = #{taskStatus} or statusChg.CurStatusCode is null))
     </select>
 
-    <select id="findAll" resultType="com.hfmes.sunshine.domain.SCOption">
+    <select id="findAll" resultMap="optionResult">
         select *
         from T_SCOption
     </select>

@@ -1,10 +1,8 @@
 package com.hfmes.sunshine.ws.impl;
 
+import com.hfmes.sunshine.cache.PersonCache;
 import com.hfmes.sunshine.domain.*;
-import com.hfmes.sunshine.dto.ConditionDto;
-import com.hfmes.sunshine.dto.OptionDTO;
-import com.hfmes.sunshine.dto.ParamsObj;
-import com.hfmes.sunshine.dto.Result;
+import com.hfmes.sunshine.dto.*;
 import com.hfmes.sunshine.service.*;
 import com.hfmes.sunshine.utils.JacksonUtils;
 import com.hfmes.sunshine.ws.OptionWebService;
@@ -38,7 +36,6 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final PlanDtlService planDtlService;
     private final DevcService devcService;
     private final LogService logService;
-    private final DicItemService dicItemService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
@@ -50,7 +47,6 @@ public class OptionWebServiceImpl implements OptionWebService {
                                 PlanDtlService planDtlService,
                                 DevcService devcService,
                                 LogService logService,
-                                DicItemService dicItemService,
                                 TaskService taskService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
@@ -62,7 +58,6 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.planDtlService = planDtlService;
         this.devcService = devcService;
         this.logService=logService;
-        this.dicItemService=dicItemService;
     }
 
     /**
@@ -77,6 +72,12 @@ public class OptionWebServiceImpl implements OptionWebService {
         Integer devcId = Integer.valueOf(deviceId);
         List<OptionDTO> result = optionService.obtainOptions(cardNo, devcId);
         return JacksonUtils.toJSon(Result.success(result));
+    }
+
+    @Override
+    public String obtainAllOptions() {
+        List<OptionsDTO> result = optionService.obtainAllOptions();
+        return JacksonUtils.toJSon(result);
     }
 
 
@@ -196,7 +197,19 @@ public class OptionWebServiceImpl implements OptionWebService {
         return StringUtils.capitalize(result.toString());
     }
 
+    @Override
+    public String hasNextTask(String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = conditionService.hasNextTask(params.getDeviceId());
+        return StringUtils.capitalize(result.toString());
+    }
 
+    @Override
+    public String isMouldSame(String objStr) {
+        ParamsObj params = getParamObj(objStr);
+        Boolean result = conditionService.isMouldSame(params.getDeviceId());
+        return StringUtils.capitalize(result.toString());
+    }
 
     /* *****************************************************
      * 生产计数接口
@@ -342,13 +355,18 @@ public class OptionWebServiceImpl implements OptionWebService {
      */
     @Override
     public String btnPressOpAction(String opIdStr, String optionIdStr, String deviceIdStr, String mldIdStr) {
-        Integer opId = StringUtils.isNumeric(opIdStr) ? Integer.valueOf(opIdStr) : null;
-        Integer optionId = StringUtils.isNumeric(optionIdStr) ? Integer.valueOf(optionIdStr) : null;
-        Integer deviceId = StringUtils.isNumeric(deviceIdStr) ? Integer.valueOf(deviceIdStr) : null;
-        Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
+        try {
+            Integer opId = StringUtils.isNumeric(opIdStr) ? Integer.valueOf(opIdStr) : null;
+            Integer optionId = StringUtils.isNumeric(optionIdStr) ? Integer.valueOf(optionIdStr) : null;
+            Integer deviceId = StringUtils.isNumeric(deviceIdStr) ? Integer.valueOf(deviceIdStr) : null;
+            Integer mldId = StringUtils.isNumeric(mldIdStr) ? Integer.valueOf(mldIdStr) : null;
 
-        optionService.exceOption(opId, optionId, deviceId, mldId);
-        return JacksonUtils.toJSon(Result.success());
+            optionService.exceOption(opId, optionId, deviceId, mldId);
+            return JacksonUtils.toJSon(Result.success());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return JacksonUtils.toJSon(Result.fail(-1));
+        }
     }
 
     @Override
@@ -370,6 +388,11 @@ public class OptionWebServiceImpl implements OptionWebService {
         devclog.setTaskId(Integer.parseInt(taskId));
         boolean b=logService.devLog(devclog);
         return "1";
+    }
+
+    @Override
+    public String getPersonByCardNo(String cardNo) {
+        return JacksonUtils.toJSon(PersonCache.get(cardNo));
     }
 
     @Override

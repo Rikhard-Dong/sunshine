@@ -23,17 +23,17 @@
     <insert id="insertOne" useGeneratedKeys="true" keyProperty="mldRprId" keyColumn="MldRprId"
             parameterType="com.hfmes.sunshine.domain.MldRpr">
         insert into T_MldRpr (MldDtlId, faltTime, Reporter, Fault, RprName, StartTime, RprId, EndTime,
-                              FaltDesc, ReprDesc, DescTime, RepairerId)
+                              FaltDesc, ReprDesc, DescTime)
         values
             (#{mldDtlId}, #{faltTime}, #{reporter}, #{fault}, #{rprName}, #{startTime}, #{rprId}, #{endTime},
-                          #{faltDesc}, #{reprDesc}, #{descTime}, #{repairerId})
+                #{faltDesc}, #{reprDesc}, #{descTime})
     </insert>
 
     <update id="updateRepairer">
         update T_MldRpr
-        set RepairerId = #{repairerId},
-            RprName    = #{rprName},
-            StartTime  = #{startTime}
+        set RprId     = #{rprId},
+            RprName   = #{rprName},
+            StartTime = #{startTime}
         where MldRprId = #{mldRprId}
     </update>
 
@@ -44,8 +44,15 @@
     </update>
 
     <select id="findUnComplete" resultType="com.hfmes.sunshine.domain.MldRpr">
-        select  *
+        select *
         from T_MldRpr
         where EndTime is null
+    </select>
+
+    <select id="findByMldIdTop1" resultType="com.hfmes.sunshine.domain.MldRpr">
+        select top 1 *
+        from T_MldRpr
+        where MldDtlId = #{mldDtlId}
+        order by faltTime desc
     </select>
 </mapper>

@@ -29,10 +29,8 @@ public class ProduceSuspendAction extends BaseAction implements Action<DeviceSta
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("暂停生产....");
         contextLoad(context);
-
         // 记录日志
         devLog("暂停生产", "", "操作");
-
         updateNum();
 
 

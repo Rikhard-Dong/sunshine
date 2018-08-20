@@ -3,6 +3,7 @@ package com.hfmes.sunshine.dao;
 import com.hfmes.sunshine.domain.Task;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,6 +13,12 @@ import java.util.List;
  * 任务
  */
 public interface TaskDao {
+    /* ****************************************
+     * insert
+     ******************************************/
+
+    Integer insertOne(Task newTask);
+
 
     /* ****************************************
      * update
@@ -33,6 +40,64 @@ public interface TaskDao {
     Integer updateTestNum(@Param("taskId") Integer taskId,
                           @Param("testNum") Integer testNum);
 
+    /**
+     * 更新生产开始时间
+     *
+     * @param taskId
+     * @param startTime
+     * @return
+     */
+    Integer updateStartTime(@Param("taskId") Integer taskId,
+                            @Param("startTime") Date startTime);
+
+    /**
+     * 更新生产结束时间
+     *
+     * @param taskId
+     * @param endTime
+     * @return
+     */
+    Integer updateEndTime(@Param("taskId") Integer taskId,
+                          @Param("endTime") Date endTime);
+
+    /**
+     * 更新模具安装开始时间
+     *
+     * @param taskId
+     * @param mldStateDate
+     * @return
+     */
+    Integer updateMLdStartTime(@Param("taskId") Integer taskId,
+                               @Param("mldStartTime") Date mldStateDate);
+
+    /**
+     * 更新模具安装结束时间
+     *
+     * @param taskId
+     * @param mldEndTime
+     * @return
+     */
+    Integer updateMLdEndTime(@Param("taskId") Integer taskId,
+                             @Param("mldEndTime") Date mldEndTime);
+
+    /**
+     * 更新操作员id
+     *
+     * @param taskId
+     * @param opId
+     * @return
+     */
+    Integer updateDevOpId(@Param("taskId") Integer taskId,
+                          @Param("opId") Integer opId);
+
+    /**
+     * 更新装模工id
+     *
+     * @param taskId task id
+     * @param opId   mould op id
+     * @return 更新行数
+     */
+    Integer updateMldOp(@Param("taskId") Integer taskId, @Param("mldOpId") Integer opId);
 
     /* ****************************************
      * Select
@@ -76,4 +141,14 @@ public interface TaskDao {
     String getStatusByTaskId(Integer taskId);
 
     List<Task> findByStatusIsST00ByDevcId(Integer deviceId);
+
+    /**
+     * 根据planDtlId统计该planDtl总共生产数量
+     *
+     * @param planDtlId
+     * @return
+     */
+    Integer sumProcNumByPlanDtlId(Integer planDtlId);
+
+
 }

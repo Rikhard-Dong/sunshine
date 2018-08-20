@@ -17,6 +17,7 @@ public class ConditionDto {
     private String rtnType;
     private String parms;
     private Boolean value;
+    private String notMatch;
 
     public ConditionDto() {
     }
@@ -30,5 +31,6 @@ public class ConditionDto {
         this.rtnType = condition.getRtnType();
         this.parms = condition.getParms();
         this.value = value;
+
     }
 }

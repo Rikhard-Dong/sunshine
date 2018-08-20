@@ -34,7 +34,7 @@ public interface MldRprDao {
      * @return
      */
     Integer updateRepairer(@Param("mldRprId") Integer mldRprId,
-                           @Param("repairerId") Integer repairerId,
+                           @Param("rprId") Integer repairerId,
                            @Param("rprName") String rprName,
                            @Param("startTime") Date startTime);
 
@@ -57,4 +57,12 @@ public interface MldRprDao {
      * @return
      */
     List<MldRpr> findUnComplete();
+
+    /**
+     * 查找最新一条模具维修信息, 根据模具id
+     *
+     * @param mldDtlId
+     * @return
+     */
+    MldRpr findByMldIdTop1(Integer mldDtlId);
 }

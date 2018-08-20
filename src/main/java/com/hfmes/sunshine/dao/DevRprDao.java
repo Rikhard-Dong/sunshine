@@ -57,4 +57,12 @@ public interface DevRprDao {
      * @return
      */
     List<DevRpr> findUnComplete();
+
+    /**
+     * 找到最新的一条设备维修记录, 根据报修时间排序
+     *
+     * @param devcId
+     * @return
+     */
+    DevRpr findByDevcIdTop1(Integer devcId);
 }

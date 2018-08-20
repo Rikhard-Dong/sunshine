@@ -8,6 +8,8 @@ import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 import static com.hfmes.sunshine.utils.Constants.SM;
 
 /**
@@ -22,6 +24,7 @@ public class CompleteMouldFillingAction extends BaseAction implements Action<Mou
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("装模完成action....");
         contextLoad(context);
+        updateNum();
 
         // 插入模具日志信息
         mldLog("模具安装完成", "", "操作");
@@ -32,6 +35,8 @@ public class CompleteMouldFillingAction extends BaseAction implements Action<Mou
 
         // 更新设备信息
         updateDevcMldDltStatus();
+
+        taskDao.updateMLdEndTime(taskId, new Date());
 
         // 记录状态转换
         statusDataLog(SM);

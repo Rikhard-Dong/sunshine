@@ -1,21 +1,20 @@
 package com.hfmes.sunshine.service.impl;
 
+import com.hfmes.sunshine.cache.DevcCache;
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
 import com.hfmes.sunshine.dto.ConditionDto;
 import com.hfmes.sunshine.dto.OptionDTO;
+import com.hfmes.sunshine.dto.OptionsDTO;
 import com.hfmes.sunshine.dto.Result;
 import com.hfmes.sunshine.service.OptionExceService;
 import com.hfmes.sunshine.service.OptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static com.hfmes.sunshine.utils.Constants.*;
 
@@ -33,10 +32,8 @@ public class OptionServiceImpl implements OptionService {
     private final SCConditionDao conditionDao;
     private final SCMethodDao methodDao;
     private final SCOptCondDao scOptCondDao;
-    private final Map<Integer, Devc> devcs;
     private final OptionExceService optionExceService;
-
-
+    private final SCOptCondDao optCondDao;
 
 
     @Autowired
@@ -46,16 +43,16 @@ public class OptionServiceImpl implements OptionService {
                              SCConditionDao conditionDao,
                              SCMethodDao methodDao,
                              SCOptCondDao scOptCondDao,
-                             @Qualifier("devcs") Map<Integer, Devc> devcs,
-                             OptionExceService optionExceService) {
+                             OptionExceService optionExceService,
+                             SCOptCondDao optCondDao) {
         this.optionDao = optionDao;
         this.roleDao = roleDao;
         this.taskDao = taskDao;
         this.conditionDao = conditionDao;
         this.methodDao = methodDao;
         this.scOptCondDao = scOptCondDao;
-        this.devcs = devcs;
         this.optionExceService = optionExceService;
+        this.optCondDao = optCondDao;
     }
 
     /**
@@ -67,7 +64,7 @@ public class OptionServiceImpl implements OptionService {
      */
     @Override
     public List<OptionDTO> obtainOptions(String cardNo, Integer deviceId) {
-        Devc devc = devcs.get(deviceId);
+        Devc devc = DevcCache.get(deviceId);
 
         if (devc == null) {
             // TODO 传入的设备不在map中
@@ -84,14 +81,7 @@ public class OptionServiceImpl implements OptionService {
         log.debug("deviceStatus --> {}, mouldStatus --> {}, taskStatus --> {}", deviceStatus, mouldStatus, taskStatus);
 
         // 获取操作的交集
-        Set<SCOption> options = optionDao.findByCardNo(cardNo);
-        log.debug("####options --> {}", options);
-        options.retainAll(optionDao.findBySDStatus(deviceStatus));
-        log.debug("####options --> {}", options);
-        options.retainAll(optionDao.findBySMStatus(mouldStatus));
-        log.debug("####options --> {}", options);
-        options.retainAll(optionDao.findBySTStatus(taskStatus));
-        log.debug("options --> {}", options);
+        List<SCOption> options = optionDao.findByCardNoAndStatus(cardNo, deviceStatus, mouldStatus, taskStatus);
 
         List<OptionDTO> optionDTOS = new ArrayList<>();
 
@@ -102,6 +92,18 @@ public class OptionServiceImpl implements OptionService {
 
         }
         return optionDTOS;
+    }
+
+    @Override
+    public List<OptionsDTO> obtainAllOptions() {
+        List<SCOption> options = optionDao.findAll();
+        List<OptionsDTO> result = new ArrayList<>();
+        for (SCOption option : options) {
+//            log.info("option --> ### {}\n\n\n", option);
+            OptionsDTO optionsDTO = new OptionsDTO(option, scOptCondDao);
+            result.add(optionsDTO);
+        }
+        return result;
     }
 
     /**
@@ -115,7 +117,15 @@ public class OptionServiceImpl implements OptionService {
 
         for (SCCondition condition : conditions) {
             Boolean value = scOptCondDao.getValueByOptIdAndConditionId(opId, condition.getScConditionId());
-            conditionDtos.add(new ConditionDto(condition, value));
+
+            ConditionDto temp = new ConditionDto(condition, value);
+            SCOptCond scOptCond = optCondDao.findByOptionIdAndCondIdAndValue(opId, condition.getScConditionId(), value);
+            if (scOptCond != null) {
+                temp.setNotMatch(scOptCond.getNotMatch());
+            } else {
+                log.warn("警告 --> 没有对应的optCond数据, opId -> {}, condId -> {}, value -> {}", opId, condition.getScConditionId(), value);
+            }
+            conditionDtos.add(temp);
         }
 
         return conditionDtos;
@@ -206,9 +216,15 @@ public class OptionServiceImpl implements OptionService {
             case 21:
                 optionExceService.stopProduce(opId, optionId, deviceId, mldDtlId);
                 break;
-
+            case 22:
+                optionExceService.nextTaskForPunch(opId, optionId, deviceId, mldDtlId);
+                break;
+            case 23:
+                optionExceService.nextTaskForPBCB(opId, optionId, deviceId, mldDtlId);
+                break;
             default:
-
+                log.warn("执行动作id错误 optionId -> {}", optionId);
+                break;
         }
 
         return null;

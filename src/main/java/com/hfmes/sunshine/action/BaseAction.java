@@ -1,19 +1,20 @@
 package com.hfmes.sunshine.action;
 
+import com.hfmes.sunshine.cache.*;
 import com.hfmes.sunshine.dao.*;
 import com.hfmes.sunshine.domain.*;
+import com.hfmes.sunshine.enums.DeviceStatus;
 import com.hfmes.sunshine.enums.MouldStatus;
 import com.hfmes.sunshine.enums.TaskStatus;
+import com.hfmes.sunshine.exception.DevcNotFoundException;
+import com.hfmes.sunshine.exception.TaskNotFoundException;
 import com.hfmes.sunshine.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.statemachine.StateContext;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import static com.hfmes.sunshine.utils.Constants.BTN_EVENT_TYPE;
 import static com.hfmes.sunshine.utils.Constants.ST;
@@ -40,32 +41,9 @@ public class BaseAction {
     protected DevRprDao devRprDao;
     @Autowired
     protected MldRprDao mldRprDao;
+    @Autowired
+    protected PlanDtlDao planDtlDao;
 
-
-    @Autowired
-    @Qualifier("devcs")
-    protected Map<Integer, Devc> devcMap;
-    @Autowired
-    @Qualifier("mldDtls")
-    protected Map<Integer, MldDtl> mldDtlMap;
-    @Autowired
-    @Qualifier("persons2")
-    protected Map<Integer, Person> personMap;
-    @Autowired
-    @Qualifier("deviceTasks")
-    protected Map<Integer, List<Task>> deviceTaskMap;
-    @Autowired
-    @Qualifier("tasks")
-    protected Map<Integer, Task> tasks;
-    @Autowired
-    @Qualifier("devRprs")
-    protected Map<Integer, DevRpr> devRprMap;
-    @Autowired
-    @Qualifier("mldRprs")
-    protected Map<Integer, MldRpr> mldRprMap;
-    @Autowired
-    @Qualifier("countNums")
-    protected Map<Integer, Integer> counts;
     protected Integer devcId;
     protected Integer opId;
     protected Integer optionId;
@@ -80,11 +58,11 @@ public class BaseAction {
 
     protected StatusData statusData = new StatusData();
 
-    protected Devc devc;
-    protected MldDtl mldDtl;
-    protected Task task;
-
-    private Person person;
+//    protected Devc devc;
+//    protected MldDtl mldDtl;
+//    protected Task task;
+//
+//    private Person person;
 
     /**
      * 加载一些基础属性
@@ -100,6 +78,14 @@ public class BaseAction {
         mldDtlId = (Integer) context.getMessageHeader("mldDtlId");
 
 
+        if (DevcCache.get(devcId) == null) {
+            DevcCache.init(devcDao);
+            if (DevcCache.get(devcId) == null) {
+                log.error("错误, 当前内存中没有设备信息");
+                throw new DevcNotFoundException("错误, 当前内存中没有设备信息");
+            }
+        }
+
         curStatus = context.getSource().getId().toString();
         nextStatus = context.getTarget().getId().toString();
 
@@ -108,19 +94,19 @@ public class BaseAction {
 
         log.debug("curStatus --> {}, nextStatus --> {}", curStatus, nextStatus);
 
-        devc = devcMap.get(devcId);
-        mldDtl = mldDtlMap.get(mldDtlId);
+//        devc = DevcCache.get(devcId);
+//        mldDtl = MldDtlsCache.get(mldDtlId);
+//
+//        person = Person2Cache.get(opId);
+//        if (devc == null || mldDtl == null) {
+//            // 抛出异常回滚
+//            log.error("对应设备信息为空 --> {}", devc == null);
+//            log.error("对应模具信息为空 --> {}", mldDtl == null);
+//            return;
+//        }
 
-        person = personMap.get(opId);
-        if (devc == null || mldDtl == null) {
-            // TODO 抛出异常回滚
-            log.error("对应设备信息为空 --> {}", devc == null);
-            log.error("对应模具信息为空 --> {}", mldDtl == null);
-            return;
-        }
-
-        taskId = devc.getTaskId();
-        task = devc.getTask();
+        taskId = DevcCache.get(devcId).getTaskId();
+//        task = devc.getTask();
 
     }
 
@@ -136,7 +122,8 @@ public class BaseAction {
         mldLog.setMldDtlId(mldDtlId);
         mldLog.setOpTime(new Date());
         mldLog.setTaskId(taskId == null ? 0 : taskId);
-        mldLog.setOpName(person == null ? "" : person.getName());
+//        mldLog.setOpName(person == null ? "" : person.getName());
+        mldLog.setOpName(Person2Cache.get(opId) == null ? "" : Person2Cache.get(opId).getName());
         mldLog.setOpDesc(opDesc);
         mldLog.setOpName(opName);
         mldLog.setOpType(opType);
@@ -152,7 +139,8 @@ public class BaseAction {
         devLog.setTaskId(taskId);
         devLog.setOpId(opId);
         devLog.setOpTime(new Date());
-        devLog.setOpName(person == null ? "" : person.getName());
+//        devLog.setOpName(person == null ? "" : person.getName());
+        devLog.setOpName(Person2Cache.get(opId) == null ? "" : Person2Cache.get(opId).getName());
         devLog.setOpDesc(opDesc);
         devLog.setOpName(opName);
         devLog.setOpType(opType);
@@ -188,11 +176,17 @@ public class BaseAction {
      * 更新工单信息, 同步更新devc的工单id
      */
     protected void updateTaskStatus() {
+        Task task = TasksCache.get(taskId);
+        Devc devc = DevcCache.get(devcId);
 
         if (task == null) {
-            log.error("更新task失败!task 为空");
-            // TODO 异常
-            return;
+            // 没有对应的工单
+            TasksCache.init(taskDao);
+            task = TasksCache.get(taskId);
+            if (task == null) {
+                log.error("工单id#{}#对应的工单为空", taskId);
+                throw new TaskNotFoundException("工单id#" + taskId + "#对应的工单为空");
+            }
         }
         if (!StringUtils.equals(task.getStatus(), curTaskStatus)) {
             log.error("工单状态不符合, 当前工单状态应为为{}, 实际状态为{}", task.getStatus(), curTaskStatus);
@@ -205,47 +199,53 @@ public class BaseAction {
 
         // 更新设备的工单信息
         devc.setTask(task);
-        devcMap.put(devc.getDeviceId(), devc);
     }
 
     /**
      * 更新模具状态
      */
     protected void updateMldStatus() {
+        MldDtl mldDtl = MldDtlsCache.get(mldDtlId);
+        Task task = TasksCache.get(taskId);
+        Devc devc = DevcCache.get(devcId);
+
         mldDtl.setStatus(nextStatus);
         mldDtlDao.updateStatus(mldDtlId, nextStatus);
-        mldDtlMap.put(mldDtl.getMldDtlId(), mldDtl);
         task.setMldDtl(mldDtl);
+
+        log.info("###### task mldDtl -> {}", task.getMldDtl());
+        log.info("###### task cache mldDtl -> {}", TasksCache.get(taskId).getMldDtl());
         devc.setTask(task);
-        devcMap.put(devcId, devc);
-        tasks.put(taskId, task);
     }
 
     /**
      * 更新设备中模具状态信息
      */
     protected void updateDevcMldDltStatus() {
+        MldDtl mldDtl = MldDtlsCache.get(mldDtlId);
+        Devc devc = DevcCache.get(devcId);
+
         devc.setMldDtlId(mldDtlId);
         devc.setMldDtl(mldDtl);
         devc.setMldStatus(mldDtl.getStatus());
         devcDao.updateMldDtlIdAndMldStatus(devcId, mldDtlId, nextStatus);
-        devcMap.put(devc.getDeviceId(), devc);
     }
 
     protected void resetCounts() {
-        counts.put(devcId, 0);
+        CountNumsCache.put(devcId, 0);
     }
 
     /**
      * 移除模具
      */
     protected void removeDevcMld() {
+        Devc devc = DevcCache.get(devcId);
+
         devc.setMldDtlId(null);
         devc.setMldDtl(null);
         devc.setMldStatus(null);
 
         devcDao.updateMldDtlIdAndMldStatus(devcId, null, "");
-        devcMap.put(devc.getDeviceId(), devc);
 
     }
 
@@ -253,11 +253,11 @@ public class BaseAction {
      * 更新设备状态
      */
     protected void updateDevcStatus() {
+        Devc devc = DevcCache.get(devcId);
 
         log.warn("devcId --> {}, 更新设备状态为:--> {}", devc.getDeviceId(), nextStatus);
         devc.setStatus(nextStatus);
         Integer result = devcDao.updateStatus(devc.getDeviceId(), nextStatus);
-        devcMap.put(devc.getDeviceId(), devc);
         log.warn("执行结果 -> {}", result);
     }
 
@@ -265,55 +265,57 @@ public class BaseAction {
      * 添加一条设备维修记录
      */
     protected void addDevRpr() {
+        Person person = Person2Cache.get(opId);
+
         DevRpr devRpr = new DevRpr();
         devRpr.setDevcId(devcId);
         devRpr.setFaltTime(new Date());
-        devRpr.setReporter(String.valueOf(opId));
+        devRpr.setReporter(person.getName());
+        devRpr.setFault("设备故障");
         devRprDao.insertOne(devRpr);
-        devRprMap.put(devcId, devRpr);
     }
 
     /**
      * 添加一条模具维修记录
      */
     protected void addMldRpr() {
+        Person person = Person2Cache.get(opId);
+
         MldRpr mldRpr = new MldRpr();
         mldRpr.setMldDtlId(mldDtlId);
         mldRpr.setFaltTime(new Date());
-        mldRpr.setReporter(String.valueOf(opId));
+        mldRpr.setReporter(person.getName());
+        mldRpr.setFault("模具故障");
         mldRprDao.insertOne(mldRpr);
-        mldRprMap.put(mldDtlId, mldRpr);
     }
 
     /**
      * 开始维修设备, 更新开始时间及维修人员
      */
     protected void startDevRpr() {
-        DevRpr devRpr = devRprMap.get(devcId);
+        DevRpr devRpr = devRprDao.findByDevcIdTop1(devcId);
         if (devRpr == null) {
             log.error("没有设备维修信息, devcId --> {}", devcId);
             return;
         }
         devRpr.setStartTime(new Date());
         devRpr.setRepairerId(opId);
-        devRprDao.updateRepairer(devRpr.getDevRprId(), opId, null, devRpr.getStartTime());
-        devRprMap.put(devcId, devRpr);
+        devRprDao.updateRepairer(devRpr.getDevRprId(), opId, "", devRpr.getStartTime());
     }
 
     /**
      * 开始模具维修
      */
     protected void startMldRpr() {
-        MldRpr mldRpr = mldRprMap.get(mldDtlId);
+        MldRpr mldRpr = mldRprDao.findByMldIdTop1(mldDtlId);
         if (mldRpr == null) {
             log.error("没有设备维修信息, mldDtlId --> {}", mldDtlId);
             return;
         }
 
         mldRpr.setStartTime(new Date());
-        mldRpr.setRepairerId(opId);
-        mldRprDao.updateRepairer(mldRpr.getMldRprId(), opId, null, mldRpr.getStartTime());
-        mldRprMap.put(mldDtlId, mldRpr);
+        mldRpr.setRprId(opId);
+        mldRprDao.updateRepairer(mldRpr.getMldRprId(), opId, "", mldRpr.getStartTime());
     }
 
 
@@ -321,55 +323,59 @@ public class BaseAction {
      * 设备维修结束, 记录结束时间
      */
     protected void endDevRpr() {
-        DevRpr devRpr = devRprMap.get(devcId);
+        DevRpr devRpr = devRprDao.findByDevcIdTop1(devcId);
         if (devRpr == null) {
             log.error("没有设备维修信息, devcId --> {}", devcId);
             return;
         }
         devRprDao.updateCompleteRepair(devRpr.getDevRprId(), "", new Date());
-        devRprMap.remove(devcId);
     }
 
     protected void endMldRpr() {
-        MldRpr mldRpr = mldRprMap.get(mldDtlId);
+        MldRpr mldRpr = mldRprDao.findByMldIdTop1(mldDtlId);
         if (mldRpr == null) {
             log.error("没有设备维修信息, mldDtlId --> {}", mldDtlId);
             return;
         }
         mldRprDao.updateCompleteRepair(mldRpr.getMldRprId(), "", new Date());
-        mldRprMap.remove(mldDtlId);
     }
 
     /**
      * 撤销报修, 记录结束时间
      */
     protected void revokeDevRpr() {
-        DevRpr devRpr = devRprMap.get(devcId);
+        DevRpr devRpr = devRprDao.findByDevcIdTop1(devcId);
         if (devRpr == null) {
             log.error("没有设备维修信息, devcId --> {}", devcId);
             return;
         }
         devRprDao.updateCompleteRepair(devRpr.getDevRprId(), "撤销报修", new Date());
-        devRprMap.remove(devcId);
     }
 
     /**
      * 撤销模具报修, 记录结束时间
      */
     protected void revokeMldRpr() {
-        MldRpr mldRpr = mldRprMap.get(mldDtlId);
+        MldRpr mldRpr = mldRprDao.findByMldIdTop1(mldDtlId);
         if (mldRpr == null) {
             log.error("没有设备维修信息, mldDtlId --> {}", mldDtlId);
             return;
         }
         mldRprDao.updateCompleteRepair(mldRpr.getMldRprId(), "", new Date());
-        mldRprMap.remove(mldDtlId);
     }
 
+    /**
+     * 更新工单中的数量信息
+     */
     protected void updateNum() {
-        if (devc != null) {
+        Devc devc = DevcCache.get(devcId);
+        Task task = TasksCache.get(taskId);
 
-            if (StringUtils.equals(devc.getMldStatus(), MouldStatus.SM40.toString())) {
+        log.info("更新工单数量, dev status -> {}, mld status -> {}, task status -> {}", devc.getStatus(), devc.getMldStatus(), task.getStatus());
+        if (devc != null) {
+            if (StringUtils.equals(devc.getMldStatus(), MouldStatus.SM40.toString())
+                    && StringUtils.equals(devc.getStatus(), DeviceStatus.SD10.toString())
+                    && StringUtils.equals(task.getStatus(), TaskStatus.ST10.toString())) {
                 log.info("更新生产数量 id ->  {}., num -> {}", taskId, devc.getTask().getProcNum());
                 taskDao.updateProcNum(taskId, devc.getTask().getProcNum());
             } else {
@@ -377,7 +383,30 @@ public class BaseAction {
                 taskDao.updateTestNum(taskId, devc.getTask().getTestNum());
             }
         } else {
-            log.warn("devc is null");
+            log.error("devc is null");
+        }
+    }
+
+    /**
+     * 更新planDtl相关数据
+     */
+    protected void updatePlanDtl() {
+        Task task = TasksCache.get(taskId);
+
+        PlanDtl planDtl = planDtlDao.findById(task.getPlanDtlId());
+        Integer sum = taskDao.sumProcNumByPlanDtlId(task.getPlanDtlId());
+        if (sum == null || sum <= 0) {
+            log.error("taskId->{}, planDtlId->{}, 统计生产数量小于等于零", taskId, task.getPlanDtlId());
+            return;
+        }
+        if (planDtl != null) {
+            if (sum >= planDtl.getReqNum()) {
+                planDtlDao.updateCmpNumAndComplete(task.getPlanDtlId(), sum);
+            } else {
+                planDtlDao.updateCmpNum(task.getPlanDtlId(), sum);
+            }
+        } else {
+            log.error("当前工单#{}#对应的planDtl#{}#为空", task.getTaskId(), task.getPlanDtlId());
         }
     }
 }

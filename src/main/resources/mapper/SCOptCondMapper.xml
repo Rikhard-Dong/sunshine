@@ -9,4 +9,10 @@
         from T_SCOptCond oc
         where SCOptionId = #{optId} and SCConditionId = #{conditionId}
     </select>
+
+    <select id="findByOptionIdAndCondIdAndValue" resultType="com.hfmes.sunshine.domain.SCOptCond">
+        select *
+        from T_SCOptCond
+        where SCOptionId = #{opId} and SCConditionId = #{condId} and Value = #{value};
+    </select>
 </mapper>

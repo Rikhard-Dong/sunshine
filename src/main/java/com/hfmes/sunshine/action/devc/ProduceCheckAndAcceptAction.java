@@ -1,10 +1,13 @@
 package com.hfmes.sunshine.action.devc;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.TasksCache;
 import com.hfmes.sunshine.domain.Task;
 import com.hfmes.sunshine.enums.DeviceEvents;
 import com.hfmes.sunshine.enums.DeviceStatus;
+import com.hfmes.sunshine.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
@@ -22,21 +25,31 @@ import static com.hfmes.sunshine.utils.Constants.ST;
 @Slf4j
 public class ProduceCheckAndAcceptAction extends BaseAction implements Action<DeviceStatus, DeviceEvents> {
 
+    @Autowired
+    private TaskService taskService;
+
     @Override
     @Transactional
     public void execute(StateContext<DeviceStatus, DeviceEvents> context) {
         log.debug("生产验收...");
         contextLoad(context);
+
         updateNum();
 
+        Task task = TasksCache.get(taskId);
 
         // 更新task状态
         task.setStatus(nextTaskStatus);
         taskDao.updateStatus(taskId, task.getStatus());
 
 
-        // TODO 选择新单
         statusDataLog(ST);
         resetCounts();
+
+        // 更新planDtl数据
+        updatePlanDtl();
+
+        //  选择新单
+        taskService.taskDown(devcId);
     }
 }

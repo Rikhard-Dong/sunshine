@@ -1,6 +1,10 @@
 package com.hfmes.sunshine.action.mould;
 
 import com.hfmes.sunshine.action.BaseAction;
+import com.hfmes.sunshine.cache.DevcCache;
+import com.hfmes.sunshine.cache.MldDtlsCache;
+import com.hfmes.sunshine.domain.Devc;
+import com.hfmes.sunshine.domain.MldDtl;
 import com.hfmes.sunshine.enums.MouldEvents;
 import com.hfmes.sunshine.enums.MouldStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +32,7 @@ public class MouldRepairAction extends BaseAction implements Action<MouldStatus,
     public void execute(StateContext<MouldStatus, MouldEvents> context) {
         log.debug("模具维修action....");
         contextLoad(context);
+        updateNum();
 
         // 记录模具操作日志
         mldLog("模具维修", "", "操作");
@@ -35,6 +40,8 @@ public class MouldRepairAction extends BaseAction implements Action<MouldStatus,
         // 更新模具状态
         updateMldStatus();
 
+        Devc devc = DevcCache.get(devcId);
+        MldDtl mldDtl = MldDtlsCache.get(mldDtlId);
         // 如果设备有该模具
         if (devc.getMldDtl() != null && devc.getMldDtl().getMldDtlId().equals(mldDtl.getMldDtlId())) {
             // 更新模具状态信息

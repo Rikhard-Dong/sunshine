@@ -27,6 +27,18 @@
                      select="com.hfmes.sunshine.dao.PlanDao.findByPlanId"/>
     </resultMap>
 
+    <update id="updateCmpNum">
+        update T_PlanDtl
+        set CmpNum = #{cmpNum}
+        where PlanDtlId = #{planDtlId}
+    </update>
+
+    <update id="updateCmpNumAndComplete">
+        update T_PlanDtl
+        set CmpNum = #{cmpNum}, Status = '完成'
+        where PlanDtlId = #{planDtlId}
+    </update>
+
     <select id="findById" resultMap="planDtlResult">
         select *
         from T_PlanDtl
