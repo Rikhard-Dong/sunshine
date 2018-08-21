@@ -175,7 +175,8 @@ public interface OptionWebService {
      */
     @WebMethod
     String checkDSSame(@WebParam(name = "devcId") String devcId,
-                       @WebParam(name = "devcStatus") String devcStatus);
+                       @WebParam(name = "devcStatus") String devcStatus,
+                       @WebParam(name = "taskId") String taskId);
 
 
     /**
@@ -320,6 +321,7 @@ public interface OptionWebService {
 
     /**
      * 根据id获取对应的计划详情
+     *
      * @param planDtlId
      * @return
      */
@@ -329,6 +331,7 @@ public interface OptionWebService {
 
     /**
      * 插入设备日志
+     *
      * @param devcId
      * @param taskId
      * @param opId
@@ -339,15 +342,16 @@ public interface OptionWebService {
      */
     @WebMethod
     String devcLogInsert(@WebParam(name = "devcId") String devcId,
-                   @WebParam(name = "taskId") String taskId,
-                   @WebParam(name = "opId") String opId,
-                   @WebParam(name = "opDesc") String opDesc,
-                   @WebParam(name = "opName") String opName,
-                   @WebParam(name = "opType") String opType);
+                         @WebParam(name = "taskId") String taskId,
+                         @WebParam(name = "opId") String opId,
+                         @WebParam(name = "opDesc") String opDesc,
+                         @WebParam(name = "opName") String opName,
+                         @WebParam(name = "opType") String opType);
 
 
     /**
      * 返回状态code对应的title
+     *
      * @return
      */
     @WebMethod
@@ -355,6 +359,7 @@ public interface OptionWebService {
 
     /**
      * 返回所有的用户列表
+     *
      * @return
      */
     @WebMethod

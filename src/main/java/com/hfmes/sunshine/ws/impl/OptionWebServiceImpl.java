@@ -36,6 +36,7 @@ public class OptionWebServiceImpl implements OptionWebService {
     private final PlanDtlService planDtlService;
     private final DevcService devcService;
     private final LogService logService;
+    private final DicItemService dicItemService;
 
     @Autowired
     public OptionWebServiceImpl(OptionService optionService,
@@ -47,7 +48,7 @@ public class OptionWebServiceImpl implements OptionWebService {
                                 PlanDtlService planDtlService,
                                 DevcService devcService,
                                 LogService logService,
-                                TaskService taskService) {
+                                TaskService taskService, DicItemService dicItemService) {
         this.optionService = optionService;
         this.conditionService = conditionService;
         this.checkStatusService = checkStatusService;
@@ -57,7 +58,8 @@ public class OptionWebServiceImpl implements OptionWebService {
         this.taskService = taskService;
         this.planDtlService = planDtlService;
         this.devcService = devcService;
-        this.logService=logService;
+        this.logService = logService;
+        this.dicItemService = dicItemService;
     }
 
     /**
@@ -232,8 +234,9 @@ public class OptionWebServiceImpl implements OptionWebService {
      * @return 一致返回true, 不一致返回false
      */
     @Override
-    public String checkDSSame(String devcId, String devcStatus) {
-        Boolean result = checkStatusService.checkDevcStatus(Integer.valueOf(devcId), devcStatus);
+    public String checkDSSame(String devcId, String devcStatus, String taskId) {
+        Boolean result = checkStatusService.checkDevcStatus(Integer.valueOf(devcId),
+                devcStatus, Integer.valueOf(taskId));
         return StringUtils.capitalize(result.toString());
     }
 
@@ -378,7 +381,7 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     @Override
     public String devcLogInsert(String devcId, String taskId, String opId, String opDesc, String opName, String opType) {
-        DevLog devclog=new DevLog();
+        DevLog devclog = new DevLog();
         devclog.setOpName(opName);
         devclog.setDevcId(Integer.parseInt(devcId));
         devclog.setOpDesc(opDesc);
@@ -386,7 +389,7 @@ public class OptionWebServiceImpl implements OptionWebService {
         devclog.setOpTime(new Date());
         devclog.setOpType(opType);
         devclog.setTaskId(Integer.parseInt(taskId));
-        boolean b=logService.devLog(devclog);
+        boolean b = logService.devLog(devclog);
         return "1";
     }
 
@@ -397,13 +400,13 @@ public class OptionWebServiceImpl implements OptionWebService {
 
     @Override
     public String getStausTitleByCode() {
-        List<Map<String,String>>list=dicItemService.getStausTitleByCode();
+        List<Map<String, String>> list = dicItemService.getStausTitleByCode();
         return JacksonUtils.toJSon(list);
     }
 
     @Override
     public String getAllPersonList() {
-        Map<String, Person>maps=syncStatusService.getAllPersonList();
+        Map<String, Person> maps = syncStatusService.getAllPersonList();
         return JacksonUtils.toJSon(maps);
     }
 

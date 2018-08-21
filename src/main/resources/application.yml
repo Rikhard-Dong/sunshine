@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: proc
 
 mybatis:
   type-aliases-package: com.hfmes.sunshine.domain
